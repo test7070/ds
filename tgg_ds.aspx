@@ -79,39 +79,25 @@
 
             function mainPost() {
             	q_mask(bbmMask);
-                q_cmbParse("cmbTypea", q_getPara('tgg.typea'));
-                q_cmbParse("combPaytype", q_getPara('vcc.paytype'));
-                q_cmbParse("cmbTrantype", q_getPara('sys.tran'));
-				
-				$("#cmbTypea").focus(function() {
-                    var len = $(this).children().length > 0 ? $(this).children().length : 1;
-                    $(this).attr('size', len + "");
-                }).blur(function() {
-                    $(this).attr('size', '1');
+                $('#txtNoa').change(function(e){
+                	$(this).val($.trim($(this).val()));   	
+					if($(this).val().length>0){
+						if((/\W/g).test($(this).val())){
+							alert('編號只允許 英文(A-Z)、數字(0-9)。');
+						}else{
+							t_where="where=^^ noa='"+$(this).val()+"'^^";
+                    		q_gt('tgg', t_where, 0, 0, 0, "checkTggno_change", r_accy);
+						}
+					}
                 });
-                $("#cmbTrantype").focus(function() {
-                    var len = $(this).children().length > 0 ? $(this).children().length : 1;
-                    $(this).attr('size', len + "");
-                }).blur(function() {
-                    $(this).attr('size', '1');
-                });
-                $("#combPaytype").change(function(e) {
-                	if(q_cur==1 || q_cur==2)
-					 $('#txtPaytype').val($('#combPaytype').find(":selected").text()); 
-				});
-                $("#txtPaytype").focus(function(e) {
-  					var n=$(this).val().match(/[0-9]+/g);
-  					var input = document.getElementById ("txtPaytype");
-		            if (typeof(input.selectionStart) != 'undefined' && n != null) {	  
-		                input.selectionStart = $(this).val().indexOf(n);
-		                input.selectionEnd =$(this).val().indexOf(n)+n.length+1;
-		            }
-				});
-                $('#lblConn').click(function() {
+				$('#btnConn').click(function() {
                     t_where = "noa='" + $('#txtNoa').val() + "'";
-                    q_box("conn_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "95%", "650px", q_getMsg('lblConn'));
+                    q_box("conn_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "95%", "650px", q_getMsg('btnConn'));
                 });
-
+                $('#btnDetail').click(function() {
+                    t_where = "noa='" + $('#txtNoa').val() + "'";
+                    q_box("custdetail_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'custdetail', "95%", "650px", q_getMsg('btnDetail'));
+                });
             }
             function q_boxClose(s2) {
                 var ret;
@@ -125,15 +111,29 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'checkTggno_change':
+                		var as = _q_appendData("tgg", "", true);
+                        if (as[0] != undefined){
+                        	alert('已存在 '+as[0].noa+' '+as[0].comp);
+                        }
+                		break;
+                	case 'checkTggno_btnOk':
+                		var as = _q_appendData("tgg", "", true);
+                        if (as[0] != undefined){
+                        	alert('已存在 '+as[0].noa+' '+as[0].comp);
+                            Unlock();
+                            return;
+                        }else{
+                        	q_gtnoa(q_name, t_noa);
+                        }
+                		break;
                     case q_name:
                         if (q_cur == 4)
                             q_Seek_gtPost();
-
-                        if (q_cur == 1 || q_cur == 2)
-                            q_changeFill(t_name, ['txtGrpno', 'txtGrpname'], ['noa', 'comp']);
-
                         break;
-                }  /// end switch
+                    default:
+                    	break;
+                } 
             }
 
             function _btnSeek() {
@@ -143,14 +143,15 @@
                 q_box('tgg_s.aspx', q_name + '_s', "550px", "400px", q_getMsg("popSeek"));
             }
             function btnIns() {
-            	if($('#Copy').is(':checked')){
+            	if($('#Copy').prop('checked')){
             		curData.copy();
             	}
                 _btnIns();
-            	if($('#Copy').is(':checked')){
+                refreshBbm();
+            	if($('#Copy').prop('checked')){
             		curData.paste();
             	}
-            	$('#Copy').removeAttr('checked');
+            	$('#Copy').prop('checked',false);
                 $('#txtNoa').focus();
             }
 
@@ -158,7 +159,7 @@
                 if (emp($('#txtNoa').val()))
                     return;
                 _btnModi();
-                $('#txtNoa').attr('readonly','readonly');
+                refreshBbm();
                 $('#txtComp').focus();
             }
 
@@ -166,26 +167,35 @@
                 q_box('z_tggtran.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "90%", "600px", q_getMsg("popPrint"));
             }
             function btnOk() {
-                if($('#txtChkdate').val().length>0 && !q_cd($('#txtChkdate').val()))
-            		alert(q_getMsg('lblChkdate')+'錯誤。');  
-            	if($('#txtStartdate').val().length>0 && !q_cd($('#txtStartdate').val()))
-            		alert(q_getMsg('lblStartdate')+'錯誤。');
-            		
-            	if (dec($('#txtCredit').val()) > 9999999999)
-                    t_err = t_err + q_getMsg('msgCreditErr') + '\r'; 
-                    		           
-                var t_err = '';
-                t_err = q_chkEmpField([['txtNoa', q_getMsg('lblNoa')], ['txtComp', q_getMsg('lblComp')]]);
-                if (t_err.length > 0) {
-                    alert(t_err);
-                    return;
+                Lock(); 
+            	$('#txtNoa').val($.trim($('#txtNoa').val()));   	
+            	if(!(/^\w+$/g).test($('#txtNoa').val())){
+            		if((/\W/g).test($('#txtNoa').val()))
+            			alert('編號只允許 英文(A-Z)、數字(0-9)。');
+            		else
+            			alert(q_getMsg('lblNoa')+'錯誤。');
+            		Unlock();
+            		return;
+            	}
+            	if ($('#txtSerial').val().length > 0 && checkId($('#txtSerial').val())!=2){
+            		alert(q_getMsg('lblSerial')+'錯誤。');
+            		Unlock();
+            		return;
+            	}
+                if(q_cur ==1){
+                	$('#txtWorker').val(r_name);
+                }else if(q_cur ==2){
+                	$('#txtWorker2').val(r_name);
+                }else{
+                	alert("error: btnok!")
                 }
-                $('#txtWorker' ).val(r_name);
-                var t_noa = trim($('#txtNoa').val());
-                if (t_noa.length == 0)
-                    q_gtnoa(q_name, t_noa);
-                else
-                    wrServer(t_noa);
+                //------------------------------------
+                if(q_cur==1){
+                	t_where="where=^^ noa='"+$('#txtNoa').val()+"'^^";
+                    q_gt('tgg', t_where, 0, 0, 0, "checkTggno_btnOk", r_accy);
+                }else{
+                	wrServer(t_noa);
+                }
             }
 
             function wrServer(key_value) {
@@ -197,6 +207,14 @@
 
             function refresh(recno) {
                 _refresh(recno);
+                refreshBbm();
+            }
+            function refreshBbm(){
+            	if(q_cur==1){
+            		$('#txtNoa').css('color','black').css('background','white').removeAttr('readonly');
+            	}else{
+            		$('#txtNoa').css('color','green').css('background','RGB(237,237,237)').attr('readonly','readonly');
+            	}
             }
 
             function readonly(t_para, empty) {
