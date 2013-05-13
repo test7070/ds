@@ -19,7 +19,7 @@
                 alert("An error occurred:\r\n" + error.Message);
             }
 
-            var q_name = "cust";
+            var q_name = "ucc";
             var q_readonly = ['txtWorker','txtWorker2'];
             var bbmNum = [];
             var bbmMask = [];
@@ -29,7 +29,6 @@
             brwNowPage = 0;
             brwKey = 'noa';
             brwCount2 = 15;
-            aPop = new Array(['txtSalesno', 'lblSales', 'sss', 'noa,namea', 'txtSalesno,txtSales', 'sss_b.aspx']);
 
             $(document).ready(function() {
                 bbmKey = ['noa'];
@@ -58,53 +57,28 @@
 						}
 					}
                 });
-                $('#btnConn').click(function() {
-                    t_where = "noa='" + $('#txtNoa').val() + "'";
-                    q_box("conn_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "95%", "650px", q_getMsg('btnConn'));
-                });
-                $('#btnDetail').click(function() {
-                    t_where = "noa='" + $('#txtNoa').val() + "'";
-                    q_box("custdetail_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'custdetail', "95%", "650px", q_getMsg('btnDetail'));
-                });
-                $('#txtUacc1').change(function(e){
-                	var patt = /^(\d{4})([^\.,.]*)$/g;
-                    $(this).val($(this).val().replace(patt,"$1.$2"));
-                });
-                $('#txtUacc2').change(function(e){
-                	var patt = /^(\d{4})([^\.,.]*)$/g;
-                    $(this).val($(this).val().replace(patt,"$1.$2"));
-                });
-                $('#txtUacc3').change(function(e){
-                	var patt = /^(\d{4})([^\.,.]*)$/g;
-                    $(this).val($(this).val().replace(patt,"$1.$2"));
-                });
-                $('#txtUacc4').change(function(e){
-                	var patt = /^(\d{4})([^\.,.]*)$/g;
-                    $(this).val($(this).val().replace(patt,"$1.$2"));
-                });
             }
             function q_boxClose(s2) {
                 var ret;
                 switch (b_pop) {
                     case q_name + '_s':
                         q_boxClose2(s2);
-                        ///   q_boxClose 3/4
                         break;
                 }  
             }
 
             function q_gtPost(t_name) {
                 switch (t_name) {
-                	case 'checkCustno_change':
-                		var as = _q_appendData("cust", "", true);
+                	case 'checkUccno_change':
+                		var as = _q_appendData("ucc", "", true);
                         if (as[0] != undefined){
-                        	alert('已存在 '+as[0].noa+' '+as[0].comp);
+                        	alert('已存在 '+as[0].noa+' '+as[0].product);
                         }
                 		break;
-                	case 'checkCustno_btnOk':
-                		var as = _q_appendData("cust", "", true);
+                	case 'checkUccno_btnOk':
+                		var as = _q_appendData("ucc", "", true);
                         if (as[0] != undefined){
-                        	alert('已存在 '+as[0].noa+' '+as[0].comp);
+                        	alert('已存在 '+as[0].noa+' '+as[0].product);
                             Unlock();
                             return;
                         }else{
@@ -124,24 +98,22 @@
                 if (q_cur > 0 && q_cur < 4)// 1-3
                     return;
 
-                q_box('cust_ds_s.aspx', q_name + '_s', "550px", "400px", q_getMsg("popSeek"));
+                q_box('ucc_ds_s.aspx', q_name + '_s', "550px", "400px", q_getMsg("popSeek"));
             }
             function btnIns() {
                 _btnIns();
                 refreshBbm();
                 $('#txtNoa').focus();
             }
-
             function btnModi() {
                 if (emp($('#txtNoa').val()))
                     return;
                 _btnModi();
                 refreshBbm();
-                $('#txtComp').focus();
+                $('#txtProduct').focus();
             }
-
             function btnPrint() {
-                q_box('z_cust_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+                q_box('z_ucc_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
             }
             function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
@@ -150,7 +122,6 @@
             }
             function btnOk() {    
             	Lock(); 
-            	$('#txtNoa').val($.trim($('#txtNoa').val()));   	
             	$('#txtNoa').val($.trim($('#txtNoa').val()));   
             	if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
 				}else{
@@ -158,11 +129,6 @@
 					Unlock();
 					return;
 				}
-            	if ($('#txtSerial').val().length > 0 && checkId($('#txtSerial').val())!=2){
-            		alert(q_getMsg('lblSerial')+'錯誤。');
-            		Unlock();
-            		return;
-            	}
                 if(q_cur ==1){
                 	$('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
@@ -173,7 +139,7 @@
                 //------------------------------------
                 if(q_cur==1){
                 	t_where="where=^^ noa='"+$('#txtNoa').val()+"'^^";
-                    q_gt('cust', t_where, 0, 0, 0, "checkCustno_btnOk", r_accy);
+                    q_gt('cust', t_where, 0, 0, 0, "checkUccno_btnOk", r_accy);
                 }else{
                 	wrServer(t_noa);
                 }
@@ -181,7 +147,6 @@
 
             function wrServer(key_value) {
                 var i;
-
 				$('#txt' + bbmKey[0].substr(0, 1).toUpperCase() + bbmKey[0].substr(1)).val(key_value);
 				_btnOk(key_value, bbmKey[0], '', '', 2);
             }
@@ -430,91 +395,24 @@
 					<tr>
 						<td><span> </span><a id="lblNoa" class="lbl"> </a></td>
 						<td><input id="txtNoa"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblSerial" class="lbl"> </a></td>
-						<td><input id="txtSerial"  type="text"  class="txt c1"/></td>
 						<td><span> </span><a id="lblTypea" class="lbl"> </a></td>
 						<td><select id="cmbTypea"  class="txt c1"> </select></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblComp" class="lbl"> </a></td>
-						<td colspan="3"><input id="txtComp" type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblProduct" class="lbl"> </a></td>
+						<td colspan="3"><input id="txtProduct" type="text" class="txt c1"/> </td>
 						<td><span> </span><a id="lblNick" class="lbl"> </a></td>
 						<td><input id="txtNick" type="text"  class="txt c1"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblBoss" class="lbl"> </a></td>
-						<td><input id="txtboss" type="text" class="txt c1"/> </td>
-						<td><span> </span><a id="lblHead" class="lbl"> </a></td>
-						<td><input id="txthead" type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblEngpro" class="lbl"> </a></td>
+						<td colspan="3"><input id="txtEngpro" type="text" class="txt c1"/> </td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblTel" class="lbl"> </a></td>
-						<td colspan="2"><input id="txtTel" type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblFax" class="lbl"> </a></td>
-						<td colspan="2"><input id="txtFax" type="text" class="txt c1"/></td>
-						
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblMobile" class="lbl"> </a></td>
-						<td colspan="2"><input id="txtMobile" type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblEmail" class="lbl"> </a></td>
-						<td colspan="2"><input id="txtEmail" type="text" class="txt c1"/></td>
-					</tr>
-					<tr>
-						<td> </td>
-						<td><input id="btnDetail" type="button" /></td>
-						<td><input id="btnConn" type="button" /></td>
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblAddr_fact" class="lbl"> </a></td>
-						<td colspan="5">
-							<input id="txtZip_fact" type="text" style="float:left; width:10%;"/>
-							<input id="txtAddr_fact"  type="text" style="float:left; width:90%;"/>
-						</td>
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblAddr_comp" class="lbl"> </a></td>
-						<td colspan="5">
-							<input id="txtZip_comp" type="text" style="float:left; width:10%;"/>
-							<input id="txtAddr_comp"  type="text" style="float:left; width:90%;"/>
-						</td>
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblAddr_invo" class="lbl"> </a></td>
-						<td colspan="5">
-							<input id="txtZip_invo" type="text" style="float:left; width:10%;"/>
-							<input id="txtAddr_invo"  type="text" style="float:left; width:90%;"/>
-						</td>
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblAddr_home" class="lbl"> </a></td>
-						<td colspan="5">
-							<input id="txtZip_home" type="text" style="float:left; width:10%;"/>
-							<input id="txtAddr_home"  type="text" style="float:left; width:90%;"/>
-						</td>
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblSales" class="lbl btn" > </a></td>
-						<td colspan="2">
-							<input id="txtSalesno" type="text" style="float:left; width:40%;"/>
-							<input id="txtSales" type="text" style="float:left; width:60%;"/>
-						</td>
-					</tr>
-					<tr style="display:none;">
-						<td><span> </span><a id="lblUacc4" class="lbl"> </a></td>
-						<td><input id="txtUacc4" type="text" class="txt c1"/></td>
-					</tr>
-					<tr style="display:none;">
-						<td><span> </span><a id="lblUacc1" class="lbl"> </a></td>
-						<td><input id="txtUacc1"    type="text" class="txt c1"/></td>
-					</tr>
-					<tr style="display:none;">
-						<td><span> </span><a id="lblUacc2" class="lbl"> </a></td>
-						<td><input id="txtUacc2" type="text" class="txt c1"/></td>
-					</tr>
-					<tr style="display:none;">
-						<td><span> </span><a id="lblUacc3" class="lbl"> </a></td>
-						<td><input id="txtUacc3"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblSpec" class="lbl"> </a></td>
+						<td colspan="3"><input id="txtSpec" type="text" class="txt c1"/> </td>
+						<td><span> </span><a id="lblUnit" class="lbl"> </a></td>
+						<td><input id="txtUnit" type="text" class="txt c1"/> </td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
