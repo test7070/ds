@@ -113,6 +113,11 @@
 		            		}
 		        		}
             	},
+            	priceChange : function(){
+            		var t_addrno = $.trim($('#txtStraddrno').val());
+					var t_date = $.trim($('#txtTrandate').val());
+					q_gt('addrs', "where=^^ noa='"+t_addrno+"' and datea<='"+t_date+"' ^^", 0, 0, 0, 'getPrice');
+            	},
             	checkData : function(){
         			this.isTrd = false;
         			this.isTre = false;
@@ -254,6 +259,25 @@
 
 			function q_gtPost(t_name) {
 				switch (t_name) {
+					case 'getPrice':
+						var t_price = 0;
+						var t_price2 = 0;
+						var t_price3 = 0;
+						var as = _q_appendData("addrs", "", true);
+						if(as[0]!=undefined){
+							t_price = as[0].custprice;
+						 	t_price2 = as[0].driverprice;
+							t_price3 = as[0].driverprice2;
+						}
+						if(!trans.isTrd){
+							$('#txtPrice').val(t_price);
+						}
+						if(!trans.isTre){
+							$('#txtPrice2').val(t_price2);
+							$('#txtPrice3').val(t_price3);
+						}
+						sum();
+						break;
 					case 'transInit_1':
 						var as = _q_appendData("carteam", "", true);
 						var t_item = "";
@@ -370,23 +394,7 @@
 						}
 						break;
 					case 'txtStraddrno':
-						if (q_cur == 2 && $.trim($('#txtTrdno').val()).length > 0) {
-							for (var i in curData.data) {
-								if (curData.data[i].field == 'txtPrice') {
-									$('#' + curData.data[i].field).val(curData.data[i].value);
-								}
-							}
-						}
-						if (q_cur == 2 && $.trim($('#txtTreno').val()).length > 0) {
-							for (var i in curData.data) {
-								if (curData.data[i].field == 'txtPrice2' || curData.data[i].field == 'txtPrice3') {
-									$('#' + curData.data[i].field).val(curData.data[i].value);
-								}
-							}
-						}
-						if(q_cur==1 || q_cur==2){
-							$('#txtInmount').focus();
-						}
+						trans.priceChange();
 						break;
 				}
 			}
@@ -720,13 +728,33 @@
 				<table class="tview" id="tview">
 					<tr>
 						<td align="center" style="width:20px; color:black;"><a id="vewChk"> </a></td>
-						<td align="center" style="width:120px; color:black;"><a id="vewNoa"> </a></td>
-						<td align="center" style="width:100px; color:black;"><a id="vewTrandate"> </a></td>
+						<td align="center" style="width:80px; color:black;"><a id="vewDatea"> </a></td>
+						<td align="center" style="width:80px; color:black;"><a id="vewTrandate"> </a></td>
+						<td align="center" style="width:80px; color:black;"><a id="vewCarno"> </a></td>
+						<td align="center" style="width:80px; color:black;"><a id="vewDriver"> </a></td>
+						<td align="center" style="width:80px; color:black;"><a id="vewNick"> </a></td>
+						<td align="center" style="width:120px; color:black;"><a id="vewStraddr"> </a></td>
+						<td align="center" style="width:60px; color:black;"><a id="vewMount"> </a></td>
+						<td align="center" style="width:60px; color:black;"><a id="vewPrice"> </a></td>
+						<td align="center" style="width:60px; color:black;"><a id="vewMount2"> </a></td>
+						<td align="center" style="width:60px; color:black;"><a id="vewPrice2"> </a></td>
+						<td align="center" style="width:60px; color:black;"><a id="vewPrice3"> </a></td>
+						<td align="center" style="width:60px; color:black;"><a id="vewDiscount"> </a></td>
 					</tr>
 					<tr>
 						<td ><input id="chkBrow.*" type="checkbox"/></td>
-						<td id="noa" style="text-align: center;">~noa</td>
+						<td id="datea" style="text-align: center;">~datea</td>
 						<td id="trandate" style="text-align: center;">~trandate</td>
+						<td id="carno" style="text-align: center;">~carno</td>
+						<td id="driver" style="text-align: center;">~driver</td>
+						<td id="nick" style="text-align: center;">~nick</td>
+						<td id="straddr" style="text-align: center;">~straddr</td>
+						<td id="mount" style="text-align: right;">~mount</td>
+						<td id="price" style="text-align: right;">~price</td>
+						<td id="mount2" style="text-align: right;">~mount2</td>
+						<td id="price2" style="text-align: right;">~price2</td>
+						<td id="price3" style="text-align: right;">~price3</td>
+						<td id="discount" style="text-align: right;">~discount</td>
 					</tr>
 				</table>
 			</div>
