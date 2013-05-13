@@ -47,13 +47,15 @@
             function mainPost() {
                 q_mask(bbmMask);
                 $('#txtNoa').change(function(e){
-                	$(this).val($.trim($(this).val()));   	
+                	$(this).val($.trim($(this).val()).toUpperCase());  	
 					if($(this).val().length>0){
 						if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
 							t_where="where=^^ noa='"+$(this).val()+"'^^";
                     		q_gt('ucc', t_where, 0, 0, 0, "checkUccno_change", r_accy);
 						}else{
+							Lock();
 							alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
+							Unlock();
 						}
 					}
                 });
@@ -82,7 +84,7 @@
                             Unlock();
                             return;
                         }else{
-                        	q_gtnoa(q_name, t_noa);
+                        	wrServer($('#txtNoa').val());
                         }
                 		break;
                     case q_name:
@@ -141,7 +143,7 @@
                 	t_where="where=^^ noa='"+$('#txtNoa').val()+"'^^";
                     q_gt('cust', t_where, 0, 0, 0, "checkUccno_btnOk", r_accy);
                 }else{
-                	wrServer(t_noa);
+                	wrServer($('#txtNoa').val());
                 }
             }
 
