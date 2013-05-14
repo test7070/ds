@@ -38,7 +38,7 @@
 			,['txtCustno', '', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
 			,['txtDriverno', '', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
 			,['txtUccno', '', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
-			,['txtStraddrno', '', 'addr', 'noa,addr,productno,product,custprice,driverprice,driverprice2', 'txtStraddrno,txtStraddr,txtUccno,txtProduct,txtPrice,txtPrice2,txtPrice3', 'addr_b.aspx'] 
+			,['txtStraddrno', '', 'addr', 'noa,addr,productno,product', 'txtStraddrno,txtStraddr,txtUccno,txtProduct', 'addr_b.aspx'] 
 			);
 			function currentData() {
             }
@@ -229,6 +229,7 @@
 				$('#txtDiscount').change(function(){
 					sum();
 				});
+				q_xchgForm();
 			}
 
 			function sum() {
@@ -244,7 +245,7 @@
 				if(!trans.isTre){
 					var t_mount2 = q_float('txtOutmount').add(q_float('txtPton2'));
 					var t_total2 = t_mount2.mul(q_float('txtPrice2').add(q_float('txtPrice3'))).mul(q_float('txtDiscount')).round(0);
-					$('#txtMount2').val(FormatNumber(t_mount));
+					$('#txtMount2').val(FormatNumber(t_mount2));
 					$('#txtTotal2').val(FormatNumber(t_total2));
 				}
 			}
@@ -426,7 +427,7 @@
 							var as = _q_appendData("view_tres", "", true);
 							if(as[0]!=undefined){
 								for(var i=0;i<as.length;i++){
-									if(as[i].noa != t_trdeno){
+									if(as[i].noa != t_treno){
 										alert('資料錯誤:司機立帳單據不一致【'+as[i].noa+'】【'+t_treno+'】');
 										Unlock();
 										return;
