@@ -33,11 +33,12 @@
 			q_desc = 1;
             q_xchg = 1;
             brwCount2 = 15;
-            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardealno,cardeal', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
-			,['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
-			,['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
-			,['txtUccno', 'lblUcc', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
-			,['txtStraddrno', 'lblStraddr', 'addr', 'noa,addr,productno,product,custprice,driverprice,driverprice2', 'txtStraddrno,txtStraddr,txtUccno,txtProduct,txtPrice,txtPrice2,txtPrice3', 'addr_b.aspx'] 
+            //不能彈出瀏覽視窗
+            aPop = new Array(['txtCarno', '', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
+			,['txtCustno', '', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
+			,['txtDriverno', '', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+			,['txtUccno', '', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
+			,['txtStraddrno', '', 'addr', 'noa,addr,productno,product,custprice,driverprice,driverprice2', 'txtStraddrno,txtStraddr,txtUccno,txtProduct,txtPrice,txtPrice2,txtPrice3', 'addr_b.aspx'] 
 			);
 			function currentData() {
             }
@@ -149,11 +150,11 @@
         				//轉來的一律不可改日期
         			}else{
         				//檢查是否已立帳
-        				q_gt('trds', "where=^^ tranno='"+$('#txtNoa').val()+"' and trannoq='"+$('#txtNoq').val()+"' ^^", 0, 0, 0, 'checkTrd_'+$('#txtNoa').val()+'_'+$('#txtNoq').val(),r_accy);
+        				q_gt('view_trds', "where=^^ tranno='"+$('#txtNoa').val()+"' and trannoq='"+$('#txtNoq').val()+"' ^^", 0, 0, 0, 'checkTrd_'+$('#txtNoa').val()+'_'+$('#txtNoq').val(),r_accy);
         			}
             	}
             }
-            var trans = new transData();
+            trans = new transData();
             	
 			$(document).ready(function() {
 				bbmKey = ['noa'];
@@ -310,16 +311,12 @@
 					case q_name:
 						if (q_cur == 4)
 							q_Seek_gtPost();
-
-						if (q_cur == 1 || q_cur == 2)
-							q_changeFill(t_name, ['txtGrpno', 'txtGrpname'], ['noa', 'comp']);
-
 						break;
 					default:
 						if(t_name.substring(0,8)=='checkTrd'){
 							var t_tranno = t_name.split('_')[1];
 							var t_trannoq = t_name.split('_')[2];
-							var as = _q_appendData("trds", "", true);
+							var as = _q_appendData("view_trds", "", true);
 							if(as[0]!=undefined){
 								trans.isTrd = true;
 								if(as[0].noa!=$('#txtTrdno').val()){
@@ -339,10 +336,10 @@
 				        			$('#txtTotal').removeAttr('readonly').css('color','black').css('background','white');
 								}
 							}
-							q_gt('tres', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTre_'+t_tranno+'_'+t_trannoq,r_accy);
+							q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTre_'+t_tranno+'_'+t_trannoq,r_accy);
 							
 						}else if(t_name.substring(0,8)=='checkTre'){
-							var as = _q_appendData("tres", "", true);
+							var as = _q_appendData("view_tres", "", true);
 							if(as[0]!=undefined){
 								trans.isTre = true;
 								if(as[0].noa!=$('#txtTreno').val()){
@@ -372,6 +369,98 @@
 							}
 							sum();
 							Unlock(1);
+						}else if(t_name.substring(0,11)=='btnOkCheck1'){
+							//檢查出車單是否已存在TRD
+							var t_tranno = t_name.split('_')[1];
+							var t_trannoq = t_name.split('_')[2];
+							var t_trdno = t_name.split('_')[3];
+							var t_treno = t_name.split('_')[4];
+							var as = _q_appendData("view_trds", "", true);
+							
+							if(as[0]!=undefined){
+								for(var i=0;i<as.length;i++){
+									if(as[i].noa != t_trdno){
+										alert('資料錯誤:客戶立帳單據不一致【'+as[i].noa+'】【'+t_trdno+'】'+i);
+										Unlock();
+										return;
+									}
+								}
+							}
+							if(t_trdno.length>0){
+								t_where = "where=^^ noa='"+t_trdno+"' ^^";
+								q_gt('view_trds', t_where, 0, 0, 0, 'btnOkCheck2_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
+							}else{
+								t_where = "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^";
+								q_gt('view_tres', t_where, 0, 0, 0, 'btnOkCheck3_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
+							}
+							
+						}else if(t_name.substring(0,11)=='btnOkCheck2'){
+							//檢查出車單上的立帳單號是否與TRD一致
+							var t_tranno = t_name.split('_')[1];
+							var t_trannoq = t_name.split('_')[2];
+							var t_trdno = t_name.split('_')[3];
+							var t_treno = t_name.split('_')[4];
+							var as = _q_appendData("view_trds", "", true);
+							var t_isExist = false;
+							if(as[0]!=undefined){
+								for(var i=0;i<as.length;i++){
+									if(as[i].tranno == t_tranno && as[i].trannoq == t_trannoq){
+										t_isExist = true;
+										break;
+									}
+								}
+							}
+							if(!t_isExist){
+								alert('資料錯誤:客戶立帳單據【'+t_trdno+'】查無出車單【'+t_tranno+'】');
+								Unlock();
+								return;
+							}
+							t_where = "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^";
+							q_gt('view_tres', t_where, 0, 0, 0, 'btnOkCheck3_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
+						}else if(t_name.substring(0,11)=='btnOkCheck3'){
+							//檢查出車單是否已存在TRE
+							var t_tranno = t_name.split('_')[1];
+							var t_trannoq = t_name.split('_')[2];
+							var t_trdno = t_name.split('_')[3];
+							var t_treno = t_name.split('_')[4];
+							var as = _q_appendData("view_tres", "", true);
+							if(as[0]!=undefined){
+								for(var i=0;i<as.length;i++){
+									if(as[i].noa != t_trdeno){
+										alert('資料錯誤:司機立帳單據不一致【'+as[i].noa+'】【'+t_treno+'】');
+										Unlock();
+										return;
+									}
+								}
+							}
+							if(t_treno.length>0){
+								t_where = "where=^^ noa='"+t_treno+"' ^^";
+								q_gt('view_tres', t_where, 0, 0, 0, 'btnOkCheck4_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
+							}else{
+								saveData();
+							}
+						}else if(t_name.substring(0,11)=='btnOkCheck4'){
+							//檢查出車單上的立帳單號是否與TRE一致
+							var t_tranno = t_name.split('_')[1];
+							var t_trannoq = t_name.split('_')[2];
+							var t_trdno = t_name.split('_')[3];
+							var t_treno = t_name.split('_')[4];
+							var as = _q_appendData("view_tres", "", true);
+							var t_isExist = false;
+							if(as[0]!=undefined){
+								for(var i=0;i<as.length;i++){
+									if(as[i].tranno == t_tranno && as[i].trannoq == t_trannoq){
+										t_isExist = true;
+										break;
+									}
+								}
+							}
+							if(!t_isExist){
+								alert('資料錯誤:司機立帳單據【'+t_treno+'】查無出車單【'+t_tranno+'】');
+								Unlock();
+								return;
+							}
+							saveData();
 						}
 						break;
 				}
@@ -385,16 +474,20 @@
 						break;
 					case 'txtCustno':
 						if(q_cur==1 || q_cur==2){
-							$('#txtCaseuseno').val($('#txtCustno').val());
-							$('#txtCaseuse').val($('#txtComp').val());
-							if ($("#txtCustno").val().length > 0) {
-								$("#txtStraddrno").val($("#txtCustno").val()+'-');
-								$("#txtStraddr").val("");
+							if(!trans.isTrd){
+								$('#txtCaseuseno').val($('#txtCustno').val());
+								$('#txtCaseuse').val($('#txtComp').val());
+								if ($("#txtCustno").val().length > 0) {
+									$("#txtStraddrno").val($("#txtCustno").val()+'-');
+									$("#txtStraddr").val("");
+								}
 							}
 						}
 						break;
 					case 'txtStraddrno':
-						trans.priceChange();
+						if(!trans.isTrd){
+							trans.priceChange();
+						}
 						break;
 				}
 			}
@@ -465,7 +558,24 @@
             		return;
 				}
 				//---------------------------------------------------------------
-				
+				var t_tranno = $.trim($('#txtNoa').val());
+				var t_trannoq = $.trim($('#txtNoq').val());
+				var t_trdno = $.trim($('#txtTrdno').val());
+				var t_treno = $.trim($('#txtTreno').val());
+				var t_where = "";
+				if(t_tranno=='AUTO' || t_tranno.length==0){	
+					if(t_trdno.length>0 || t_treno.length>0){
+						alert('資料異常。');
+						Unlock();
+						return;
+					}
+					saveData();
+				}else{
+					t_where = "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^";
+					q_gt('view_trds', t_where, 0, 0, 0, 'btnOkCheck1_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
+				}			
+			}
+			function saveData(){
 				if(q_cur ==1){
                 	$('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
