@@ -52,7 +52,7 @@
 					if($(this).val().length>0){
 						if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
 							t_where="where=^^ noa='"+$(this).val()+"'^^";
-                    		q_gt('ucc', t_where, 0, 0, 0, "checkUccno_change", r_accy);
+                    		q_gt('cust', t_where, 0, 0, 0, "checkCustno_change", r_accy);
 						}else{
 							Lock();
 							alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
