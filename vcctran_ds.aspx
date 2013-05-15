@@ -59,7 +59,7 @@
 
             function mainPost() {
                 q_getFormat();
-                bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm],['txtCarno', r_picd]];
+                bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm]];
                 q_mask(bbmMask);
                 //q_cmbParse("cmbStype", q_getPara('vcc.stype'));
                 q_cmbParse("combPaytype", q_getPara('vcc.paytype'));
