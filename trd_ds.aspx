@@ -145,6 +145,44 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'btnDele':
+                		var as = _q_appendData("umms", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "",t_paysale=0;
+                        	for(var i=0;i<as.length;i++){
+                        		t_paysale = parseFloat(as[i].paysale.length==0?"0":as[i].paysale);
+                        		if(t_paysale!=0)
+                        			t_msg += String.fromCharCode(13)+'收款單號【'+as[i].noa+'】 '+FormatNumber(t_paysale);
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已沖帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+                    	_btnDele();
+                    	Unlock();
+                		break;
+                	case 'btnModi':
+                		var as = _q_appendData("umms", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "",t_paysale=0;
+                        	for(var i=0;i<as.length;i++){
+                        		t_paysale = parseFloat(as[i].paysale.length==0?"0":as[i].paysale);
+                        		if(t_paysale!=0)
+                        			t_msg += String.fromCharCode(13)+'收款單號【'+as[i].noa+'】 '+FormatNumber(t_paysale);
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已沖帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+                    	_btnModi();
+		                sum();
+		                Unlock();
+		                $('#txtDatea').focus();
+                		break;
                 	case 'cust':
                 		var t_custno2 ='',t_cust2='';
                 		var as = _q_appendData("cust", "", true);
@@ -318,11 +356,11 @@
             }
 
             function btnModi() {
-                if (emp($('#txtNoa').val()))
+            	if (emp($('#txtNoa').val()))
                     return;
-                _btnModi();
-                sum();
-                $('#txtDatea').focus();
+                Lock();
+                var t_where =" where=^^ vccno='"+ $('#txtNoa').val()+"'^^";
+                q_gt('umms', t_where, 0, 0, 0, 'btnModi',r_accy);
             }
 
             function btnPrint() {
@@ -427,9 +465,10 @@
             }
 
             function btnDele() {
-                _btnDele();
+                Lock();
+                var t_where =" where=^^ vccno='"+ $('#txtNoa').val()+"'^^";
+                q_gt('umms', t_where, 0, 0, 0, 'btnDele',r_accy);
             }
-
             function btnCancel() {
                 _btnCancel();
             }

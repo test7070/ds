@@ -71,15 +71,6 @@
                 	if($('#txtMon').val().length==0)
                 		$('#txtMon').val($('#txtDatea').val().substring(0,6));
                 });
-				/* 若非本會計年度則無法存檔 */
-				/*$('#txtDatea').focusout(function () {
-					if($(this).val().substr( 0,3)!= r_accy){
-				        $('#btnOk').attr('disabled','disabled');
-				        alert(q_getMsg('lblDatea') + '非本會計年度。');
-					}else{
-				       	$('#btnOk').removeAttr('disabled');
-					}
-				});*/
 				$("#cmbStype").focus(function() {
                     var len = $(this).children().length > 0 ? $(this).children().length : 1;
                     $(this).attr('size', len + "");
@@ -163,6 +154,44 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'btnDele':
+                		var as = _q_appendData("umms", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "",t_paysale=0;
+                        	for(var i=0;i<as.length;i++){
+                        		t_paysale = parseFloat(as[i].paysale.length==0?"0":as[i].paysale);
+                        		if(t_paysale!=0)
+                        			t_msg += String.fromCharCode(13)+'收款單號【'+as[i].noa+'】 '+FormatNumber(t_paysale);
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已沖帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+                    	_btnDele();
+                    	Unlock();
+                		break;
+                	case 'btnModi':
+                		var as = _q_appendData("umms", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "",t_paysale=0;
+                        	for(var i=0;i<as.length;i++){
+                        		t_paysale = parseFloat(as[i].paysale.length==0?"0":as[i].paysale);
+                        		if(t_paysale!=0)
+                        			t_msg += String.fromCharCode(13)+'收款單號【'+as[i].noa+'】 '+FormatNumber(t_paysale);
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已沖帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+                    	_btnModi();           
+		                sum();
+		                Unlock();
+		                $('#txtDatea').focus();	
+                		break;
                 	case 'part':
                         var as = _q_appendData("part", "", true);
                         if (as[0] != undefined) {
@@ -211,11 +240,16 @@
             	Lock();
             	if($.trim($('#txtNick').val()).length==0)
             		$('#txtNick').val($('#txtComp').val());
-            	if(!q_cd($('#txtDatea').val())){
-            		alert(q_getMsg('lblDatea')+'錯誤。');
+            	if($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())){
+					alert(q_getMsg('lblDatea')+'錯誤。');
             		Unlock();
             		return;
-            	}
+				}
+            	if($('#txtDatea').val().substring(0,3)!=r_accy){
+					alert('年度異常錯誤，請切換到【'+r_accy+'】年度再作業。');
+					Unlock();
+            		return;
+				}
             	if ($('#txtMon').val().length > 0 && !(/^[0-9]{3}\/(?:0?[1-9]|1[0-2])$/g).test($('#txtMon').val())){
             		alert(q_getMsg('lblMon')+'錯誤。');
             		Unlock();
@@ -254,9 +288,9 @@
             function btnModi() {
                 if (emp($('#txtNoa').val()))
                     return;
-                _btnModi();           
-                sum();
-                $('#txtDatea').focus();
+                Lock();
+                var t_where =" where=^^ vccno='"+ $('#txtNoa').val()+"'^^";
+                q_gt('umms', t_where, 0, 0, 0, 'btnModi',r_accy);
             }
             function btnPrint() {
             	q_box('z_vcctran.aspx'+ "?;;;;"+r_accy+";noa="+trim($('#txtNoa').val()), '', "90%", "650px", m_print);
@@ -365,7 +399,9 @@
             }
 
             function btnDele() {
-                _btnDele();
+            	Lock();
+                var t_where =" where=^^ vccno='"+ $('#txtNoa').val()+"'^^";
+                q_gt('umms', t_where, 0, 0, 0, 'btnDele',r_accy);
             }
 
             function btnCancel() {
