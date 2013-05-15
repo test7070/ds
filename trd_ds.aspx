@@ -347,10 +347,11 @@
             function sum() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return;
+               	//小數 可能會有問題需注意
                 var t_money = 0,t_mount = 0;
                 for ( i = 0; i < q_bbsCount; i++) {
                     t_money = t_money.add(q_float('txtTranmoney_' + i));
-                    //小數相加可能會有問題
+                    
                     t_mount = t_mount.add(q_float('txtMount_' + i));
                 }
                 t_mount = t_mount.round(3);
@@ -358,7 +359,7 @@
 				var t_minusmoney = q_float('txtMinusmoney');
 				var t_tax = q_float('txtTax'); 
 				
-				var t_total = t_money + t_plusmoney - t_minusmoney +t_tax;
+				var t_total = t_money.add(t_plusmoney).sub(t_minusmoney).add(t_tax);
                
                 $('#txtMoney').val(FormatNumber(t_money));
                 $('#txtTotal').val(FormatNumber(t_total));
@@ -487,7 +488,7 @@
 			    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
 			    m = Math.pow(10, Math.max(r1, r2));
 			    n = (r1 >= r2) ? r1 : r2;
-			    return ((arg1 * m - arg2 * m) / m).toFixed(n);
+			    return parseFloat(((arg1 * m - arg2 * m) / m).toFixed(n));
 			}
 		</script>
 		<style type="text/css">
