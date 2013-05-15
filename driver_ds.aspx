@@ -27,12 +27,6 @@
             brwList = [];
             brwNowPage = 0;
             brwKey = 'noa';
-            //ajaxPath = ""; //  execute in Root
-            //q_alias = 'a';
-            aPop = new Array(['txtInsurerno', 'lblInsurer', 'insurer', 'noa,comp', 'txtInsurerno,txtInsurer', 'Insurer_b.aspx'],
-            ['txtCardealno', 'lblCardeal', 'cardeal', 'noa,comp', 'txtCardealno,txtCardeal', 'Cardeal_b.aspx'],
-            ['txtBankno2', 'lblBank2', 'bank', 'noa,bank', 'txtBankno2,txtBank2', 'Bank_b.aspx'],
-            ['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtComp', 'acomp_b.aspx'])
 
             $(document).ready(function() {
                 bbmKey = ['noa'];
