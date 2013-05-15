@@ -70,7 +70,7 @@
                 	$(this).val($.trim($(this).val()).toUpperCase());
                 	if ($(this).val().length > 0 && checkId($(this).val())!=1){
                 		Lock();
-	            		alert(q_getMsg('txtIdno')+'錯誤。');
+	            		alert(q_getMsg('lblIdno')+'錯誤。');
 	            		Unlock();
 	            	}
                 });
@@ -151,8 +151,8 @@
 					Unlock();
 					return;
 				}
-            	if ($('#txtSerial').val().length > 0 && checkId($('#txtSerial').val())!=2){
-            		alert(q_getMsg('lblSerial')+'錯誤。');
+            	if ($('#txtIdno').val().length > 0 && checkId($('#txtIdno').val())!=1){
+            		alert(q_getMsg('lblIdno')+'錯誤。');
             		Unlock();
             		return;
             	}
