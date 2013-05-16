@@ -82,7 +82,6 @@
 		        q_brwCount();
 		        q_gt(q_name, q_content, q_sqlCount, 1);
 		    });
-		    //////////////////   end Ready
 		    function main() {
 		        if (dataErr) {
 		            dataErr = false;
@@ -136,12 +135,44 @@
 
 		    function q_gtPost(t_name) {
 		        switch (t_name) {
+		        	case 'btnDele':
+                		var as = _q_appendData("paybs", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "";
+                        	for(var i=0;i<as.length;i++){
+                        			t_msg += String.fromCharCode(13)+'立帳單號【'+as[i].noa+'】 ';
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已立帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+                    	_btnDele();
+                    	Unlock();
+                		break;
+                	case 'btnModi':
+                		var as = _q_appendData("paybs", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "";
+                        	for(var i=0;i<as.length;i++){
+                        		if(t_paysale!=0)
+                        			t_msg += String.fromCharCode(13)+'立帳單號【'+as[i].noa+'】 ';
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已立帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+	                	_btnModi();
+				        sum();
+	                	Unlock();
+                		$('#txtCarno').focus();
+                		break;
 		            case q_name:
 		                if (q_cur == 4)
 		                    q_Seek_gtPost();
-
-		                if (q_cur == 1 || q_cur == 2)
-		                    q_changeFill(t_name, ['txtGrpno', 'txtGrpname'], ['noa', 'comp']);
 		                break;
 		        }  /// end switch
 		    }
@@ -217,12 +248,11 @@
 		    }
 
 		    function btnModi() {
-		    	
-		        if (emp($('#txtNoa').val()))
-		            return;
-		        _btnModi();
-		        $('#txtCarno').focus();
-		        sum();
+		    	if (emp($('#txtNoa').val()))
+                    return;
+                Lock();
+                t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
+            	q_gt('paybs', t_where, 0, 0, 0, "btnDele", r_accy);
 		    }
 
 		    function btnPrint() {
@@ -241,7 +271,6 @@
 		            return;
 		        }
 		        q_nowf();
-		        as['date'] = abbm2['date'];
 		        return true;
 		    }
 		    function q_popPost(t_id) {
@@ -327,7 +356,9 @@
 		    }
 
 		    function btnDele() {
-		        _btnDele();
+		        Lock();
+                t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
+            	q_gt('paybs', t_where, 0, 0, 0, "btnDele", r_accy);
 		    }
 
 		    function btnCancel() {
