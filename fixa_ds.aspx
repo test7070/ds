@@ -579,14 +579,12 @@
 						<td><input id="txtDatea" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblNoa" class="lbl"> </a></td>
 						<td colspan="2"><input id="txtNoa" type="text" class="txt c1"/></td>
-						<td class="tdZ"> </td>  
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblFixadate" class="lbl"> </a></td>
 						<td><input id="txtFixadate" type="text" class="txt c1"/></td>	
 						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
 						<td><input id="txtMon" type="text" class="txt c1"/></td>				
-						<td class="tdZ"> </td>  
 					</tr>
 					
 					<tr>
@@ -671,10 +669,10 @@
 				</table>
 			</div>
 		</div>
-		<div class='dbbs' >
-			<table id="tbbs" class='tbbs'  border="1"  cellpadding='2' cellspacing='1'  >
+		<div class='dbbs'>
+			<table id="tbbs" class='tbbs'>
 				<tr style='color:white; background:#003366;' >
-					<td align="center" style="width:3%;">
+					<td  align="center" style="width:30px;">
 					<input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  />
 					</td>
 					<td align="center" style="width:20px;"> </td>
