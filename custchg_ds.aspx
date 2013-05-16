@@ -75,6 +75,40 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'btnDele':
+                		var as = _q_appendData("paybs", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "";
+                        	for(var i=0;i<as.length;i++){
+                    			t_msg += String.fromCharCode(13)+'立帳單號【'+as[i].noa+'】 ';
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已立帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+                    	_btnDele();
+                    	Unlock();
+                		break;
+                	case 'btnModi':
+                		var as = _q_appendData("paybs", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "";
+                        	for(var i=0;i<as.length;i++){
+                    			t_msg += String.fromCharCode(13)+'立帳單號【'+as[i].noa+'】 ';
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已立帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+	                	_btnModi();
+				        sum();
+	                	Unlock();
+                		$('#txtDatea').focus();
+                		break;
                     case q_name:
                         if (q_cur == 4)
                             q_Seek_gtPost();
@@ -109,9 +143,9 @@
             function btnModi() {
                 if (emp($('#txtNoa').val()))
                     return;
-                _btnModi();
-                sum();
-                $('#txtDatea').focus();
+                Lock();
+                t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
+            	q_gt('paybs', t_where, 0, 0, 0, "btnModi", r_accy);
             }
             function btnPrint() {
 				q_box('z_custchg.aspx?;;;'+r_accy, '', "95%", "95%", q_getMsg("popPrint"));
@@ -211,7 +245,9 @@
             }
 
             function btnDele() {
-                _btnDele();
+                Lock();
+                t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
+            	q_gt('paybs', t_where, 0, 0, 0, "btnDele", r_accy);
             }
 
             function btnCancel() {

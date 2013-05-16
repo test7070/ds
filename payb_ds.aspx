@@ -300,7 +300,7 @@
                             q_Seek_gtPost();
                         break;
                     default:
-                    	if(t_name.substring(0,10)='checkRc2no'){
+                    	if(t_name.substring(0,10)=='checkRc2no'){
                     		var t_sel = parseFloat(t_name.split('_')[1]);
                     		var as = _q_appendData("paybs", "", true);
                        		if (as[0] != undefined) {
@@ -385,7 +385,7 @@
             			checkRc2no(n-1);
             		}else{
             			t_where=" where=^^ rc2no='"+t_rc2no+"' and noa!='"+$('#txtNoa').val()+"'^^";
-                    	q_gt('paybs', t_where, 0, 0, 0, "checkRc2no", r_accy);
+                    	q_gt('paybs', t_where, 0, 0, 0, "checkRc2no_"+n, r_accy);
             		}
             	}
             }
