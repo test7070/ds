@@ -216,7 +216,7 @@
 		    function _btnSeek() {
 		        if (q_cur > 0 && q_cur < 4)// 1-3
 		            return;
-		        q_box('fixa_s.aspx', q_name + '_s', "500px", "550px", q_getMsg("popSeek"));
+		        q_box('fixa_ds_s.aspx', q_name + '_s', "550px", "560px", q_getMsg("popSeek"));
 		    }
 		    function bbsAssign() {
 		        for (var i = 0; i < q_bbsCount; i++) {
