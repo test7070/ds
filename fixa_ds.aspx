@@ -692,9 +692,9 @@
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
 					<td><select id="cmbWtype.*" class="txt c1"> </select></td>
 					<td>
-					<input class="txt" id="txtProductno.*" type="text" style="width:25%;"/>
-					<input class="txt" id="txtProduct.*"type="text" style="width:55%;"/>
-					<input id="btnProductno.*" type="button" value="..." style="width: 10%;" />
+						<input id="btnProductno.*" type="button" value="..." style="width: 5%;" />
+						<input class="txt" id="txtProductno.*" type="text" style="width:30%;"/>
+						<input class="txt" id="txtProduct.*"type="text" style="width:55%;"/>
 					</td>
 					<td>
 					<input class="txt c1" id="txtUnit.*" type="text" style="text-align: center;"/>

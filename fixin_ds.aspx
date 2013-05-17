@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
 	<head>
-		<title></title>
+		<title> </title>
 		<script src="../script/jquery.min.js" type="text/javascript"></script>
 		<script src='../script/qj2.js' type="text/javascript"></script>
 		<script src='qset.js' type="text/javascript"></script>
@@ -21,10 +21,10 @@
             q_desc = 1;
             q_tables = 's';
             var q_name = "fixin";
-            var q_readonly = ['txtNoa', 'txtMoney', 'txtTotal', 'txtWorker'];
-            var q_readonlys = [];
-            var bbmNum = new Array(['txtDiscount', 10, 0], ['txtMoney', 10, 0], ['txtTax', 10, 0], ['txtTotal', 10, 0]);
-            var bbsNum = new Array(['txtPrice', 10, 0], ['txtMount', 10, 0], ['txtMoney', 10, 0]);
+            var q_readonly = ['txtNoa', 'txtMoney', 'txtTotal', 'txtWorker', 'txtWorker2'];
+            var q_readonlys = ['txtMoney'];
+            var bbmNum = new Array(['txtDiscount', 10, 0,1], ['txtMoney', 10, 0,1], ['txtTax', 10, 0,1], ['txtTotal', 10, 0,1]);
+            var bbsNum = new Array(['txtPrice', 10, 2, 1], ['txtMount', 10, 2, 1], ['txtMoney', 10, 0,1]);
             var bbmMask = [];
             var bbsMask = [];
             q_sqlCount = 6;
@@ -35,7 +35,7 @@
             aPop = new Array(['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx']
             , ['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
             , ['txtAcc1', 'lblAcc1', 'acc', 'acc1,acc2', 'txtAcc1,txtAcc2', "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy + '_' + r_cno]
-            , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,brand,unit,inprice', 'txtProductno_,txtProduct_,txtBrand_,txtUnit_,txtPrice_', 'fixucc_b.aspx']
+            , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,brand,unit,inprice', 'txtProductno_,txtProduct_,txtBrand_,txtUnit_,txtPrice_,txtBrand_', 'fixucc_b.aspx']
             , ['txtTireno_', ' ', 'tirestk', 'noa', '0txtTireno_', 'tireno_b.aspx']);
 
             $(document).ready(function() {
@@ -90,7 +90,44 @@
             }
 
             function q_gtPost(t_name) {
-                switch (t_name) {                  
+                switch (t_name) {  
+                	case 'btnDele':
+                		var as = _q_appendData("paybs", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "";
+                        	for(var i=0;i<as.length;i++){
+                    			t_msg += String.fromCharCode(13)+'立帳單號【'+as[i].noa+'】 ';
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已立帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }	
+                        var tireno = new Array();
+                        for(var i=0;i<q_bbsCount;i++)
+                        	if($.trim($('#txtTireno_'+i).val()).length>0)
+                        		tireno.push($.trim($('#txtTireno_'+i).val()));
+                    	DeleteCheck(tireno);
+                		break;                	
+                	case 'btnModi':
+                		var as = _q_appendData("paybs", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "";
+                        	for(var i=0;i<as.length;i++){
+                    			t_msg += String.fromCharCode(13)+'立帳單號【'+as[i].noa+'】 ';
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已立帳:'+ t_msg);
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+	                	_btnModi();
+				        sum();
+	                	Unlock();
+                		$('#txtIndate').focus();
+                		break;                
                     case q_name:
                         if (q_cur == 4)
                             q_Seek_gtPost();
@@ -98,7 +135,7 @@
                     default:
                     	if(t_name.substring(0,12)=="tirenoChange"){
                     		var t_tireno = t_name.split('_')[1];
-                    		var t_sel = t_name.split('_')[2];
+                    		var t_sel = parseFloat(t_name.split('_')[2]);
                     		var as = _q_appendData("fixins", "", true);
                        		if (as[0] != undefined) {
                        			for(var i=0;i<as.length;i++){
@@ -114,7 +151,7 @@
                    			Unlock();
                     	}else if(t_name.substring(0,12)=="tirenoBtnOk1"){
                     		var t_tireno = t_name.split('_')[1];
-                    		var t_sel = t_name.split('_')[2];
+                    		var t_sel = parseFloat(t_name.split('_')[2]);
                     		var as = _q_appendData("fixins", "", true);
                        		if (as[0] != undefined) {
                        			for(var i=0;i<as.length;i++){
@@ -133,33 +170,47 @@
                     			t_tireno = t_tireno.slice(1,t_tireno.length);
                     		else
                     			t_tireno = new Array();
-                    		var t_sel = t_name.split('_')[2];
                     		var as = _q_appendData("tirestk", "", true);
                     		var tire = new Array();
+                    		var diffTireno = new Array();
                        		if (as[0] != undefined) {
                        			for(var i=0;i<as.length;i++){
                        				tire.push(as[i].noa);
                        			}
                        		}
-                       		alert(t_tireno.length);
-                       		/*var notExist = new Array();
-                       		for(var i=0;i<tire.length;i++){
-                       			for(var )
-                       		}*/
-                       		
-                       		
+                       		for(var i in tire){
+                       			if(t_tireno.indexOf(tire[i])<0){
+                       				//需檢查是否已領料
+                       				diffTireno.push(tire[i]);
+                       			}
+                       		}
+                       		checkFixoutTireno(diffTireno);
                     	}else if(t_name.substring(0,12)=="tirenoBtnOk3"){
                     		var t_tireno = t_name.split('_');
-                    		var t_sel = t_name.split('_')[2];
+                    		if(t_tireno.length>1)
+                    			t_tireno = t_tireno.slice(1,t_tireno.length);
+                    		else
+                    			t_tireno = new Array();
                     		var as = _q_appendData("fixouts", "", true);
-                    		var tire = new Array();
                        		if (as[0] != undefined) {
-                       			for(var i=0;i<as.length;i++){
-                       				tire.push(as[i].noa);
-                       			}
+                       			alert('胎號【'+as[0].tireno+'】已領料禁止異動，領料單號【'+as[0].noa+'】');
+                       			Unlock();
+                       			return;
                        		}
-                       		
-                       		
+                       		checkFixoutTireno(t_tireno);
+                    	}else if(t_name.substring(0,11)=="DeleteCheck"){
+                    		var t_tireno = t_name.split('_');
+                    		if(t_tireno.length>1)
+                    			t_tireno = t_tireno.slice(1,t_tireno.length);
+                    		else
+                    			t_tireno = new Array();
+                    		var as = _q_appendData("fixouts", "", true);
+                       		if (as[0] != undefined) {
+                       			alert('胎號【'+as[0].tireno+'】已領料禁止異動，領料單號【'+as[0].noa+'】');
+                       			Unlock();
+                       			return;
+                       		}
+                       		DeleteCheck(t_tireno);
                     	}
                     	break;
                 } 
@@ -222,8 +273,9 @@
             		if(t_tireno.length>0){
             			t_where=" where=^^ tireno='"+t_tireno+"'^^";
             			q_gt('fixins', t_where, 0, 0, 0, "tirenoBtnOk1_"+t_tireno+"_"+n, r_accy);
+            		}else{
+            			checkFixinTireno(n-1);
             		}
-            		checkFixinTireno(n-1);
             	}
             }
             function checkTirestk(){
@@ -236,9 +288,30 @@
             	t_where=" where=^^ fixinno='"+$('#txtNoa').val()+"'^^";
             	q_gt('tirestk', t_where, 0, 0, 0, "tirenoBtnOk2_"+t_tireno, r_accy);
             }
-            function checkFixoutTireno(n){
-            	
-            	
+            function checkFixoutTireno(tireno){
+            	if(tireno.length==0){
+            		SaveData();
+            	}else{
+            		var t_where=" where=^^ tireno='"+tireno[0]+"'^^";
+            		var t_string = "";
+            		for(var i=1; i<tireno.length; i++){
+            			t_string = (t_string>0?'_':'') + tireno[i];
+            		}
+            		q_gt('fixouts', t_where, 0, 0, 0, "tirenoBtnOk3_"+t_string, r_accy);
+            	}
+            }
+            function DeleteCheck(tireno){
+            	if(tireno.length==0){
+            		_btnDele();
+                	Unlock();
+            	}else{
+            		var t_where=" where=^^ tireno='"+tireno[0]+"'^^";
+            		var t_string = "";
+            		for(var i=1; i<tireno.length; i++){
+            			t_string = (t_string>0?'_':'') + tireno[i];
+            		}
+            		q_gt('fixouts', t_where, 0, 0, 0, "DeleteCheck_"+t_string, r_accy);
+            	}
             }
 
             function _btnSeek() {
@@ -246,9 +319,6 @@
                     return;
 
                 q_box('fixin_s.aspx', q_name + '_s', "520px", "400px", q_getMsg("popSeek"));
-            }
-
-            function combPay_chg() {
             }
 
             function bbsAssign() {
@@ -278,30 +348,28 @@
             }
 
             function btnModi() {
-                if (emp($('#txtNoa').val()))
+               if (emp($('#txtNoa').val()))
                     return;
-                _btnModi();
-                $('#txtIndate').focus();
-                sum();
+                Lock();
+                t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
+            	q_gt('paybs', t_where, 0, 0, 0, "btnModi", r_accy);
             }
 
             function btnPrint() {
-                q_box('z_fixinp.aspx', '', "95%", "650px", q_getMsg("popPrint"));
+                q_box('z_fixinp.aspx', '', "95%", "95%", q_getMsg("popPrint"));
             }
 
             function wrServer(key_value) {
                 var i;
-
                 $('#txt' + bbmKey[0].substr(0, 1).toUpperCase() + bbmKey[0].substr(1)).val(key_value);
                 _btnOk(key_value, bbmKey[0], bbsKey[1], '', 2);
             }
 
             function bbsSave(as) {
-                if (!as['productno']) {
+                if (!as['productno'] && !as['product']) {
                     as[bbsKey[1]] = '';
                     return;
                 }
-
                 q_nowf();
                 return true;
             }
@@ -309,24 +377,19 @@
             function sum() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return;
-                var t_mount, t_price, t_money = 0, t_tax, t_discount;
-                for (var j = 0; j < q_bbsCount; j++) {
-                    t_mount = q_float('txtMount_' + j);
-                    t_price = q_float('txtPrice_' + j);
-                    $('#txtMoney_' + j).val(round(t_mount * t_price, 0));
-                    t_money += round(t_mount * t_price, 0);
+                var t_money = 0, t_tax, t_discount;
+                for (var i = 0; i < q_bbsCount; i++) {
+                	$('#txtMoney_' + i).val(FormatNumber(q_float('txtMount_' + i).mul(q_float('txtPrice_' + i)).round(0)));
+                	t_money = t_money.add(q_float('txtMoney_' + i));
                 }
                 t_tax = q_float('txtTax');
                 t_discount = q_float('txtDiscount');
-                $('#txtMoney').val(t_money);
-                $('#txtTax').val(t_tax);
-                $('#txtTotal').val(round(t_money + t_tax - t_discount, 0));
+                $('#txtMoney').val(FormatNumber(t_money));
+                $('#txtTotal').val(FormatNumber(t_money.add(t_tax).sub(t_discount)));
             }
-
             function refresh(recno) {
                 _refresh(recno);
             }
-
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
             }
@@ -365,7 +428,9 @@
                 _q_brwAssign(s1);
             }
             function btnDele() {
-                _btnDele();
+                Lock();
+                t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
+            	q_gt('paybs', t_where, 0, 0, 0, "btnDele", r_accy);
             }
             function btnCancel() {
                 _btnCancel();
@@ -434,7 +499,7 @@
             }
             .dview {
                 float: left;
-                width: 470px;
+                width: 350px;
                 border-width: 0px;
             }
             .tview {
@@ -454,7 +519,7 @@
             }
             .dbbm {
                 float: left;
-                width: 480px;
+                width: 600px;
                 /*margin: -1px;
                  border: 1px black solid;*/
                 border-radius: 5px;
@@ -555,12 +620,14 @@
 						<td align="center" style="width:80px; color:black;"><a id="vewDatea"> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id="vewIndate"> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id="vewNick"> </a></td>
+						<td align="center" style="width:80px; color:black;"><a id="vewTotal"> </a></td>
 					</tr>
 					<tr>
 						<td ><input id="chkBrow.*" type="checkbox"/></td>
 						<td id="datea" style="text-align: center;">~datea</td>
 						<td id="indate" style="text-align: center;">~indate</td>
 						<td id="nick" style="text-align: center;">~nick</td>
+						<td id="total,0,1" style="text-align: right;">~total,0,1</td>
 					</tr>
 				</table>
 			</div>
@@ -589,7 +656,7 @@
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
-						<td colspan="5">
+						<td colspan="4">
 						<input id="txtTggno" type="text" class="txt"  style="width:25%;"/>
 						<input id="txtTgg" type="text" class="txt" style="width:75%;"/>
 						<input id="txtNick" type="text" class="txt" style="display: none;"/>
@@ -598,8 +665,8 @@
 					<tr>
 						<td><span> </span><a id="lblAcc1" class="lbl btn"> </a></td>
 						<td colspan="3">
-							<input id="txtAcc1" type="text" class="txt"  style="width:25%;"/>
-							<input id="txtAcc2" type="text" class="txt" style="width:75%;"/>
+							<input id="txtAcc1" type="text" class="txt"  style="width:30%;"/>
+							<input id="txtAcc2" type="text" class="txt" style="width:70%;"/>
 						</td>
 						<td><span> </span><a id="lblMoney" class="lbl"> </a></td>
 						<td><input id="txtMoney" type="text" class="txt num c1" /></td>
