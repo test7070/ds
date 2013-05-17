@@ -19,7 +19,7 @@
                 alert("An error occurred:\r\n" + error.Message);
             }
             var q_name = "custchg";
-            var q_readonly = ['txtNoa', 'txtWorker', 'txtTrdno'];
+            var q_readonly = ['txtNoa', 'txtWorker', 'txtWorker2', 'txtTrdno'];
             var bbmNum = new Array(['txtMinusmoney', 10, 0], ['txtPlusmoney', 10, 0]);
             var bbmMask = [['txtDatea', '999/99/99']];
             q_sqlCount = 6;
@@ -132,7 +132,7 @@
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)// 1-3
                     return;
-                q_box('custchg_s.aspx', q_name + '_s', "530px", "400px", q_getMsg("popSeek"));
+                q_box('custchg_ds_s.aspx', q_name + '_s', "530px", "500px", q_getMsg("popSeek"));
             }
             function btnIns() {
                 _btnIns();
