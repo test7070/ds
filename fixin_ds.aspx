@@ -73,8 +73,13 @@
                     	var t_tireno = $.trim($('#txtTireno_'+b_seq).val());
                     	if(t_tireno.length>0){
                     		Lock();
-                    		t_where=" where=^^ tireno='"+t_tireno+"'^^";
-            				q_gt('fixins', t_where, 0, 0, 0, "tirenoChange_"+t_tireno+"_"+b_seq, r_accy);
+                    		if((/^\w+([\u002D|\u002F]\w+)*$/g).test(t_tireno)){
+								t_where=" where=^^ tireno='"+t_tireno+"'^^";
+            					q_gt('fixins', t_where, 0, 0, 0, "tirenoChange_"+t_tireno+"_"+b_seq, r_accy);
+							}else{
+								alert('編號只允許 英文(A-Z)、數字(0-9)、斜線(/)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001、A01/2、A01/2-1');
+								Unlock();
+							}
                     	}
                         break;
                 }
@@ -239,6 +244,12 @@
                     return;
                 }
                 for (var i = 0; i < q_bbsCount; i++) {
+                	if((/^\w+([\u002D|\u002F]\w+)*$/g).test($('#txtTireno_' + i).val())){
+					}else{
+						alert('【'+$('#txtTireno_' + i).val()+'】編碼異常，編號只允許 英文(A-Z)、數字(0-9)、斜線(/)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001、A01/2、A01/2-1');
+						Unlock();
+						return;
+					}
                     for (var j = 0; j < q_bbsCount; j++) {
                         if (i != j && $('#txtTireno_' + i).val() == $('#txtTireno_' + j).val() && $('#txtTireno_' + i).val() != '' && $('#txtTireno_' + j).val()) {
                             alert('【'+$('#txtTireno_' + i).val()+'】胎號重複，請修改');
