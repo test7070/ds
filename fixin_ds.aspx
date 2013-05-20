@@ -216,6 +216,64 @@
                        			return;
                        		}
                        		DeleteCheck(t_tireno);
+                    	}else if(t_name.substring(0,15)=="checkStk_change"){
+                    		var t_datea = t_name.split('_')[2];
+                    		var t_productno = t_name.split('_')[3];
+                    		var t_sel = parseFloat(t_name.split('_')[4]);
+                    		var t_stkmount = 0;
+                    		var t_mount = 0;
+                    		var as = _q_appendData("fixucc", "", true);
+                       		if (as[0] != undefined) {
+                       			if(as[0].begindate > t_datea){
+                       				//異動日期<期初日期的資料不允許修改
+                       				alert('日期異常:'+t_productno+q_getMsg('lblIndate')+'【'+t_datea+'】小於期初日期【'+as[0].begindate+'】 。');
+	                    			Unlock();
+	                    			$('#txtMount_'+t_sel).focus();
+	                    			return;
+                       			}
+                       			t_stkmount = parseFloat(as[0].mount.length==0?"0":as[0].mount);
+                       		}
+                       		for (var i = 0; i < q_bbsCount; i++) {
+                       			if($('#txtProductno_'+i).val()==t_productno){
+                       				t_mount += q_float('txtMount_'+i);
+                       			}
+                       		}
+                    		if(t_stkmount+t_mount<0){
+                    			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
+                    			Unlock();
+                    			$('#txtMount_'+t_sel).focus();
+                    			return;
+                    		}
+                    	}if(t_name.substring(0,14)=="checkStk_btnOk"){
+                    		var t_datea = t_name.split('_')[2];
+                    		var t_productno = t_name.split('_')[3];
+                    		var t_sel = parseFloat(t_name.split('_')[4]);
+                    		var t_stkmount = 0;
+                    		var t_mount = 0;
+                    		var as = _q_appendData("fixucc", "", true);
+                       		if (as[0] != undefined) {
+                       			if(as[0].begindate > t_datea){
+                       				//異動日期<期初日期的資料不允許修改
+                       				alert('日期異常:'+t_productno+q_getMsg('lblIndate')+'【'+t_datea+'】小於期初日期【'+as[0].begindate+'】 。');
+	                    			Unlock();
+	                    			$('#txtMount_'+t_sel).focus();
+	                    			return;
+                       			}
+                       			t_stkmount = parseFloat(as[0].mount.length==0?"0":as[0].mount);
+                       		}
+                       		for (var i = 0; i < q_bbsCount; i++) {
+                       			if($('#txtProductno_'+i).val()==t_productno){
+                       				t_mount += q_float('txtMount_'+i);
+                       			}
+                       		}
+                    		if(t_stkmount+t_mount<0){
+                    			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
+                    			Unlock();
+                    			$('#txtMount_'+t_sel).focus();
+                    			return;
+                    		}else{
+                    			checkStkBtnOk(t_sel-1);
+                    		}
                     	}
                     	break;
                 } 
@@ -244,9 +302,10 @@
                     return;
                 }
                 for (var i = 0; i < q_bbsCount; i++) {
-                	if((/^\w+([\u002D|\u002F]\w+)*$/g).test($('#txtTireno_' + i).val())){
+                	if($('#txtTireno_' + i).val().length==0){
+                	}else if ((/^\w+([\u002D|\u002F]\w+)*$/g).test($('#txtTireno_' + i).val())){
 					}else{
-						alert('【'+$('#txtTireno_' + i).val()+'】編碼異常，編號只允許 英文(A-Z)、數字(0-9)、斜線(/)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001、A01/2、A01/2-1');
+						alert('【'+$('#txtTireno_' + i).val()+'】x編碼異常，編號只允許 英文(A-Z)、數字(0-9)、斜線(/)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001、A01/2、A01/2-1');
 						Unlock();
 						return;
 					}
@@ -301,7 +360,7 @@
             }
             function checkFixoutTireno(tireno){
             	if(tireno.length==0){
-            		SaveData();
+            		checkStkBtnOk(q_bbsCount-1);
             	}else{
             		var t_where=" where=^^ tireno='"+tireno[0]+"'^^";
             		var t_string = "";
@@ -324,6 +383,23 @@
             		q_gt('fixouts', t_where, 0, 0, 0, "DeleteCheck_"+t_string, r_accy);
             	}
             }
+            function checkStkBtnOk(n){
+            	if(n<0){
+            		SaveData();
+            	}else{
+            		var t_datea = $.trim($('#txtIndate').val());
+            		var t_noa = $.trim($('#txtNoa').val());
+                	var t_productno = $.trim($('#txtProductno_'+n).val());
+                	if(t_productno.length>0){
+                		var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
+							+ " where[1]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
+							+ " where[2]=^^a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
+						q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_btnOk_"+t_datea +"_"+t_productno +"_"+n, r_accy);
+                	}else{
+                		checkStkBtnOk(n-1)
+                	}
+            	}
+            }
 
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)// 1-3
@@ -336,8 +412,34 @@
                 for (var i = 0; i < q_bbsCount; i++) {
                 	$('#lblNo_' + i).text(i + 1);
                     if (!$('#btnMinus_' + i).hasClass('isAssign')) {
+                        $('#txtProductno_'+i).change(function(e){
+		                	$(this).val($.trim($(this).val()).toUpperCase());    	
+							if($(this).val().length>0){
+								if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
+								}else{
+									Lock();
+									alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
+									Unlock();
+								}
+							}
+		                });
                         $('#txtMount_' + i).change(function(e) {
-                            sum();
+                        	var n = $(this).attr('id').replace('txtMount_','');
+                        	var t_datea = $.trim($('#txtIndate').val());
+                        	var t_noa = $.trim($('#txtNoa').val());
+                        	var t_productno = $.trim($('#txtProductno_'+n).val());
+                        	if(t_datea.length==0){
+                        		Lock();
+                        		alert('請輸入'+q_getMsg('lblIndate'));
+                        		Unlock();
+                        	}else if(t_productno.length>0 && (/^(\w+|\w+\u002D\w+)$/g).test(t_productno)){
+								var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
+									+ " where[1]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
+									+ " where[2]=^^a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
+								q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_datea +"_"+t_productno +"_"+n, r_accy);
+							}else{
+								sum();
+							}                        	
                         });
                         $('#txtPrice_' + i).change(function(e) {
                             sum();
