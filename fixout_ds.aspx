@@ -38,7 +38,6 @@
             function currentData() {
             }
 
-
             currentData.prototype = {
                 data : [],
                 /*新增時複製的欄位*/
@@ -108,6 +107,51 @@
                         if (q_cur == 4)
                             q_Seek_gtPost();
                         break;
+                    default:
+                    	if(t_name.substring(0,15)=="checkStk_change"){
+                    		var t_productno = t_name.split('_')[2];
+                    		var t_sel = parseFloat(t_name.split('_')[3]);
+                    		var t_stkmount = 0;
+                    		var t_mount = 0;
+                    		var as = _q_appendData("fixucc", "", true);
+                       		if (as[0] != undefined) {
+                       			t_stkmount = parseFloat(as[0].mount.length==0?"0":as[0].mount);
+                       		}
+                       		for (var i = 0; i < q_bbsCount; i++) {
+                       			if($('#txtProductno_'+i).val()==t_productno){
+                       				t_mount += q_float('txtMount_'+i);
+                       			}
+                       		}
+                    		if(t_stkmount-t_mount<0){
+                    			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
+                    			Unlock();
+                    			$('#txtMount_'+t_sel).focus();
+                    			return;
+                    		}
+                    	}if(t_name.substring(0,14)=="checkStk_btnOk"){
+                    		var t_productno = t_name.split('_')[2];
+                    		var t_sel = parseFloat(t_name.split('_')[3]);
+                    		var t_stkmount = 0;
+                    		var t_mount = 0;
+                    		var as = _q_appendData("fixucc", "", true);
+                       		if (as[0] != undefined) {
+                       			t_stkmount = parseFloat(as[0].mount.length==0?"0":as[0].mount);
+                       		}
+                       		for (var i = 0; i < q_bbsCount; i++) {
+                       			if($('#txtProductno_'+i).val()==t_productno){
+                       				t_mount += q_float('txtMount_'+i);
+                       			}
+                       		}
+                    		if(t_stkmount-t_mount<0){
+                    			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
+                    			Unlock();
+                    			$('#txtMount_'+t_sel).focus();
+                    			return;
+                    		}else{
+                    			checkStkBtnOk(t_sel-1);
+                    		}
+                    	}
+                    	break;
                 }
             }
 
@@ -136,6 +180,14 @@
                     return;
                 }
                 for (var i = 0; i < q_bbsCount; i++) {
+                	if($('#txtProductno_'+i).val().length>0){
+                		if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtProductno_'+i).val())){
+						}else{
+							alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
+							Unlock();
+							return;
+						}
+                	}
                     for (var j = 0; j < q_bbsCount; j++) {
                         if (i != j && $('#txtTireno_' + i).val() == $('#txtTireno_' + j).val() && $('#txtTireno_' + i).val() != '' && $('#txtTireno_' + j).val()) {
                             alert('胎號重複，請修改');
@@ -145,19 +197,35 @@
                     }
                 }
                 sum();
-                if (q_cur == 1) {
-                    $('#txtWorker').val(r_name);
-                } else if (q_cur == 2) {
-                    $('#txtWorker2').val(r_name);
-                } else {
-                    alert("error: btnok!")
-                }
-                var t_noa = trim($('#txtNoa').val());
-                var t_date = trim($('#txtDatea').val());
-                if (t_noa.length == 0 || t_noa == "AUTO")
-                    q_gtnoa(q_name, replaceAll(q_getPara('sys.key_fixout') + (t_date.length == 0 ? q_date() : t_date), '/', ''));
-                else
-                    wrServer(t_noa);
+                checkStkBtnOk(q_bbsCount-1);
+            }
+            function checkStkBtnOk(n){
+            	if(n<0){
+            		if (q_cur == 1) {
+	                    $('#txtWorker').val(r_name);
+	                } else if (q_cur == 2) {
+	                    $('#txtWorker2').val(r_name);
+	                } else {
+	                    alert("error: btnok!")
+	                }
+	                var t_noa = trim($('#txtNoa').val());
+	                var t_date = trim($('#txtDatea').val());
+	                if (t_noa.length == 0 || t_noa == "AUTO")
+	                    q_gtnoa(q_name, replaceAll(q_getPara('sys.key_fixout') + (t_date.length == 0 ? q_date() : t_date), '/', ''));
+	                else
+	                    wrServer(t_noa);
+            	}else{
+            		var t_noa = $.trim($('#txtNoa').val());
+                	var t_productno = $.trim($('#txtProductno_'+n).val());
+                	if(t_productno.length>0){
+                		var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
+							+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
+							+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
+						q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_btnOk_"+t_productno +"_"+n, r_accy);
+                	}else{
+                		checkStkBtnOk(n-1)
+                	}
+            	}
             }
 
             function _btnSeek() {
@@ -169,16 +237,22 @@
             function q_popPost(s1) {
                 switch (s1) {
                     case 'txtTireno_':
-                    	var t_tireno = $('#txtTireno_'+b_seq).val();
+                    	var n = b_seq;
+                    	refreshBbs();
+                    	var t_tireno = $.trim($('#txtTireno_'+n).val());
                     	if(t_tireno.length>0){
-                    		var t_mount = q_float('txtMount_' + b_seq);
-                    		var t_price = q_float('txtPrice_' + b_seq);
-                    		$('#txtMoney_'+b_seq).val(FormatNumber(t_mount.mul(t_price).round(0)));
+                    		var t_mount = q_float('txtMount_' + n);
+                    		var t_price = q_float('txtPrice_' + n);
+                    		$('#txtMoney_'+n).val(FormatNumber(t_mount.mul(t_price).round(0)));
                     	}
-                        /*if (!emp($('#txtTireno_' + b_seq).val())) {
-                            var t_where = "where=^^ tireno='" + $('#txtTireno_' + b_seq).val() + "' ^^";
-                            q_gt('fixouts', t_where, 0, 0, 0, "", r_accy);
-                        }*/
+                    	var t_noa = $.trim($('#txtNoa').val());
+                    	var t_productno = $.trim($('#txtProductno_'+n).val());
+                    	if(t_productno.length>0){
+                    		var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
+								+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
+								+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
+							q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_productno +"_"+n, r_accy);
+                    	}
                         break;
                 }
             }
@@ -187,8 +261,29 @@
                 for (var i = 0; i < q_bbsCount; i++) {
                 	$('#lblNo_' + i).text(i + 1);
                     if (!$('#btnMinus_' + i).hasClass('isAssign')) {
+                    	$('#txtProductno_'+i).change(function(e){
+		                	$(this).val($.trim($(this).val()).toUpperCase());    	
+							if($(this).val().length>0){
+								if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
+								}else{
+									Lock();
+									alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
+									Unlock();
+								}
+							}
+		                });
                         $('#txtMount_' + i).change(function(e) {
-                            sum();
+                        	var n = $(this).attr('id').replace('txtMount_','');
+                        	var t_noa = $.trim($('#txtNoa').val());
+                        	var t_productno = $.trim($('#txtProductno_'+n).val());
+							if(t_productno.length>0 && (/^(\w+|\w+\u002D\w+)$/g).test(t_productno)){
+								var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
+									+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
+									+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
+								q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_productno +"_"+n, r_accy);
+							}else{
+								sum();
+							}                        	
                         });
                         $('#txtPrice_' + i).change(function(e) {
                             sum();
@@ -205,13 +300,12 @@
                 curData.copy();
                 _btnIns();
                 curData.paste();
-
                 $('#txtNoa').val('AUTO');
-                $('#cmbTypea').val('01');
                 if ($('#txtDatea').val().length == 0)
                     $('#txtDatea').val(q_date());
                 if ($('#txtMon').val().length == 0)
                     $('#txtMon').val(q_date().substring(0, 6));
+                refreshBbs();
                 $('#txtCarno').focus();
             }
 
@@ -219,8 +313,9 @@
                 if (emp($('#txtNoa').val()))
                     return;
                 _btnModi();
-                $('#txtOutdate').focus();
+                refreshBbs();
                 sum();
+                $('#txtOutdate').focus();
             }
 
             function btnPrint() {
@@ -229,7 +324,6 @@
 
             function wrServer(key_value) {
                 var i;
-
                 $('#txt' + bbmKey[0].substr(0, 1).toUpperCase() + bbmKey[0].substr(1)).val(key_value);
                 _btnOk(key_value, bbmKey[0], bbsKey[1], '', 2);
             }
@@ -256,6 +350,21 @@
 
             function refresh(recno) {
                 _refresh(recno);
+                refreshBbs();
+            }
+            function refreshBbs(){
+            	if(q_cur==1 || q_cur==2)
+	            	for (var i = 0; i < q_bbsCount; i++) {
+	            		if($.trim($('#txtTireno_'+i).val()).length>0){
+	            			$('#btnProductno_'+i).attr('disabled','disabled');
+	            			$('#txtProductno_'+i).attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+	            			$('#txtProduct_'+i).attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+	            		}else{
+	            			$('#btnProductno_'+i).removeAttr('disabled');
+	            			$('#txtProductno_'+i).removeAttr('readonly').css('color','black').css('background','white');
+	            			$('#txtProduct_'+i).removeAttr('readonly').css('color','black').css('background','white');
+	            		}	
+	            	}
             }
 
             function readonly(t_para, empty) {
@@ -578,6 +687,7 @@
 					<input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  />
 					</td>
 					<td align="center" style="width:20px;"> </td>
+					<td align="center" style="width:100px;"><a id='lblTireno_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblProductno_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblProduct_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblBrand_s'> </a></td>
@@ -585,7 +695,6 @@
 					<td align="center" style="width: 70px;"><a id='lblPrice_s'> </a></td>
 					<td align="center" style="width: 70px;"><a id='lblMount_s'> </a></td>
 					<td align="center" style="width: 70px;"><a id='lblMoney_s'> </a></td>
-					<td align="center" style="width:100px;"><a id='lblTireno_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblMemo_s'> </a></td>
 					<td align="center" style="width: 50px;"><a id='lblPosition_s'> </a></td>
 				</tr>
@@ -595,6 +704,7 @@
 					<input id="txtNoq.*" type="text" style="display: none;" />
 					</td>
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
+					<td><input id="txtTireno.*" type="text" style="width: 95%;"/></td>
 					<td>
 						<input id="btnProductno.*" type="button" style="width: 10%;font-size: medium;"/>
 						<input id="txtProductno.*" type="text" style="width: 80%;" />
@@ -605,7 +715,6 @@
 					<td><input id="txtPrice.*" type="text" style="width: 95%;text-align: right;"/></td>
 					<td><input id="txtMount.*" type="text" style="width: 95%;text-align: right;"/></td>
 					<td><input id="txtMoney.*" type="text" style="width: 95%;text-align: right;"/></td>
-					<td><input id="txtTireno.*" type="text" style="width: 95%;"/></td>
 					<td><input id="txtMemo.*" type="text" style="width: 95%;"/></td>
 					<td><select id="cmbPosition.*" style="width: 95%;"> </select></td>
 				</tr>

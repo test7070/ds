@@ -55,7 +55,7 @@
                     		q_gt('cust', t_where, 0, 0, 0, "checkCustno_change", r_accy);
 						}else{
 							Lock();
-							alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
+							alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
 							Unlock();
 						}
 					}
@@ -163,7 +163,7 @@
             	$('#txtNoa').val($.trim($('#txtNoa').val()));   	
             	if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
 				}else{
-					alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
+					alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
 					Unlock();
 					return;
 				}
