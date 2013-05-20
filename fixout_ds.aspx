@@ -117,6 +117,7 @@
                     		var as = _q_appendData("fixucc", "", true);
                        		if (as[0] != undefined) {
                        			if(as[0].begindate > t_datea){
+                       				//異動日期<期初日期的資料不允許修改
                        				alert('日期異常:'+t_productno+q_getMsg('lblOutdate')+'【'+t_datea+'】小於期初日期【'+as[0].begindate+'】 。');
 	                    			Unlock();
 	                    			$('#txtMount_'+t_sel).focus();
@@ -144,6 +145,7 @@
                     		var as = _q_appendData("fixucc", "", true);
                        		if (as[0] != undefined) {
                        			if(as[0].begindate > t_datea){
+                       				//異動日期<期初日期的資料不允許修改
                        				alert('日期異常:'+t_productno+q_getMsg('lblOutdate')+'【'+t_datea+'】小於期初日期【'+as[0].begindate+'】 。');
 	                    			Unlock();
 	                    			$('#txtMount_'+t_sel).focus();
