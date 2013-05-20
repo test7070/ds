@@ -109,12 +109,19 @@
                         break;
                     default:
                     	if(t_name.substring(0,15)=="checkStk_change"){
-                    		var t_productno = t_name.split('_')[2];
-                    		var t_sel = parseFloat(t_name.split('_')[3]);
+                    		var t_datea = t_name.split('_')[2];
+                    		var t_productno = t_name.split('_')[3];
+                    		var t_sel = parseFloat(t_name.split('_')[4]);
                     		var t_stkmount = 0;
                     		var t_mount = 0;
                     		var as = _q_appendData("fixucc", "", true);
                        		if (as[0] != undefined) {
+                       			if(as[0].begindate > t_datea){
+                       				alert('日期異常:'+t_productno+q_getMsg('lblOutdate')+'【'+t_datea+'】小於期初日期【'+as[0].begindate+'】 。');
+	                    			Unlock();
+	                    			$('#txtMount_'+t_sel).focus();
+	                    			return;
+                       			}
                        			t_stkmount = parseFloat(as[0].mount.length==0?"0":as[0].mount);
                        		}
                        		for (var i = 0; i < q_bbsCount; i++) {
@@ -129,12 +136,19 @@
                     			return;
                     		}
                     	}if(t_name.substring(0,14)=="checkStk_btnOk"){
-                    		var t_productno = t_name.split('_')[2];
-                    		var t_sel = parseFloat(t_name.split('_')[3]);
+                    		var t_datea = t_name.split('_')[2];
+                    		var t_productno = t_name.split('_')[3];
+                    		var t_sel = parseFloat(t_name.split('_')[4]);
                     		var t_stkmount = 0;
                     		var t_mount = 0;
                     		var as = _q_appendData("fixucc", "", true);
                        		if (as[0] != undefined) {
+                       			if(as[0].begindate > t_datea){
+                       				alert('日期異常:'+t_productno+q_getMsg('lblOutdate')+'【'+t_datea+'】小於期初日期【'+as[0].begindate+'】 。');
+	                    			Unlock();
+	                    			$('#txtMount_'+t_sel).focus();
+	                    			return;
+                       			}
                        			t_stkmount = parseFloat(as[0].mount.length==0?"0":as[0].mount);
                        		}
                        		for (var i = 0; i < q_bbsCount; i++) {
@@ -168,7 +182,7 @@
                     Unlock();
                     return;
                 }
-                if (!q_cd($('#txtOutdate').val())) {
+                if ($('#txtOutdate').val().length == 0 || !q_cd($('#txtOutdate').val())) {
                     alert(q_getMsg('lblOutdate') + '錯誤。');
                     Unlock();
                     return;
@@ -215,13 +229,14 @@
 	                else
 	                    wrServer(t_noa);
             	}else{
+            		var t_datea = $.trim($('#txtOutdate').val());
             		var t_noa = $.trim($('#txtNoa').val());
                 	var t_productno = $.trim($('#txtProductno_'+n).val());
                 	if(t_productno.length>0){
                 		var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
 							+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
 							+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
-						q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_btnOk_"+t_productno +"_"+n, r_accy);
+						q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_btnOk_"+t_datea +"_"+t_productno +"_"+n, r_accy);
                 	}else{
                 		checkStkBtnOk(n-1)
                 	}
@@ -245,13 +260,18 @@
                     		var t_price = q_float('txtPrice_' + n);
                     		$('#txtMoney_'+n).val(FormatNumber(t_mount.mul(t_price).round(0)));
                     	}
+                    	var t_datea = $.trim($('#txtOutdate').val());
                     	var t_noa = $.trim($('#txtNoa').val());
                     	var t_productno = $.trim($('#txtProductno_'+n).val());
-                    	if(t_productno.length>0){
+                    	if(t_datea.length==0){
+                    		Lock();
+                    		alert('請輸入'+q_getMsg('lblOutdate'));
+                    		Unlock();
+                        }else if(t_productno.length>0){
                     		var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
 								+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
 								+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
-							q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_productno +"_"+n, r_accy);
+							q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_datea +"_"+t_productno +"_"+n, r_accy);
                     	}
                         break;
                 }
@@ -274,13 +294,18 @@
 		                });
                         $('#txtMount_' + i).change(function(e) {
                         	var n = $(this).attr('id').replace('txtMount_','');
+                        	var t_datea = $.trim($('#txtOutdate').val());
                         	var t_noa = $.trim($('#txtNoa').val());
                         	var t_productno = $.trim($('#txtProductno_'+n).val());
-							if(t_productno.length>0 && (/^(\w+|\w+\u002D\w+)$/g).test(t_productno)){
+                        	if(t_datea.length==0){
+                        		Lock();
+                        		alert('請輸入'+q_getMsg('lblOutdate'));
+                        		Unlock();
+                        	}else if(t_productno.length>0 && (/^(\w+|\w+\u002D\w+)$/g).test(t_productno)){
 								var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
 									+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
 									+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
-								q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_productno +"_"+n, r_accy);
+								q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_datea +"_"+t_productno +"_"+n, r_accy);
 							}else{
 								sum();
 							}                        	
