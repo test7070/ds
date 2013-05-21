@@ -101,25 +101,25 @@
                 	var t_etrandate = $.trim($('#txtEtrandate').val());
                 	var t_baddrno = $.trim($('#txtStraddrno').val());
                 	var t_eaddrno = $.trim($('#txtEndaddrno').val());
-                	var t_where = "custno='"+t_custno+"'";
-                	t_where += t_noa.length>0?" and (len(isnull(trdno,''))=0 or trdno='"+t_noa+"')":" and len(isnull(trdno,''))=0";
-                	t_where += t_bdate.length>0?" and datea>='"+t_bdate+"'":"";
-                	t_where += t_edate.length>0?" and datea<='"+t_edate+"'":"";
-                	t_where += t_btrandate.length>0?" and trandate>='"+t_btrandate+"'":"";
-                	t_where += t_etrandate.length>0?" and trandate<='"+t_etrandate+"'":"";
-                	t_where += t_baddrno.length>0?" and straddrno>='"+t_baddrno+"'":"";
-                	t_where += t_eaddrno.length>0?" and straddrno<='"+t_eaddrno+"'":"";
+                	var t_where = "(b.noa is null or b.noa='"+t_noa+"')";
+                	t_where += " and a.custno='"+t_custno+"'";
+                	t_where += t_bdate.length>0?" and a.datea>='"+t_bdate+"'":"";
+                	t_where += t_edate.length>0?" and a.datea<='"+t_edate+"'":"";
+                	t_where += t_btrandate.length>0?" and a.trandate>='"+t_btrandate+"'":"";
+                	t_where += t_etrandate.length>0?" and a.trandate<='"+t_etrandate+"'":"";
+                	t_where += t_baddrno.length>0?" and a.straddrno>='"+t_baddrno+"'":"";
+                	t_where += t_eaddrno.length>0?" and a.straddrno<='"+t_eaddrno+"'":"";
                 	var t_po = "";
                 	if ($.trim($('#txtPo').val()).length > 0) {
                         var tmp = $.trim($('#txtPo').val()).split(',');
                         t_po = ' and (';
                         for (var i in tmp)
-                        t_po += (i == 0 ? '' : ' or ') + "view_trans" + r_accy + ".po='" + tmp[i] + "'"
+                        t_po += (i == 0 ? '' : ' or ') + "a.po='" + tmp[i] + "'"
                         t_po += ')';
                         t_where += t_po;
                     }
-                	t_where = "where=^^"+t_where+"^^ order=^^datea,noa^^";
-                	q_gt('view_trans', t_where, 0, 0, 0, "", r_accy);
+                	t_where = "where=^^"+t_where+"^^";
+                	q_gt('trd_tran', t_where, 0, 0, 0, "", r_accy);
                 	
                 });
                 $("#btnCustchg").click(function(e) {
@@ -224,7 +224,7 @@
                         sum();
                         Unlock();
                         break;
-                    case 'view_trans':
+                    case 'trd_tran':
                         var as = _q_appendData("view_trans", "", true);
                         q_gridAddRow(bbsHtm, 'tbbs', 'txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtTotal,txtCustorde,txtProduct'
                         , as.length, as, 'trandate,noa,noq,carno,straddr,total,caseno,mount,price,total,custorde,product', '','');
@@ -342,7 +342,7 @@
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)
                     return;
-                q_box('trd_s.aspx', q_name + '_s', "600px", "450px", q_getMsg("popSeek"));
+                q_box('trd_ds_s.aspx', q_name + '_s', "600px", "450px", q_getMsg("popSeek"));
             }
 
             function bbsAssign() {
