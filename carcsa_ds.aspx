@@ -29,7 +29,7 @@
             ,['txtInmoney',10,0,1]
             ,['txtOutmoney',10,0,1]];
             var bbsNum = [['txtWeight',10,3,1],['txtMount',10,3,1],['txtDiscount',10,3,1],['txtInmoney',10,0,1],['txtOutmoney',10,0,1],['txtOutprice',10,3,1]];
-            var bbmMask = [];
+            var bbmMask = [['txtTrandate', '999/99/99'], ['txtBtime', '99:99'], ['txtEtime', '99:99'], ['txtMon', '999/99']];
             var bbsMask = [];
             q_sqlCount = 6;
             brwCount = 6;
@@ -81,7 +81,13 @@
 			
 			function carcsaData(){}
 			carcsaData.prototype={
-				type : new Array()
+				isInit : false,
+				type : new Array(),
+				calctype : new Array(),
+				init : function(){
+            		Lock();
+            		q_gt('calctype', '', 0, 0, 0, 'carcsaInit_1');
+            	}
 			}
 			var carcsa = new carcsaData();
 			
@@ -103,18 +109,10 @@
             }
 
             function mainPost() {
-
-                q_getFormat();
-                bbmMask = [['txtTrandate', r_picd], ['txtBtime', '99:99'], ['txtEtime', '99:99'], ['txtMon', r_picm]];
                 q_mask(bbmMask);
-				q_gt('carcsatype', '', 0, 0, 0, "");
-				q_gt('acomp', '', 0, 0, 0, "");
-				q_gt('calctype2', '', 0, 0, 0, "calctypes");
-				q_gt('carcsatype', '', 0, 0, 0, "");
+                carcsa.init();
 				
-				q_cmbParse("cmbOntime", ',Y');
-				q_cmbParse("cmbInterval", q_getPara('carcsa.interval'));
-                //q_cmbParse("cmbType", '@,'+q_getPara('carcsa.type'));
+				/*q_cmbParse("cmbOntime", ',Y');
                 q_cmbParse("cmbTypea2", ('').concat(new Array('', '全拖', '半拖', '小時', '塊')));
 
 				$("#txtAddrno").focus(function() {
@@ -157,12 +155,12 @@
                    		q_pop('', "trans_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno+";", 'trans', 'noa', 'datea', "95%", "95%", q_getMsg('popTrans'), true);
                		else
                			alert('無出車單號。');
-                });
+                });*/
             }
 			function browTrans(obj){
 				var noa = $.trim($(obj).val());
             	if(noa.length>0)
-            		q_box("trans.aspx?;;;noa='" + noa + "';"+r_accy, 'trans', "95%", "95%", q_getMsg("popTarans"));
+            		q_box("trans_ds.aspx?;;;noa='" + noa + "';"+r_accy, 'trans', "95%", "95%", q_getMsg("popTarans"));
 			}
             function q_boxClose(s2) {
                 var ret;
@@ -173,58 +171,45 @@
                 }
                 b_pop = '';
             }
-
             function q_gtPost(t_name) {
                 switch (t_name) {
-                	case 'carcsatype':
-                	 	var as = _q_appendData("carcsatype", "", true);
-                        if (as[0] != undefined) {
-                        	for(var i=0;i<as.length;i++){
-                        		carcsa.type.push({
-		                        	noa : as[i].noa,
-		                        	cartype : as[i].cartype,
-		                        	memo : as[i].memo,
-		                        	typea : as[i].typea,
-		                        	price : as[i].price
-		                        });
-                        	}
-                        }
-                        break;
-                	case 'addr':
-                        var as = _q_appendData("addr", "", true);
-                        if (as[0] != undefined) {
-	                        $('#txtAddrno').val(as[0].noa);
-	                        $('#txtAddr').val(as[0].addr);
-	                        $('#txtUccno').val(as[0].productno);
-	                        $('#txtProduct').val(as[0].product);
-                        }
-                        break;
-                	case 'calctypes':
+                	case 'carcsaInit_1':
 						var as = _q_appendData("calctypes", "", true);
-						var t_item = "@";
-						var item = new Array({
-								noa : '',
-								typea : '',
-								discount : 0,
-								isOutside : false
-							});
+						var t_item = "";
 						for ( i = 0; i < as.length; i++) {
-							if(!(as[i].noa=='D' || as[i].noa=='E'))
-								continue;
-							t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
-							item.push({
+							t_item += (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
+							carcsa.calctype.push({
 								noa : as[i].noa + as[i].noq,
 								typea : as[i].typea,
 								discount : as[i].discount,
+								discount2 : as[i].discount2,
 								isOutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
 							});
 						}
 						q_cmbParse("cmbCalctype", t_item, "s");
-						calctypeItem = item;
-						refresh(q_recno);
+						q_gt('carcsatype', '', 0, 0, 0, 'carcsaInit_2');
 						break;
-                	case 'acomp':
-                        var as = _q_appendData("acomp", "", true);
+                	case 'carcsaInit_2':
+						var as = _q_appendData("carcsatype", "", true);
+						var t_item = " @ ";
+						for ( i = 0; i < as.length; i++) {
+							t_item += (t_item.length > 0 ? ',' : '')+ as[i].cartype + '_' + as[i].memo + '_' + as[i].typea + '_' + as[i].price;
+							carcsa.type.push({
+								noa : as[i].noa,
+								cartype : as[i].cartype,
+								memo : as[i].memo,
+								typea : as[i].typea,
+								price : parseFloat(as[i].price.length == 0 ? "0":as[i].price)
+							});
+						}
+						q_cmbParse("cmbType", t_item);
+						if (abbm[q_recno] != undefined) {
+                        	$("#cmbType").val(abbm[q_recno].cno);
+                        }
+						q_gt('acomp', '', 0, 0, 0, 'carcsaInit_3');
+						break;
+					case 'carcsaInit_3':
+						var as = _q_appendData("acomp", "", true);
                         if (as[0] != undefined) {
 	                        var t_item = " @ ";
 	                        for ( i = 0; i < as.length; i++) {
@@ -235,19 +220,16 @@
 	                        	$("#cmbCno").val(abbm[q_recno].cno);
 	                        }
                         }
-                        break;
-                	case 'carcsatype':
-                        var as = _q_appendData("carcsatype", "", true);
+                        carcsa.isInit = true;
+						Unlock();
+						break;
+                	case 'addr':
+                        var as = _q_appendData("addr", "", true);
                         if (as[0] != undefined) {
-	                        var t_item = " @ ";
-	                        for ( i = 0; i < as.length; i++) {
-	                            t_item = t_item + (t_item.length > 0 ? ',' : '');
-	                            t_item = t_item + as[i].cartype + '_' + as[i].memo + '_' + as[i].typea + '_' + as[i].price;
-	                        }
-	                        q_cmbParse("cmbType", t_item);
-	                        if (abbm[q_recno] != undefined) {
-	                        	$("#cmbType").val(abbm[q_recno].cno);
-	                        }
+	                        $('#txtAddrno').val(as[0].noa);
+	                        $('#txtAddr').val(as[0].addr);
+	                        $('#txtUccno').val(as[0].productno);
+	                        $('#txtProduct').val(as[0].product);
                         }
                         break;
                     case q_name:
@@ -255,7 +237,7 @@
                             q_Seek_gtPost();
                         break;
                     default:
-                    	if(t_name.substring(0,14)="checkBbs_trans"){
+                    	if(t_name.substring(0,14)=="checkBbs_trans"){
                     		var t_tranno = t_name.split('_')[2];
                     		var t_sel = parseFloat(t_name.split('_')[3]);
                     		var as = _q_appendData("view_trans", "", true);
@@ -310,6 +292,7 @@
                 }
                 if(n != string.length && q_cur==2){
                 	alert('stPost 出車單回傳錯誤!'+n+'_'+string.length +'_'+string);
+                	Unlock();
                 	return;
                 }
                 var t_noa = abbm[q_recno]['noa'];
@@ -323,8 +306,10 @@
 						b_seq++;
 					}
 				} 
+				Unlock();
             }
             function btnOk() {
+            	Lock();
             	var t_carno = '';
             	$('#txtCarno2').val('');
             	for (var i = 0; i < q_bbsCount; i++) {
@@ -338,19 +323,23 @@
             	
             	if ($('#txtCustno').val().length==0){
                 	alert('請輸入'+q_getMsg('lblCust')+'。');
+                	Unlock();
                 	return;
                 }
                 if ($('#txtAddrno').val().length==0){
                 	alert('請輸入'+q_getMsg('lblAddr')+'。');
+                	Unlock();
                 	return;
                 }
                 if ($('#txtUccno').val().length==0){
                 	alert('請輸入'+q_getMsg('lblProduct')+'。');
+                	Unlock();
                 	return;
                 }
                 
             	if ($('#txtTrandate').val().length==0 || !q_cd($('#txtTrandate').val())){
                 	alert(q_getMsg('lblTrandate')+'錯誤。');
+                	Unlock();
                 	return;
                 }
                 $('#txtMon').val($.trim($('#txtMon').val()));
@@ -373,7 +362,7 @@
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)// 1-3
                     return;
-                q_box('carcsa_s.aspx', q_name + '_s', "550px", "550px", q_getMsg("popSeek"));
+                q_box('carcsa_ds_s.aspx', q_name + '_s', "550px", "550px", q_getMsg("popSeek"));
             }
             function bbsAssign() {
             	for (var j = 0; j < q_bbsCount; j++) {
