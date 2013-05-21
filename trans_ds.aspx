@@ -45,7 +45,11 @@
             currentData.prototype = {
                 data : [],
                 /*新增時複製的欄位*/
-                include : ['txtDatea', 'txtTrandate'],
+                include : ['txtDatea', 'txtTrandate','txtMon','txtMon2','txtCarno','txtDriverno','txtDriver'
+                	,'txtCustno','txtComp','txtNick','cmbCalctype','cmbCarteamno','txtStraddrno','txtStraddr'
+                	,'txtUccno','txtProduct','txtInmount','txtPrice','txtTotal'
+                	,'txtOutmount','txtPrice2','txtPrice3','txtTotal2','txtDiscount'
+                	,'txtPo','txtCustorde','txtSalesno','txtSales'],
                 /*記錄當前的資料*/
                 copy : function() {
                     this.data = new Array();
@@ -139,7 +143,6 @@
         			$('#txtInmount').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtPton').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtPrice').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
-        			$('#txtTotal').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			
         			$('#txtCarno').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtDriverno').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
@@ -149,7 +152,6 @@
         			$('#txtPrice2').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtPrice3').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtDiscount').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
-        			$('#txtTotal2').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtTolls').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#cmbCalctype').attr('disabled','disabled');
         			$('#cmbCarteamno').attr('disabled','disabled');
@@ -441,7 +443,6 @@
 								$('#txtInmount').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtPton').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtPrice').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtTotal').removeAttr('readonly').css('color','black').css('background','white');
 							}
 							if(trans.isoutside){
 								//外車
@@ -463,7 +464,6 @@
 			        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtTotal2').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
 								$('#cmbCalctype').removeAttr('disabled');
         						$('#cmbCarteamno').removeAttr('disabled');
@@ -489,7 +489,6 @@
 			        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtTotal2').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
 								$('#cmbCalctype').removeAttr('disabled');
         						$('#cmbCarteamno').removeAttr('disabled');
