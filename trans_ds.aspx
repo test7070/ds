@@ -20,11 +20,11 @@
 			}
 
 			var q_name = "trans";
-			var q_readonly = ['txtTotal','txtTotal2','txtNoa','txtOrdeno','txtTreno','txtTrdno','txtWorker','txtWorker2'];
-			var bbmNum = [['txtInmount',10,3,1],['txtPton',10,3,1],['txtPrice',10,3,1],['txtTotal',10,0,1]
+			var q_readonly = ['txtWeight3','txtMiles','txtTotal','txtTotal2','txtNoa','txtOrdeno','txtWorker','txtWorker2'];
+			var bbmNum = [['txtWeight3',10,3,1],['txtWeight2',10,3,1],['txtInmount',10,3,1],['txtPton',10,3,1],['txtPrice',10,3,1],['txtTotal',10,0,1]
 			,['txtOutmount',10,3,1],['txtPton2',10,3,1],['txtPrice2',10,3,1],['txtPrice3',10,3,1],['txtDiscount',10,2,1],['txtTotal2',10,0,1]
-			,['txtTolls',10,0,1],['txtReserve',10,0,1]];
-			var bbmMask = [['txtDatea','999/99/99'],['txtTrandate','999/99/99']];
+			,['txtTolls',10,0,1],['txtReserve',10,0,1],['txtBmiles',10,0,1],['txtEmiles',10,0,1]];
+			var bbmMask = [['txtDatea','999/99/99'],['txtTrandate','999/99/99'],['txtMon','999/99'],['txtMon2','999/99'],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
 			q_sqlCount = 6;
 			brwCount = 6;
 			brwList = [];
@@ -38,7 +38,7 @@
 			,['txtCustno', '', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
 			,['txtDriverno', '', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
 			,['txtUccno', '', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
-			,['txtStraddrno', '', 'addr', 'noa,addr,productno,product', 'txtStraddrno,txtStraddr,txtUccno,txtProduct', 'addr_b.aspx'] 
+			,['txtStraddrno', '', 'addr', 'noa,addr,productno,product,salesno,sales', 'txtStraddrno,txtStraddr,txtUccno,txtProduct,txtSalesno,txtSales', 'addr_b.aspx'] 
 			);
 			function currentData() {
             }
@@ -48,17 +48,17 @@
                 include : ['txtDatea', 'txtTrandate'],
                 /*記錄當前的資料*/
                 copy : function() {
-                    curData.data = new Array();
+                    this.data = new Array();
                     for (var i in fbbm) {
                         var isInclude = false;
-                        for (var j in curData.include) {
-                            if (fbbm[i] == curData.include[j]) {
+                        for (var j in this.include) {
+                            if (fbbm[i] == this.include[j]) {
                                 isInclude = true;
                                 break;
                             }
                         }
                         if (isInclude) {
-                            curData.data.push({
+                            this.data.push({
                                 field : fbbm[i],
                                 value : $('#' + fbbm[i]).val()
                             });
@@ -67,8 +67,8 @@
                 },
                 /*貼上資料*/
                 paste : function() {
-                    for (var i in curData.data) {
-                        $('#' + curData.data[i].field).val(curData.data[i].value);
+                    for (var i in this.data) {
+                        $('#' + this.data[i].field).val(this.data[i].value);
                     }
                 }
             };
@@ -81,6 +81,7 @@
             	isInit : false, 
             	isTrd : null,
             	isTre : null,
+            	isoutside : null,
             	init : function(){
             		Lock();
             		q_gt('carteam', '', 0, 0, 0, 'transInit_1');
@@ -122,6 +123,12 @@
             	checkData : function(){
         			this.isTrd = false;
         			this.isTre = false;
+        			this.isoutside = false;
+        			for(var i in this.calctype){
+	            		if(this.calctype[i].noa == $('#cmbCalctype').val()){
+	            			this.isoutside = this.calctype[i].isoutside;
+	            		}
+	        		}
         			$('#txtDatea').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtTrandate').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			
@@ -149,8 +156,15 @@
         			if($('#txtOrdeno').val().length>0){
         				//轉來的一律不可改日期
         			}else{
-        				//檢查是否已立帳
-        				q_gt('view_trds', "where=^^ tranno='"+$('#txtNoa').val()+"' and trannoq='"+$('#txtNoq').val()+"' ^^", 0, 0, 0, 'checkTrd_'+$('#txtNoa').val()+'_'+$('#txtNoq').val(),r_accy);
+        				var t_tranno = $.trim($('#txtNoa').val());
+        				var t_trannoq = $.trim($('#txtNoq').val());
+        				var t_datea = $.trim($('#txtDatea').val());
+        				if(q_cur==2 && (t_tranno.length==0 || t_trannoq.length==0 || t_datea.length==0)){
+        					alert('資料異常。 code:1');
+        				}else{
+        					//檢查是否已立帳
+        					q_gt('view_trds', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTrd_'+t_tranno+'_'+t_trannoq+'_'+t_datea,r_accy);
+        				}
         			}
             	}
             }
@@ -229,6 +243,22 @@
 				$('#txtDiscount').change(function(){
 					sum();
 				});
+				$('#txtBmiles').change(function(){
+					sum();
+				});
+				$('#txtEmiles').change(function(){
+					sum();
+				});
+				$('#txtWeight2').change(function(){
+					sum();
+				});
+				$("#txtStraddrno").focus(function() {
+					var input = document.getElementById ("txtStraddrno");
+		            if (typeof(input.selectionStart) != 'undefined' ) {	  
+		                input.selectionStart = 5;
+		                input.selectionEnd =8;
+		            }
+				});
 				q_xchgForm();
 			}
 
@@ -248,6 +278,16 @@
 					$('#txtMount2').val(FormatNumber(t_mount2));
 					$('#txtTotal2').val(FormatNumber(t_total2));
 				}
+				
+				var bmiles = q_float('txtBmiles');
+				var emiles = q_float('txtEmiles');
+				if (bmiles != 0 && emiles != 0)
+					$('#txtMiles').val(FormatNumber(emiles.sub(bmiles)));
+					
+				if(q_float('txtWeight2')==0)
+					$('#txtWeight3').val(0);
+				else	
+					$('#txtWeight3').val(FormatNumber(q_float('txtInmount').sub(q_float('txtWeight2')).round(3)));
 			}
 
 			function q_boxClose(s2) {
@@ -261,6 +301,78 @@
 
 			function q_gtPost(t_name) {
 				switch (t_name) {
+					case 'isTre':
+						var as = _q_appendData("view_tres", "", true);
+                        if (as[0] != undefined) {
+                        	alert('已立帳，付款立帳單號【'+as[0].noa+'】');
+                        	Unlock();
+                        	return;
+                        }
+                    	_btnDele();
+                    	Unlock();
+                        
+						break;
+					case 'isCarsal':
+						var as = _q_appendData("carsal", "", true);
+                        if (as[0] != undefined) {
+                        	if(as[0].lock=="true" || as[0].lock=="1"){
+                        		alert('【'+as[0].noa+'】司機薪資已鎖定。');
+	                        	Unlock();
+	                        	return;
+                        	}
+                        }
+                    	_btnDele();
+                		Unlock();
+						break;
+					case 'isTrd':
+						var as = _q_appendData("view_trds", "", true);
+                        if (as[0] != undefined) {
+                        	alert('已立帳，請款立帳單號【'+as[0].noa+'】');
+                        	Unlock();
+                        	return;
+                        }else{
+                        	var t_isoutside = false;
+                        	for(var i in trans.calctype){
+			            		if(trans.calctype[i].noa == $('#cmbCalctype').val()){
+			            			t_isoutside.isoutside = trans.calctype[i].isoutside;
+			            		}
+			        		}
+	        		
+                        	if(t_isoutside)
+                        		q_gt('view_tres', "where=^^ tranno='"+$('#txtNoa').val()+"' and trannoq='"+$('#txtNoq').val()+"' ^^", 0, 0, 0, 'isTre',r_accy);	
+                        	else
+                        		q_gt('carsal', "where=^^ noa='"+$('#txtDatea').val().substring(0,6)+"' ^^", 0, 0, 0, 'isCarsal',r_accy);	
+                        }
+						break;
+					case 'btnDele':
+                		var as = _q_appendData("trans", "", true);
+                        if (as[0] != undefined) {
+                        	if(as[0].ordeno.length>0){
+                        		alert('轉來的單據禁止刪除。');
+                        		Unlock();
+                        		return;
+                        	}
+                        	q_gt('view_trds', "where=^^ tranno='"+$('#txtNoa').val()+"' and trannoq='"+$('#txtNoq').val()+"' ^^", 0, 0, 0, 'isTrd',r_accy);	
+                        }else{
+                        	alert('資料異常。');
+                        }
+                		break;                	
+                	case 'btnModi':
+                		var as = _q_appendData("trans", "", true);
+                        if (as[0] != undefined) {
+                        	if(as[0].ordeno.length>0){
+                        		alert('轉來的單據禁止修改。');
+                        		Unlock();
+                        		return;
+                        	}
+                        }
+                        Unlock();
+	                	Lock(1,{opacity:0});
+						_btnModi();
+						trans.refresh();
+						trans.checkData();
+						$('#txtDatea').focus();
+                		break; 
 					case 'getPrice':
 						var t_price = 0;
 						var t_price2 = 0;
@@ -317,52 +429,44 @@
 						if(t_name.substring(0,8)=='checkTrd'){
 							var t_tranno = t_name.split('_')[1];
 							var t_trannoq = t_name.split('_')[2];
+							var t_datea = t_name.split('_')[3];
 							var as = _q_appendData("view_trds", "", true);
 							if(as[0]!=undefined){
 								trans.isTrd = true;
-								if(as[0].noa!=$('#txtTrdno').val()){
-									alert('客戶立帳單資料異常。');
-								}
 							}else{
-								if($('#txtTrdno').val().length>0)
-									trans.isTrd = true;
-								else{
-									$('#txtCustno').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtComp').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtStraddrno').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtStraddr').removeAttr('readonly').css('color','black').css('background','white');
-									$('#txtInmount').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtPton').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtPrice').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtTotal').removeAttr('readonly').css('color','black').css('background','white');
-								}
+								$('#txtCustno').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtComp').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtStraddrno').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtStraddr').removeAttr('readonly').css('color','black').css('background','white');
+								$('#txtInmount').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtPton').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtPrice').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtTotal').removeAttr('readonly').css('color','black').css('background','white');
 							}
-							q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTre_'+t_tranno+'_'+t_trannoq,r_accy);
-							
+							if(trans.isoutside){
+								//外車
+								q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTre',r_accy);
+							}else{
+								//公司車
+								q_gt('carsal', "where=^^ noa='"+t_datea.substring(0,6)+"' ^^", 0, 0, 0, 'checkCarsal',r_accy);
+							}
 						}else if(t_name.substring(0,8)=='checkTre'){
 							var as = _q_appendData("view_tres", "", true);
 							if(as[0]!=undefined){
 								trans.isTre = true;
-								if(as[0].noa!=$('#txtTreno').val()){
-									alert('司機立帳單資料異常。');
-								}
 							}else{
-								if($('#txtTreno').val().length>0)
-									trans.isTre = true;
-								else{
-									$('#txtCarno').removeAttr('readonly').css('color','black').css('background','white');
-									$('#txtDriverno').removeAttr('readonly').css('color','black').css('background','white');
-									$('#txtDriver').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtOutmount').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtPton2').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtTotal2').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
-									$('#cmbCalctype').removeAttr('disabled');
-	        						$('#cmbCarteamno').removeAttr('disabled');
-								}
+								$('#txtCarno').removeAttr('readonly').css('color','black').css('background','white');
+								$('#txtDriverno').removeAttr('readonly').css('color','black').css('background','white');
+								$('#txtDriver').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtOutmount').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtPton2').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtTotal2').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
+								$('#cmbCalctype').removeAttr('disabled');
+        						$('#cmbCarteamno').removeAttr('disabled');
 							}
 							if(!trans.isTrd && !trans.isTre){
 								$('#txtDatea').removeAttr('readonly').css('color','black').css('background','white');
@@ -370,98 +474,32 @@
 							}
 							sum();
 							Unlock(1);
-						}else if(t_name.substring(0,11)=='btnOkCheck1'){
-							//檢查出車單是否已存在TRD
-							var t_tranno = t_name.split('_')[1];
-							var t_trannoq = t_name.split('_')[2];
-							var t_trdno = t_name.split('_')[3];
-							var t_treno = t_name.split('_')[4];
-							var as = _q_appendData("view_trds", "", true);
-							
+						}else if(t_name.substring(0,11)=='checkCarsal'){
+							var as = _q_appendData("carsal", "", true);
 							if(as[0]!=undefined){
-								for(var i=0;i<as.length;i++){
-									if(as[i].noa != t_trdno){
-										alert('資料錯誤:客戶立帳單據不一致【'+as[i].noa+'】【'+t_trdno+'】'+i);
-										Unlock();
-										return;
-									}
-								}
+								if(as[0].lock=="true" || as[0].lock=="1")
+									trans.isTre = true;
 							}
-							if(t_trdno.length>0){
-								t_where = "where=^^ noa='"+t_trdno+"' ^^";
-								q_gt('view_trds', t_where, 0, 0, 0, 'btnOkCheck2_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
-							}else{
-								t_where = "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^";
-								q_gt('view_tres', t_where, 0, 0, 0, 'btnOkCheck3_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
+							if(!trans.isTre){
+								$('#txtCarno').removeAttr('readonly').css('color','black').css('background','white');
+								$('#txtDriverno').removeAttr('readonly').css('color','black').css('background','white');
+								$('#txtDriver').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtOutmount').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtPton2').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtTotal2').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
+								$('#cmbCalctype').removeAttr('disabled');
+        						$('#cmbCarteamno').removeAttr('disabled');
 							}
-							
-						}else if(t_name.substring(0,11)=='btnOkCheck2'){
-							//檢查出車單上的立帳單號是否與TRD一致
-							var t_tranno = t_name.split('_')[1];
-							var t_trannoq = t_name.split('_')[2];
-							var t_trdno = t_name.split('_')[3];
-							var t_treno = t_name.split('_')[4];
-							var as = _q_appendData("view_trds", "", true);
-							var t_isExist = false;
-							if(as[0]!=undefined){
-								for(var i=0;i<as.length;i++){
-									if(as[i].tranno == t_tranno && as[i].trannoq == t_trannoq){
-										t_isExist = true;
-										break;
-									}
-								}
+							if(!trans.isTrd && !trans.isTre){
+								$('#txtDatea').removeAttr('readonly').css('color','black').css('background','white');
+								$('#txtTrandate').removeAttr('readonly').css('color','black').css('background','white');
 							}
-							if(!t_isExist){
-								alert('資料錯誤:客戶立帳單據【'+t_trdno+'】查無出車單【'+t_tranno+'】');
-								Unlock();
-								return;
-							}
-							t_where = "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^";
-							q_gt('view_tres', t_where, 0, 0, 0, 'btnOkCheck3_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
-						}else if(t_name.substring(0,11)=='btnOkCheck3'){
-							//檢查出車單是否已存在TRE
-							var t_tranno = t_name.split('_')[1];
-							var t_trannoq = t_name.split('_')[2];
-							var t_trdno = t_name.split('_')[3];
-							var t_treno = t_name.split('_')[4];
-							var as = _q_appendData("view_tres", "", true);
-							if(as[0]!=undefined){
-								for(var i=0;i<as.length;i++){
-									if(as[i].noa != t_treno){
-										alert('資料錯誤:司機立帳單據不一致【'+as[i].noa+'】【'+t_treno+'】');
-										Unlock();
-										return;
-									}
-								}
-							}
-							if(t_treno.length>0){
-								t_where = "where=^^ noa='"+t_treno+"' ^^";
-								q_gt('view_tres', t_where, 0, 0, 0, 'btnOkCheck4_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
-							}else{
-								saveData();
-							}
-						}else if(t_name.substring(0,11)=='btnOkCheck4'){
-							//檢查出車單上的立帳單號是否與TRE一致
-							var t_tranno = t_name.split('_')[1];
-							var t_trannoq = t_name.split('_')[2];
-							var t_trdno = t_name.split('_')[3];
-							var t_treno = t_name.split('_')[4];
-							var as = _q_appendData("view_tres", "", true);
-							var t_isExist = false;
-							if(as[0]!=undefined){
-								for(var i=0;i<as.length;i++){
-									if(as[i].tranno == t_tranno && as[i].trannoq == t_trannoq){
-										t_isExist = true;
-										break;
-									}
-								}
-							}
-							if(!t_isExist){
-								alert('資料錯誤:司機立帳單據【'+t_treno+'】查無出車單【'+t_tranno+'】');
-								Unlock();
-								return;
-							}
-							saveData();
+							sum();
+							Unlock(1);
 						}
 						break;
 				}
@@ -504,6 +542,7 @@
 				curData.copy();
 				_btnIns();
 				curData.paste();
+				$('#txtNoa').val('AUTO');
 				$('#txtNoq').val('001');
 				if($('#cmbCalctype').val().length==0)
 					$('#cmbCalctype').val(trans.calctype[0].noa);
@@ -515,11 +554,14 @@
 			function btnModi() {
 				if (emp($('#txtNoa').val()))
 					return;
-				Lock(1,{opacity:0});
-				_btnModi();
-				trans.refresh();
-				trans.checkData();
-				$('#txtDatea').focus();
+				//避免資料不同步
+				if($.trim($('#txtOrdeno').val()).length>0){
+					alert('轉來的單據禁止修改。');
+				}else{
+					Lock();
+	                t_where=" where=^^ noa='"+$('#txtNoa').val()+"'^^";
+	            	q_gt('trans', t_where, 0, 0, 0, "btnModi", r_accy);
+				}
 			}
 			function btnPrint() {
 				q_box('z_trans_ds.aspx' + "?;;;;" + r_accy, '', "95%", "95%", q_getMsg("popPrint"));
@@ -559,24 +601,6 @@
             		return;
 				}
 				//---------------------------------------------------------------
-				var t_tranno = $.trim($('#txtNoa').val());
-				var t_trannoq = $.trim($('#txtNoq').val());
-				var t_trdno = $.trim($('#txtTrdno').val());
-				var t_treno = $.trim($('#txtTreno').val());
-				var t_where = "";
-				if(t_tranno=='AUTO' || t_tranno.length==0){	
-					if(t_trdno.length>0 || t_treno.length>0){
-						alert('資料異常。');
-						Unlock();
-						return;
-					}
-					saveData();
-				}else{
-					t_where = "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^";
-					q_gt('view_trds', t_where, 0, 0, 0, 'btnOkCheck1_'+t_tranno+'_'+t_trannoq+'_'+t_trdno+'_'+t_treno,r_accy);
-				}			
-			}
-			function saveData(){
 				if(q_cur ==1){
                 	$('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
@@ -589,7 +613,7 @@
 				if (t_noa.length == 0 || t_noa == "AUTO")
 					q_gtnoa(q_name, replaceAll(q_getPara('sys.key_trans') + (t_date.length == 0 ? q_date() : t_date), '/', ''));
 				else
-					wrServer(t_noa);
+					wrServer(t_noa);		
 			}
 
 			function wrServer(key_value) {
@@ -652,7 +676,13 @@
 			}
 
 			function btnDele() {
-				_btnDele();
+				if($.trim($('#txtOrdeno').val()).length>0){
+					alert('轉來的單據禁止刪除。');
+				}else{
+					Lock();
+	                var t_where =" where=^^ noa='"+ $('#txtNoa').val()+"'^^";
+	                q_gt('trans', t_where, 0, 0, 0, 'btnDele',r_accy);
+                }
 			}
 
 			function btnCancel() {
@@ -722,7 +752,7 @@
             }
             .dview {
                 float: left;
-                width: 950px; 
+                width: 100%; 
                 border-width: 0px; 
             }
             .tview {
@@ -849,6 +879,9 @@
 						<td align="center" style="width:60px; color:black;"><a id="vewPrice2"> </a></td>
 						<td align="center" style="width:60px; color:black;"><a id="vewPrice3"> </a></td>
 						<td align="center" style="width:60px; color:black;"><a id="vewDiscount"> </a></td>
+						<td align="center" style="width:120px; color:black;"><a id="vewPo"> </a></td>
+						<td align="center" style="width:120px; color:black;"><a id="vewCaseno"> </a></td>
+						<td align="center" style="width:120px; color:black;"><a id="vewCustorde"> </a></td>
 					</tr>
 					<tr>
 						<td ><input id="chkBrow.*" type="checkbox"/></td>
@@ -864,6 +897,9 @@
 						<td id="price2" style="text-align: right;">~price2</td>
 						<td id="price3" style="text-align: right;">~price3</td>
 						<td id="discount" style="text-align: right;">~discount</td>
+						<td id="po" style="text-align: left;">~po</td>
+						<td id="caseno" style="text-align: left;">~caseno</td>
+						<td id="custorde" style="text-align: left;">~custorde</td>
 					</tr>
 				</table>
 			</div>
@@ -885,6 +921,10 @@
 						<td><input id="txtDatea"  type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblTrandate" class="lbl"> </a></td>
 						<td><input id="txtTrandate"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
+						<td><input id="txtMon"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblMon2" class="lbl"> </a></td>
+						<td><input id="txtMon2"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblCarno" class="lbl"> </a></td>
@@ -911,7 +951,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblAddr" class="lbl"> </a></td>
+						<td><span> </span><a id="lblStraddr" class="lbl"> </a></td>
 						<td colspan="3">
 							<input id="txtStraddrno"  type="text" style="float:left;width:30%;"/>
 							<input id="txtStraddr"  type="text" style="float:left;width:70%;"/>
@@ -929,6 +969,11 @@
 						<td><input id="txtPton"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblPrice" class="lbl"> </a></td>
 						<td><input id="txtPrice"  type="text" class="txt c1 num"/></td>
+						<td><span> </span><a id="lblTotal" class="lbl"> </a></td>
+						<td>
+							<input id="txtMount"  type="text" style="display:none;"/>
+							<input id="txtTotal"  type="text" class="txt c1 num"/>
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblOutmount" class="lbl"> </a></td>
@@ -943,22 +988,16 @@
 							<input id="txtPrice2"  type="text" class="txt c1 num"/>
 							<input id="txtPrice3"  type="text" class="txt c1 num"/>
 						</td>
-						<td><span> </span><a id="lblDiscount" class="lbl"> </a></td>
-						<td><input id="txtDiscount"  type="text" class="txt c1 num"/></td>
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblTotal" class="lbl"> </a></td>
-						<td>
-							<input id="txtMount"  type="text" style="display:none;"/>
-							<input id="txtTotal"  type="text" class="txt c1 num"/>
-						</td>
-					</tr>
-					<tr>
 						<td><span> </span><a id="lblTotal2" class="lbl"> </a></td>
 						<td>
 							<input id="txtMount2"  type="text" style="display:none;"/>
 							<input id="txtTotal2"  type="text" class="txt c1 num"/>
 						</td>
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblDiscount" class="lbl"> </a></td>
+						<td><input id="txtDiscount"  type="text" class="txt c1 num"/></td>
+						
 						<td><span> </span><a id="lblTolls" class="lbl"> </a></td>
 						<td><input id="txtTolls"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblReserve" class="lbl"> </a></td>
@@ -980,10 +1019,34 @@
 						<td><select id="cmbCasetype" class="txt c1"> </select></td>
 					</tr>
 					<tr>
+						<td><span> </span><a id="lblBmiles" class="lbl"> </a></td>
+						<td><input id="txtBmiles"  type="text" class="txt c1 num"/></td>
+						<td><span> </span><a id="lblEmiles" class="lbl"> </a></td>
+						<td><input id="txtEmiles"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblMiles" class="lbl"> </a></td>
 						<td><input id="txtMiles"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblGps" class="lbl"> </a></td>
 						<td><input id="txtGps"  type="text" class="txt c1 num"/></td>
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblLtime" class="lbl"> </a></td>
+						<td><input id="txtLtime"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblStime" class="lbl"> </a></td>
+						<td><input id="txtStime"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblDtime" class="lbl"> </a></td>
+						<td><input id="txtDtime"  type="text" class="txt c1"/></td>
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblSales" class="lbl"> </a></td>
+						<td colspan="2">
+							<input id="txtSalesno"  type="text" style="float:left; width:50%;"/>
+							<input id="txtSales"  type="text" style="float:left; width:50%;"/>
+						</td>
+						<td> </td>
+						<td><span> </span><a id="lblWeight2" class="lbl"> </a></td>
+						<td><input id="txtWeight2" type="text"  class="txt num c1"/></td>
+						<td><span> </span><a id="lblWeight3" class="lbl"> </a></td>
+						<td><input id="txtWeight3" type="text"  class="txt num c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
@@ -997,10 +1060,6 @@
 						</td>
 						<td><span> </span><a id="lblOrdeno" class="lbl"> </a></td>
 						<td><input id="txtOrdeno"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblTrdno" class="lbl"> </a></td>
-						<td><input id="txtTrdno"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblTreno" class="lbl"> </a></td>
-						<td><input id="txtTreno"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblWorker" class="lbl"> </a></td>

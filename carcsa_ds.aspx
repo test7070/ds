@@ -23,7 +23,7 @@
             q_tables = 's';
             var q_name = "carcsa";
             var q_readonly = ['txtNoa','txtWorker','txtWorker2','txtWeight','txtMount','txtCarno','txtCarno2'
-            ,'txtInmoney','txtIntotal','txtOutmoney','txtOutplus','txtOutminus','txtOuttotal'];
+            ,'txtInmoney','txtOutmoney'];
             var q_readonlys = ['txtInmoney','txtOutmoney','txtTranno'];
             var bbmNum = [['txtWeight',10,3,1],['txtMount',10,3,1],['txtPrice',10,3,1]
             ,['txtInmoney',10,0,1]
@@ -53,17 +53,17 @@
 				include : ['txtTrandate','txtMon','cmbInterval','txtCustno','txtComp','txtNick','txtAddrno','txtAddr','txtUccno','txtProduct'],
 				/*記錄當前的資料*/
 				copy : function() {
-					curData.data = new Array();
+					this.data = new Array();
 					for (var i in fbbm) {
 						var isInclude = false;
-						for (var j in curData.include) {
-							if (fbbm[i] == curData.include[j]) {
+						for (var j in this.include) {
+							if (fbbm[i] == this.include[j]) {
 								isInclude = true;
 								break;
 							}
 						}
 						if (isInclude) {
-							curData.data.push({
+							this.data.push({
 								field : fbbm[i],
 								value : $('#' + fbbm[i]).val()
 							});
@@ -72,12 +72,19 @@
 				},
 				/*貼上資料*/
 				paste : function() {
-					for (var i in curData.data) {
-						$('#' + curData.data[i].field).val(curData.data[i].value);
+					for (var i in this.data) {
+						$('#' + this.data[i].field).val(this.data[i].value);
 					}
 				}
 			};
 			var curData = new currentData();
+			
+			function carcsaData(){}
+			carcsaData.prototype={
+				type : new Array()
+			}
+			var carcsa = new carcsaData();
+			
 			
             $(document).ready(function() {
                 bbmKey = ['noa'];
@@ -103,6 +110,8 @@
 				q_gt('carcsatype', '', 0, 0, 0, "");
 				q_gt('acomp', '', 0, 0, 0, "");
 				q_gt('calctype2', '', 0, 0, 0, "calctypes");
+				q_gt('carcsatype', '', 0, 0, 0, "");
+				
 				q_cmbParse("cmbOntime", ',Y');
 				q_cmbParse("cmbInterval", q_getPara('carcsa.interval'));
                 //q_cmbParse("cmbType", '@,'+q_getPara('carcsa.type'));
@@ -134,12 +143,6 @@
                 $('#txtPrice').change(function() {
                     sum();
                 });
-                $('#txtInplus').change(function() {
-                    sum();
-                });
-                $('#txtInminus').change(function() {
-                    sum();
-                });
                 $('#lblType').click(function(){
                 	q_box("carcsatype.aspx?" + r_userno + ";" + r_name + ";" + q_time, 'carcsatype', "95%", "95%", q_getMsg('popCarcsatype'));
                 });
@@ -151,7 +154,7 @@
                     		t_where += (t_where.length > 0 ? ' or ' : '') + "noa='" + t_tranno + "'";
                     }
                    	if(t_where.length>0)
-                   		q_pop('', "trans.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno+";", 'vcca', 'noa', 'datea', "95%", "95%", q_getMsg('popTrans'), true);
+                   		q_pop('', "trans_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno+";", 'trans', 'noa', 'datea', "95%", "95%", q_getMsg('popTrans'), true);
                		else
                			alert('無出車單號。');
                 });
@@ -173,6 +176,20 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'carcsatype':
+                	 	var as = _q_appendData("carcsatype", "", true);
+                        if (as[0] != undefined) {
+                        	for(var i=0;i<as.length;i++){
+                        		carcsa.type.push({
+		                        	noa : as[i].noa,
+		                        	cartype : as[i].cartype,
+		                        	memo : as[i].memo,
+		                        	typea : as[i].typea,
+		                        	price : as[i].price
+		                        });
+                        	}
+                        }
+                        break;
                 	case 'addr':
                         var as = _q_appendData("addr", "", true);
                         if (as[0] != undefined) {
@@ -305,13 +322,7 @@
 						i++;
 						b_seq++;
 					}
-				}                /*
-                if(string[0]!=undefined){        
-                	for(var i in string) {
-                		$('#txtTranno_'+i).val(string[i]);
-                	}
-                }
-                */
+				} 
             }
             function btnOk() {
             	var t_carno = '';
@@ -451,7 +462,7 @@
             function sum() {
             	if(!(q_cur==1 || q_cur==2))
             		return;
-                var t_mount=0,t_weight=0,t_inmoney=0,t_outmoney=0,t_outplus=0,t_outminus=0,t_outprice;
+                var t_mount=0,t_weight=0,t_inmoney=0,t_outmoney=0,t_outprice;
                 var t_price = q_float('txtPrice');
                 for (var j = 0; j < q_bbsCount; j++) {
                 	if(q_float('txtOutprice_'+j)==0 && $('#txtCarno_'+j).val().length>0)							
@@ -465,19 +476,13 @@
                     t_weight += q_float('txtWeight_'+j);
                     t_inmoney += q_float('txtInmoney_'+j);
                     t_outmoney += q_float('txtOutmoney_'+j);
-                    t_outplus += (q_float('txtOutplus_'+j).mul(q_float('txtDiscount_'+j))).round(0);
-                    t_outminus += q_float('txtOutminus_'+j);
                 }
                 
                 $('#txtMount').val(FormatNumber(t_mount));
                 $('#txtWeight').val(FormatNumber(t_weight));
                 $('#txtInmoney').val(FormatNumber(t_inmoney));
-                $('#txtIntotal').val(FormatNumber(t_inmoney.add(q_float('txtInplus')).sub(q_float('txtInminus'))));
      
                 $('#txtOutmoney').val(FormatNumber(t_outmoney));
-                $('#txtOutplus').val(FormatNumber(t_outplus));
-                $('#txtOutminus').val(FormatNumber(t_outminus));
-                $('#txtOuttotal').val(FormatNumber(t_outmoney.add(t_outplus).sub(t_outminus)));
             }
 
             ///////////////////////////////////////////////////  以下提供事件程式，有需要時修改
@@ -733,8 +738,6 @@
 						<td align="center" style="width:60px; color:black;"><a id='vewMount'> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id='vewTimes'> </a></td>
 						<td align="center" style="width:60px; color:black;"><a id='vewInmoney'> </a></td>
-						<td align="center" style="width:60px; color:black;"><a id='vewInplus'> </a></td>
-						<td align="center" style="width:60px; color:black;"><a id='vewInminus'> </a></td>
 						<td align="center" style="width:60px; color:black;"><a id='vewIntotal'> </a></td>
 						<td align="center" style="width:60px; color:black;"><a id='vewCarno'> </a></td>
 						<td align="center" style="width:60px; color:black;"><a id='vewOuttotal'> </a></td>
@@ -750,8 +753,6 @@
 						<td id="mount" style="text-align: right;">~mount</td>
 						<td id="times" style="text-align: right;">~times</td>
 						<td id="inmoney,0,1" style="text-align: right;">~inmoney,0,1</td>
-						<td id="inplus,0,1" style="text-align: right;">~inplus,0,1</td>
-						<td id="inminus,0,1" style="text-align: right;">~inminus,0,1</td>
 						<td id="intotal,0,1" style="text-align: right;">~intotal,0,1</td>
 						<td id="carno2" style="text-align: left;">~carno2</td>
 						<td id="outtotal,0,1" style="text-align: right;">~outtotal,0,1</td>
@@ -840,22 +841,10 @@
 					<tr>
 						<td><span> </span><a id="lblInmoney" class="lbl"> </a></td>
 						<td><input id="txtInmoney"  type="text" class="txt c1 num" /></td>
-						<td><span> </span><a id="lblInplus" class="lbl" style="text-decoration:line-through;"> </a></td>
-						<td><input id="txtInplus"  type="text" class="txt c1 num" /></td>
-						<td><span> </span><a id="lblInminus" class="lbl" style="text-decoration:line-through;"> </a></td>
-						<td><input id="txtInminus"  type="text" class="txt c1 num" /></td>
-						<td><span> </span><a id="lblIntotal" class="lbl" style="text-decoration:line-through;"> </a></td>
-						<td><input id="txtIntotal"  type="text" class="txt c1 num" /></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblOutmoney" class="lbl" title="數量*發單價*折扣"> </a></td>
+						<td><span> </span><a id="lblOutmoney" class="lbl"> </a></td>
 						<td><input id="txtOutmoney"  type="text" class="txt c1 num" /></td>
-						<td><span> </span><a id="lblOutplus" class="lbl" style="text-decoration:line-through;" title="司機加項*折扣"> </a></td>
-						<td><input id="txtOutplus"  type="text" class="txt c1 num" /></td>
-						<td><span> </span><a id="lblOutminus" class="lbl" style="text-decoration:line-through;"> </a></td>
-						<td><input id="txtOutminus"  type="text" class="txt c1 num" /></td>
-						<td><span> </span><a id="lblOuttotal" class="lbl" style="text-decoration:line-through;"> </a></td>
-						<td><input id="txtOuttotal"  type="text" class="txt c1 num" /></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblCarno" class="lbl"> </a></td>
@@ -897,8 +886,6 @@
 					<td align="center" style="width:80px;"><a id='lblDiscounts'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblOutprice'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblOuts'> </a></td>
-					<td align="center" style="width:80px;"><a id='lblOutpluss' style="text-decoration:line-through;"> </a></td>
-					<td align="center" style="width:80px;"><a id='lblOutminuss' style="text-decoration:line-through;"> </a></td>
 					<td align="center" style="width:150px;"><a id='lblTranno'> </a></td>
 				</tr>
 				<tr style='background:#cad3ff;'>
@@ -924,8 +911,6 @@
 					<td><input  id="txtDiscount.*" type="text" class="txt c1 num"/></td>
 					<td><input  id="txtOutprice.*" type="text" class="txt c1 num"/></td>
 					<td><input  id="txtOutmoney.*" type="text" class="txt c1 num" /></td>
-					<td><input  id="txtOutplus.*" type="text" class="txt c1 num" style="text-decoration:line-through;"/></td>
-					<td><input  id="txtOutminus.*" type="text" class="txt c1 num"/></td>
 					<td><input  id="txtTranno.*" onclick="browTrans(this)" type="text" class="txt c1"/></td>
 				</tr>
 			</table>
