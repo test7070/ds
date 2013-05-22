@@ -262,6 +262,27 @@
 								var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
             					q_gt('view_trds', t_where, 0, 0, 0, "checkBbs_trds_"+t_accy+"_"+t_tranno+"_"+t_sel, t_accy);             		
 							}
+                    	}else if(t_name.substring(0,8)=="btnDele1"){
+                    		var t_tranno = t_name.split('_')[1];
+                    		var t_sel = parseFloat(t_name.split('_')[2]);
+                    		var as = _q_appendData("trans", "", true);
+							if(as[0]!=undefined){															
+								var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
+            					q_gt('view_trds', t_where, 0, 0, 0, "btnDele2_"+t_tranno+"_"+t_sel, r_accy);             		
+							}else{
+								alert(r_accy+'年度查無出車單【'+t_tranno+'】禁止刪除。');
+								return r_accy+'年度查無出車單【'+t_tranno+'】禁止刪除。';
+							}
+                    	}else if(t_name.substring(0,8)=="btnDele2"){
+                    		var t_tranno = t_name.split('_')[1];
+                    		var t_sel = parseFloat(t_name.split('_')[2]);
+                    		var as = _q_appendData("view_trd", "", true);
+                    		if(as[0]!=undefined){
+                    			alert('出車單【'+t_tranno+'】已立帳，立帳單號【'+as[0].noa+'】。');
+								return '出車單【'+t_tranno+'】已立帳，立帳單號【'+as[0].noa+'】。';
+                    		}else{
+                    			
+                    		}
                     	}
                     	break;
                 } 
@@ -658,11 +679,27 @@
             function q_brwAssign(s1) {
                 _q_brwAssign(s1);
             }
-
-            function btnDele() {
-                _btnDele();
+			
+			function q_dele_b(){
+                checkDele(q_bbsCount-1);
+			}
+			function checkDele(n){
+            	if(n<0){
+            		return 'finish';
+            	}else{
+            		var t_tranno = $.trim($('#txtTranno_'+n).val());
+            		if(t_tranno.length>0){
+            			var t_where =" where=^^ noa='"+ t_tranno +"'^^";
+               			q_gt('trans', t_where, 0, 0, 0, 'btnDele1_'+t_tranno+'_'+n,r_accy);
+            		}else{
+            			checkDele(n-1);
+            		}
+            	}
             }
-
+            function btnDele() {
+            	Lock();
+            	_btnDele();
+            }
             function btnCancel() {
                 _btnCancel();
             }
