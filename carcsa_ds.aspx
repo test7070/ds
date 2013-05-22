@@ -169,16 +169,19 @@
                 switch (t_name) {
                 	case 'carcsaInit_1':
 						var as = _q_appendData("calctypes", "", true);
-						var t_item = "";
+						var t_item = "@";
 						for ( i = 0; i < as.length; i++) {
-							t_item += (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
-							carcsa.calctype.push({
-								noa : as[i].noa + as[i].noq,
-								typea : as[i].typea,
-								discount : as[i].discount,
-								discount2 : as[i].discount2,
-								isOutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
-							});
+							if(as[i].noa+as[i].noq=="D01" || as[i].noa+as[i].noq=="D02" || as[i].noa+as[i].noq=="E01"){
+								//for 大昌
+								t_item += (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
+								carcsa.calctype.push({
+									noa : as[i].noa + as[i].noq,
+									typea : as[i].typea,
+									discount : as[i].discount,
+									discount2 : as[i].discount2,
+									isOutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
+								});
+							}
 						}
 						q_cmbParse("cmbCalctype", t_item, "s");
 						q_gt('carcsatype', '', 0, 0, 0, 'carcsaInit_2');
@@ -188,6 +191,10 @@
 						var t_item = " @ ";
 						var t_item2 = new Array();
 						t_item2.push('');
+						t_item2.push('全拖');
+						t_item2.push('半拖');
+						t_item2.push('小時');
+						t_item2.push('塊');
 						for ( i = 0; i < as.length; i++) {
 							t_item += (t_item.length > 0 ? ',' : '')+ i+'@'+as[i].cartype + '_' + as[i].memo + '_' + as[i].typea + '_' + as[i].price;
 							carcsa.type.push({
@@ -372,13 +379,13 @@
                 			$(this).data('info').isTrd = false;
                 			$(this).data('info').isTre = false;
                 			$(this).data('info').isOutside = null;
-                			refreshBbs(n);
+                			refreshBbm();
                 		});
                 		
                 		$('#cmbCalctype_'+j).change(function(e){
                 			var n = parseInt($(this).attr('id').replace('cmbCalctype_',''));
                 			var m = $(this)[0].selectedIndex;
-                			$('#txtDiscount_' + n).val(calctypeItem[m].discount);
+                			$('#txtDiscount_' + n).val(carcsa.calctype[m].discount);
                 			sum();
                 		});
                 		$('#txtMount_' + j).change(function(e){
