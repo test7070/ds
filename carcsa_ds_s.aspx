@@ -73,6 +73,7 @@
 				t_comp = $.trim($('#txtComp').val());
 				t_cno = $('#cmbCno').val();
 				t_driverno = $.trim($('#txtDriverno').val());
+				t_tranno = $.trim($('#txtTranno').val());
 				
 				var t_where = " 1=1 " 
 				+ q_sqlPara2("noa", t_noa) 
@@ -89,6 +90,8 @@
                     t_where += " and exists(select noa from carcsas where carcsas.noa=carcsa.noa and carcsas.carno='"+t_carno+"')";
                 if (t_driverno.length>0)
                     t_where += " and exists(select noa from carcsas where carcsas.noa=carcsa.noa and carcsas.driverno='"+t_driverno+"')";
+                if (t_tranno.length>0)
+                    t_where += " and exists(select noa from carcsas where carcsas.noa=carcsa.noa and carcsas.tranno='"+t_tranno+"')";
 				t_where = ' where=^^' + t_where + '^^ ';
 				return t_where;
 			}
@@ -160,6 +163,10 @@
 				<tr class='seek_tr'>
 					<td class='seek'  style="width:20%;"><a id='lblComp'> </a></td>
 					<td><input class="txt" id="txtComp" type="text" style="width:215px; font-size:medium;" /></td>
+				</tr>
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblTranno'> </a></td>
+					<td><input class="txt" id="txtTranno" type="text" style="width:215px; font-size:medium;" /></td>
 				</tr>
 			</table>
 			<!--#include file="../inc/seek_ctrl.inc"-->

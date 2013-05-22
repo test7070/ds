@@ -246,7 +246,7 @@
             		return;
 				}
             	if($('#txtDatea').val().substring(0,3)!=r_accy){
-					alert('年度異常錯誤，請切換到【'+r_accy+'】年度再作業。');
+					alert('年度異常錯誤，請切換到【'+$('#txtDatea').val().substring(0,3)+'】年度再作業。');
 					Unlock();
             		return;
 				}
