@@ -38,6 +38,7 @@
 			,['txtCustno', '', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
 			,['txtDriverno', '', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
 			,['txtUccno', '', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
+			,['txtSalesno', 'lblSales', 'sss', 'noa,namea', 'txtSalesno,txtSales', 'sss_b.aspx']
 			,['txtStraddrno', '', 'addr', 'noa,addr,productno,product,salesno,sales', 'txtStraddrno,txtStraddr,txtUccno,txtProduct,txtSalesno,txtSales', 'addr_b.aspx'] 
 			);
 			function currentData() {
@@ -1036,7 +1037,7 @@
 						<td><input id="txtDtime"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblSales" class="lbl"> </a></td>
+						<td><span> </span><a id="lblSales" class="lbl btn"> </a></td>
 						<td colspan="2">
 							<input id="txtSalesno"  type="text" style="float:left; width:50%;"/>
 							<input id="txtSales"  type="text" style="float:left; width:50%;"/>
