@@ -179,7 +179,7 @@
 									typea : as[i].typea,
 									discount : as[i].discount,
 									discount2 : as[i].discount2,
-									isOutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
+									isoutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
 								});
 							}
 						}
@@ -354,14 +354,14 @@
                     return false;
                 var string =  xmlString.split(';');
                 var n = 0;
-                for (var i = 0; i < q_bbsCount; i++) {
+                /*for (var i = 0; i < q_bbsCount; i++) {
                 	n += $.trim($('#txtCarno_'+i).val()).length>0?1:0;
                 }
                 if(n != string.length && q_cur==2){
                 	alert('stPost 出車單回傳錯誤!'+n+'_'+string.length +'_'+string);
                 	Unlock(1);
                 	return;
-                }
+                }*/
                 var t_noa = abbm[q_recno]['noa'];
 				var b_seq = 0;
                	var i = 0;
@@ -377,6 +377,13 @@
             }
             function btnOk() {
             	Lock(1,{opacity:0});
+            	for (var i = 0; i < q_bbsCount; i++) {
+                	if($.trim($('#txtCarno_'+i).val()).length>0 && $('#cmbCalctype_'+i).val().length==0){
+                		alert('請輸入計算類別。');
+	                	Unlock(1);
+	                	return;
+                	}
+                }
             	if ($('#txtTrandate').val().length==0 || !q_cd($('#txtTrandate').val())){
                 	alert(q_getMsg('lblTrandate')+'錯誤。');
                 	Unlock(1);
@@ -428,7 +435,7 @@
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)// 1-3
                     return;
-                q_box('carcsa_ds_s.aspx', q_name + '_s', "550px", "550px", q_getMsg("popSeek"));
+                q_box('carcsa_ds_s.aspx', q_name + '_s', "550px", "95%", q_getMsg("popSeek"));
             }
             function bbsAssign() {
             	for (var j = 0; j < q_bbsCount; j++) {
@@ -437,14 +444,14 @@
                 		$('#btnMinus_' + j).data('info',{
                 			isTrd : false,//判斷是否立帳
                 			isTre : false,//判斷是否立帳
-                			isOutside : null//判斷是否是外車
+                			isoutside : null//判斷是否是外車
                 		});
                 		$('#btnMinus_' + j).click(function(e){
                 			var n = parseFloat($(this).attr('id').replace('btnMinus_','')); 
                 			//init
                 			$(this).data('info').isTrd = false;
                 			$(this).data('info').isTre = false;
-                			$(this).data('info').isOutside = null;
+                			$(this).data('info').isoutside = null;
                 			refreshBbm();
                 		});
                 		
@@ -511,13 +518,12 @@
             			$('#btnMinus_'+n).data('info',{
             				isTrd : false,
             				isTre : false,
-            				isOutside : null
+            				isoutside : null
             			});
             		}
-            		alert(n+'_'+$('#cmbCalctype_'+n).val());
             		for(var i in carcsa.calctype){
 	            		if(carcsa.calctype[i].noa == $('#cmbCalctype_'+n).val()){
-	            			$('#btnMinus_'+n).data('info').isOutside = carcsa.calctype[i].isoutside;
+	            			$('#btnMinus_'+n).data('info').isoutside = carcsa.calctype[i].isoutside;
 	            		}
 	        		}
             		$('#btnMinus_'+n).data('info').isTrd = false;
@@ -527,7 +533,7 @@
             		var t_mon = $('#txtTrandate').val().substring(0,6);
             		var t_tranno = $.trim($('#txtTranno_'+n).val());
             		if(t_tranno.length>0){
-            			if($('#btnMinus_' + n).data('info').isOutside){
+            			if($('#btnMinus_' + n).data('info').isoutside){
                     		var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
         					q_gt('view_tres', t_where, 0, 0, 0, "checkBbs_tres_"+t_accy+"_"+t_tranno+"_"+n, t_accy);
                     	}else{
@@ -594,9 +600,8 @@
                 else
                 	$('#combType').attr('disabled','disabled');
             }
-            function q_refresh_f(){
+            function q_refreshf(){
             	if(q_cur==2){
-            		alert('x');
             		checkBbs(q_bbsCount-1);
             	}
             }
@@ -608,10 +613,10 @@
             	for (var i = 0; i < q_bbsCount; i++) {
             		var isTrd = $('#btnMinus_' + i).data('info').isTrd;
             		var isTre = $('#btnMinus_' + i).data('info').isTre;
-            		var isOutside = $('#btnMinus_' + i).data('info').isOutside;
+            		var isoutside = $('#btnMinus_' + i).data('info').isoutside;
             		x_trd = x_trd | isTrd;
             		x_tre = x_tre | isTre;
-            		x_isoutsideAndTre = x_isoutsideAndTre | (isTre&isOutside);
+            		x_isoutsideAndTre = x_isoutsideAndTre | (isTre&isoutside);
 	            	refreshBbs(i);
             	}
             	if(x_trd || x_tre){
@@ -646,7 +651,7 @@
             function refreshBbs(n){
             	var isTrd = $('#btnMinus_' + n).data('info').isTrd;
             	var isTre = $('#btnMinus_' + n).data('info').isTre;
-            	var isOutside = $('#btnMinus_' + n).data('info').isOutside;
+            	var isoutside = $('#btnMinus_' + n).data('info').isoutside;
             	
             	if(isTrd || isTre){
             		$('#btnMinus_' + n).attr('disabled','disabled');
@@ -725,10 +730,12 @@
                 _q_brwAssign(s1);
             }
 			
-			function q_dele_b(){
+			function q_delef(){
+				alert('x');
                 return checkDele(q_bbsCount-1);
 			}
 			function checkDele(n){
+				alert(n);
             	if(n<0){
             		//回傳空值OR FALSE 就執行btnDele
             		return false;
