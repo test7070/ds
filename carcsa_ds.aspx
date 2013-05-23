@@ -267,21 +267,66 @@
                     		var t_sel = parseFloat(t_name.split('_')[2]);
                     		var as = _q_appendData("trans", "", true);
 							if(as[0]!=undefined){															
-								var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
-            					q_gt('view_trds', t_where, 0, 0, 0, "btnDele2_"+t_tranno+"_"+t_sel, r_accy);             		
+								var t_where = "where=^^ noa+noq='"+ as[0].calctype +"' ^^";
+								q_gt('calctypes', t_where, 0, 0, 0, "btnDele2_"+t_tranno+"_"+as[0].calctype+"_"+as[0].datea+"_"+t_sel, r_accy);             		
 							}else{
 								alert(r_accy+'年度查無出車單【'+t_tranno+'】禁止刪除。');
 								return r_accy+'年度查無出車單【'+t_tranno+'】禁止刪除。';
 							}
                     	}else if(t_name.substring(0,8)=="btnDele2"){
                     		var t_tranno = t_name.split('_')[1];
-                    		var t_sel = parseFloat(t_name.split('_')[2]);
-                    		var as = _q_appendData("view_trd", "", true);
+                    		var t_calctype = t_name.split('_')[2];
+                    		var t_date = t_name.split('_')[3];
+                    		var t_sel = parseFloat(t_name.split('_')[4]);
+                    		var as = _q_appendData("calctypes", "", true);
                     		if(as[0]!=undefined){
-                    			alert('出車單【'+t_tranno+'】已立帳，立帳單號【'+as[0].noa+'】。');
-								return '出車單【'+t_tranno+'】已立帳，立帳單號【'+as[0].noa+'】。';
+                    			var t_isoutside = (as[0].isoutside == "false" || as[0].isoutside == "0" || as[0].isoutside == undefined ? false : true);
+                    			if(t_isoutside){
+									//外車    
+									var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
+									q_gt('view_tres', t_where, 0, 0, 0, "btnDele3_"+t_tranno+"_"+t_sel, r_accy);             		                				
+                    			}else{
+                    				//公司車
+                    				var t_where = "where=^^ noa='"+ t_date.substring(0,6) +"' ^^";
+									q_gt('carsal', t_where, 0, 0, 0, "btnDele4_"+t_tranno+"_"+t_date.substring(0,6)+"_"+t_sel, r_accy);  
+                    			}
                     		}else{
-                    			
+                    			alert('資料異常，查計算類別【'+t_calctype+'】禁止刪除。');
+								return '資料異常，查計算類別【'+t_calctype+'】禁止刪除。';
+                    		}
+                    	}else if(t_name.substring(0,8)=="btnDele3"){
+                    		var t_tranno = t_name.split('_')[1];
+                    		var t_sel = parseFloat(t_name.split('_')[2]);
+                    		var as = _q_appendData("view_tres", "", true);
+                    		if(as[0]!=undefined){
+                    			alert('出車單【'+t_tranno+'】已立帳，付款立帳單號【'+as[0].noa+'】。');
+								return '出車單【'+t_tranno+'】已立帳，付款立帳單號【'+as[0].noa+'】。';
+                    		}else{
+                    			var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
+            					q_gt('view_trds', t_where, 0, 0, 0, "btnDele5_"+t_tranno+"_"+t_sel, r_accy);  
+                    		}
+                    	}else if(t_name.substring(0,8)=="btnDele4"){
+                    		var t_tranno = t_name.split('_')[1];
+                    		var t_mon = t_name.split('_')[2];
+                    		var t_sel = parseFloat(t_name.split('_')[3]);
+                    		var as = _q_appendData("carsal", "", true);
+                    		if(as[0]!=undefined){
+                    			if(as[0].lock == "true" || as[0].lock == "1"){
+                    				alert('出車單【'+t_tranno+'】已立帳，【'+t_mon+'】司機薪資已鎖定。');
+									return '出車單【'+t_tranno+'】已立帳，【'+t_mon+'】司機薪資已鎖定。';
+                    			}
+                			}       
+                			var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
+        					q_gt('view_trds', t_where, 0, 0, 0, "btnDele5_"+t_tranno+"_"+t_sel, r_accy); 
+                    	}else if(t_name.substring(0,8)=="btnDele5"){
+                    		var t_tranno = t_name.split('_')[1];
+                    		var t_sel = parseFloat(t_name.split('_')[2]);
+                    		var as = _q_appendData("view_trds", "", true);
+                    		if(as[0]!=undefined){
+                    			alert('出車單【'+t_tranno+'】已立帳，請款立帳單號【'+as[0].noa+'】。');
+								return '出車單【'+t_tranno+'】已立帳，請款立帳單號【'+as[0].noa+'】。';
+                    		}else{
+                    			checkDele(n-1);
                     		}
                     	}
                     	break;
@@ -681,11 +726,12 @@
             }
 			
 			function q_dele_b(){
-                checkDele(q_bbsCount-1);
+                return checkDele(q_bbsCount-1);
 			}
 			function checkDele(n){
             	if(n<0){
-            		return 'finish';
+            		//回傳空值OR FALSE 就執行btnDele
+            		return false;
             	}else{
             		var t_tranno = $.trim($('#txtTranno_'+n).val());
             		if(t_tranno.length>0){
@@ -697,7 +743,6 @@
             	}
             }
             function btnDele() {
-            	Lock(1,{opacity:0});
             	_btnDele();
             }
             function btnCancel() {
