@@ -602,6 +602,17 @@
             		return;
 				}
 				//---------------------------------------------------------------
+				for(var i in trans.calctype){
+        			if(trans.calctype[i].noa == $('#cmbCalctype').val()){
+        				if(trans.calctype[i].isoutside){
+        					$('#txtPrice2').val(0);
+        				}else{
+        					$('#txtPrice3').val(0);
+        				}
+        			}
+        		}
+        		sum();
+				//---------------------------------------------------------------
 				if(q_cur ==1){
                 	$('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
