@@ -268,7 +268,7 @@
                     		var as = _q_appendData("trans", "", true);
 							if(as[0]!=undefined){															
 								var t_where = "where=^^ noa+noq='"+ as[0].calctype +"' ^^";
-								q_gt('calctypes', t_where, 0, 0, 0, "btnDele2_"+t_tranno+"_"+as[0].calctype+"_"+as[0].datea+"_"+t_sel, r_accy);             		
+								q_gt('calctype2', t_where, 0, 0, 0, "btnDele2_"+t_tranno+"_"+as[0].calctype+"_"+as[0].datea+"_"+t_sel, r_accy);             		
 							}else{
 								alert(r_accy+'年度查無出車單【'+t_tranno+'】禁止刪除。');
 								return r_accy+'年度查無出車單【'+t_tranno+'】禁止刪除。';
