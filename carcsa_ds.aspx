@@ -84,7 +84,7 @@
 				type : new Array(),
 				calctype : new Array(),
 				init : function(){
-            		Lock();
+            		Lock(1,{opacity:0});
             		q_gt('calctype', '', 0, 0, 0, 'carcsaInit_1');
             	}
 			}
@@ -216,7 +216,7 @@
                         q_cmbParse("cmbTypea2", t_item2.toString());
                         
 						carcsa.isInit = true;
-						Unlock();
+						Unlock(1);
 						break;
                 	case 'addr':
                         var as = _q_appendData("addr", "", true);
@@ -314,7 +314,7 @@
                 }
                 if(n != string.length && q_cur==2){
                 	alert('stPost 出車單回傳錯誤!'+n+'_'+string.length +'_'+string);
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
                 var t_noa = abbm[q_recno]['noa'];
@@ -328,18 +328,18 @@
 						b_seq++;
 					}
 				} 
-				Unlock();
+				Unlock(1);
             }
             function btnOk() {
-            	Lock();
+            	Lock(1,{opacity:0});
             	if ($('#txtTrandate').val().length==0 || !q_cd($('#txtTrandate').val())){
                 	alert(q_getMsg('lblTrandate')+'錯誤。');
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
             	if($('#txtTrandate').val().substring(0,3)!=r_accy){
 					alert('年度異常錯誤，請切換到【'+$('#txtTrandate').val().substring(0,3)+'】年度再作業。');
-					Unlock();
+					Unlock(1);
             		return;
 				}
             	for (var i = 0; i < q_bbsCount; i++) {
@@ -350,17 +350,17 @@
             	}
             	if ($('#txtCustno').val().length==0){
                 	alert('請輸入'+q_getMsg('lblCust')+'。');
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
                 if ($('#txtAddrno').val().length==0){
                 	alert('請輸入'+q_getMsg('lblAddr')+'。');
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
                 if ($('#txtUccno').val().length==0){
                 	alert('請輸入'+q_getMsg('lblProduct')+'。');
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
                 $('#txtMon').val($.trim($('#txtMon').val()));
@@ -446,7 +446,7 @@
             function btnModi() {
                 if (emp($('#txtNoa').val()))
                     return;
-                Lock();
+                Lock(1,{opacity:0});
                 if(q_cur==1 || q_cur==2)
                 	$('#combType').removeAttr('disabled');
                 else
@@ -459,7 +459,7 @@
 			function checkBbs(n){		
             	if(n<0){
             		refreshBbm();
-            		Unlock();
+            		Unlock(1);
                 	$('#txtTrandate').focus();
             	}else{
             		if($('#btnMinus_'+n).data('info')==undefined){
@@ -697,7 +697,7 @@
             	}
             }
             function btnDele() {
-            	Lock();
+            	Lock(1,{opacity:0});
             	_btnDele();
             }
             function btnCancel() {

@@ -84,12 +84,12 @@
                         	}
                         	if(t_msg.length>0){
                         		alert('已立帳:'+ t_msg);
-                        		Unlock();
+                        		Unlock(1);
                         		return;
                         	}
                         }
                     	_btnDele();
-                    	Unlock();
+                    	Unlock(1);
                 		break;
                 	case 'btnModi':
                 		var as = _q_appendData("paybs", "", true);
@@ -100,13 +100,13 @@
                         	}
                         	if(t_msg.length>0){
                         		alert('已立帳:'+ t_msg);
-                        		Unlock();
+                        		Unlock(1);
                         		return;
                         	}
                         }
 	                	_btnModi();
 				        sum();
-	                	Unlock();
+	                	Unlock(1);
                 		$('#txtDatea').focus();
                 		break;
                     case q_name:
@@ -143,7 +143,7 @@
             function btnModi() {
                 if (emp($('#txtNoa').val()))
                     return;
-                Lock();
+                Lock(1,{opacity:0});
                 t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
             	q_gt('paybs', t_where, 0, 0, 0, "btnModi", r_accy);
             }
@@ -153,14 +153,14 @@
             function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return false;
-                Unlock();
+                Unlock(1);
             }
             function btnOk() {
-            	Lock();
+            	Lock(1,{opacity:0});
             	$('#txtDatea').val($.trim($('#txtDatea').val()));
                 if (checkId($('#txtDatea').val())==0){
                 	alert(q_getMsg('lblDatea')+'錯誤。');
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
                 sum();
@@ -245,7 +245,7 @@
             }
 
             function btnDele() {
-                Lock();
+                Lock(1,{opacity:0});
                 t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
             	q_gt('paybs', t_where, 0, 0, 0, "btnDele", r_accy);
             }

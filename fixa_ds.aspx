@@ -144,12 +144,12 @@
                         	}
                         	if(t_msg.length>0){
                         		alert('已立帳:'+ t_msg);
-                        		Unlock();
+                        		Unlock(1);
                         		return;
                         	}
                         }
                     	_btnDele();
-                    	Unlock();
+                    	Unlock(1);
                 		break;
                 	case 'btnModi':
                 		var as = _q_appendData("paybs", "", true);
@@ -160,13 +160,13 @@
                         	}
                         	if(t_msg.length>0){
                         		alert('已立帳:'+ t_msg);
-                        		Unlock();
+                        		Unlock(1);
                         		return;
                         	}
                         }
 	                	_btnModi();
 				        sum();
-	                	Unlock();
+	                	Unlock(1);
                 		$('#txtCarno').focus();
                 		break;
 		            case q_name:
@@ -178,23 +178,23 @@
 			function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return false;
-                Unlock();
+                Unlock(1);
             }
 		    function btnOk() {
-		    	Lock();
+		    	Lock(1,{opacity:0});
 	            if($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())){
 					alert(q_getMsg('lblDatea')+'錯誤。');
-            		Unlock();
+            		Unlock(1);
             		return;
 				}
 				if ($('#txtMon').val().length > 0 && !(/^[0-9]{3}\/(?:0?[1-9]|1[0-2])$/g).test($('#txtMon').val())){
                     alert(q_getMsg('lblMon') + '錯誤。');
-                    Unlock();
+                    Unlock(1);
 					return;
 				}
 	            if($('#txtFixadate').val().length == 0 || !q_cd($('#txtFixadate').val())){
 					alert(q_getMsg('lblFixadate')+'錯誤。');
-            		Unlock();
+            		Unlock(1);
             		return;
 				}
  		        sum();
@@ -249,7 +249,7 @@
 		    function btnModi() {
 		    	if (emp($('#txtNoa').val()))
                     return;
-                Lock();
+                Lock(1,{opacity:0});
                 t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
             	q_gt('paybs', t_where, 0, 0, 0, "btnModi", r_accy);
 		    }
@@ -355,7 +355,7 @@
 		    }
 
 		    function btnDele() {
-		        Lock();
+		        Lock(1,{opacity:0});
                 t_where=" where=^^ rc2no='"+$('#txtNoa').val()+"'^^";
             	q_gt('paybs', t_where, 0, 0, 0, "btnDele", r_accy);
 		    }

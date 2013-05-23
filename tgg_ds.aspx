@@ -87,18 +87,18 @@
 							t_where="where=^^ noa='"+$(this).val()+"'^^";
                     		q_gt('tgg', t_where, 0, 0, 0, "checkTggno_change", r_accy);
 						}else{
-							Lock();
+							Lock(1,{opacity:0});
 							alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-							Unlock();
+							Unlock(1);
 						}
 					}
                 });
                 $('#txtSerial').change(function() {
                 	$(this).val($.trim($(this).val()).toUpperCase());
                 	if ($(this).val().length > 0 && checkId($(this).val())!=2){
-                		Lock();
+                		Lock(1,{opacity:0});
 	            		alert(q_getMsg('lblSerial')+'錯誤。');
-	            		Unlock();
+	            		Unlock(1);
 	            	}
                 });
                 $('#txtUacc1').change(function(e){
@@ -140,7 +140,7 @@
                 		var as = _q_appendData("tgg", "", true);
                         if (as[0] != undefined){
                         	alert('已存在 '+as[0].noa+' '+as[0].comp);
-                            Unlock();
+                            Unlock(1);
                             return;
                         }else{
                         	wrServer($('#txtNoa').val());
@@ -184,17 +184,17 @@
                 q_box('z_tgg_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "90%", "600px", q_getMsg("popPrint"));
             }
             function btnOk() {
-                Lock(); 
+                Lock(1,{opacity:0}); 
             	$('#txtNoa').val($.trim($('#txtNoa').val()));   
             	if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
 				}else{
 					alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-					Unlock();
+					Unlock(1);
 					return;
 				}
             	if ($('#txtSerial').val().length > 0 && checkId($('#txtSerial').val())!=2){
             		alert(q_getMsg('lblSerial')+'錯誤。');
-            		Unlock();
+            		Unlock(1);
             		return;
             	}
                 if(q_cur ==1){

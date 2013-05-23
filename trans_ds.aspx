@@ -88,7 +88,7 @@
             	isTre : null,
             	isoutside : null,
             	init : function(){
-            		Lock();
+            		Lock(1,{opacity:0});
             		q_gt('carteam', '', 0, 0, 0, 'transInit_1');
             	},
             	refresh : function(){
@@ -308,11 +308,11 @@
 						var as = _q_appendData("view_tres", "", true);
                         if (as[0] != undefined) {
                         	alert('已立帳，付款立帳單號【'+as[0].noa+'】');
-                        	Unlock();
+                        	Unlock(1);
                         	return;
                         }
                     	_btnDele();
-                    	Unlock();
+                    	Unlock(1);
                         
 						break;
 					case 'isCarsal':
@@ -320,18 +320,18 @@
                         if (as[0] != undefined) {
                         	if(as[0].lock=="true" || as[0].lock=="1"){
                         		alert('【'+as[0].noa+'】司機薪資已鎖定。');
-	                        	Unlock();
+	                        	Unlock(1);
 	                        	return;
                         	}
                         }
                     	_btnDele();
-                		Unlock();
+                		Unlock(1);
 						break;
 					case 'isTrd':
 						var as = _q_appendData("view_trds", "", true);
                         if (as[0] != undefined) {
                         	alert('已立帳，請款立帳單號【'+as[0].noa+'】');
-                        	Unlock();
+                        	Unlock(1);
                         	return;
                         }else{
                         	var t_isoutside = false;
@@ -352,7 +352,7 @@
                         if (as[0] != undefined) {
                         	if(as[0].ordeno.length>0){
                         		alert('轉來的單據禁止刪除。');
-                        		Unlock();
+                        		Unlock(1);
                         		return;
                         	}
                         	q_gt('view_trds', "where=^^ tranno='"+$('#txtNoa').val()+"' and trannoq='"+$('#txtNoq').val()+"' ^^", 0, 0, 0, 'isTrd',r_accy);	
@@ -365,11 +365,11 @@
                         if (as[0] != undefined) {
                         	if(as[0].ordeno.length>0){
                         		alert('轉來的單據禁止修改。');
-                        		Unlock();
+                        		Unlock(1);
                         		return;
                         	}
                         }
-                        Unlock();
+                        Unlock(1);
 	                	Lock(1,{opacity:0});
 						_btnModi();
 						trans.refresh();
@@ -422,7 +422,7 @@
 						$("#cmbCalctype").val(abbm[q_recno].calctype);
 						trans.isInit = true;
 						trans.refresh();
-						Unlock();
+						Unlock(1);
 						break;
 					case q_name:
 						if (q_cur == 4)
@@ -558,7 +558,7 @@
 				if($.trim($('#txtOrdeno').val()).length>0){
 					alert('轉來的單據禁止修改。');
 				}else{
-					Lock();
+					Lock(1,{opacity:0});
 	                t_where=" where=^^ noa='"+$('#txtNoa').val()+"'^^";
 	            	q_gt('trans', t_where, 0, 0, 0, "btnModi", r_accy);
 				}
@@ -569,24 +569,24 @@
 			function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return false;
-                Unlock();
+                Unlock(1);
             }
 			function btnOk() {
-				Lock();
+				Lock(1,{opacity:0});
 				//日期檢查
 				if($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())){
 					alert(q_getMsg('lblDatea')+'錯誤。');
-            		Unlock();
+            		Unlock(1);
             		return;
 				}
 				if($('#txtTrandate').val().length == 0 || !q_cd($('#txtTrandate').val())){
 					alert(q_getMsg('lblTrandate')+'錯誤。');
-            		Unlock();
+            		Unlock(1);
             		return;
 				}
 				if($('#txtDatea').val().substring(0,3)!=r_accy){
 					alert('年度異常錯誤，請切換到【'+$('#txtDatea').val().substring(0,3)+'】年度再作業。');
-					Unlock();
+					Unlock(1);
             		return;
 				}
 				var t_days = 0;
@@ -597,7 +597,7 @@
                 t_days = Math.abs(t_date2 - t_date1) / (1000 * 60 * 60 * 24) + 1;
 				if(t_days>60){
 					alert(q_getMsg('lblDatea')+'、'+q_getMsg('lblTrandate')+'相隔天數不可多於60天。');
-					Unlock();
+					Unlock(1);
             		return;
 				}
 				//---------------------------------------------------------------
@@ -679,7 +679,7 @@
 				if($.trim($('#txtOrdeno').val()).length>0){
 					alert('轉來的單據禁止刪除。');
 				}else{
-					Lock();
+					Lock(1,{opacity:0});
 	                var t_where =" where=^^ noa='"+ $('#txtNoa').val()+"'^^";
 	                q_gt('trans', t_where, 0, 0, 0, 'btnDele',r_accy);
                 }

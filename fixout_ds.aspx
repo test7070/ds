@@ -119,7 +119,7 @@
                        			if(as[0].begindate > t_datea){
                        				//異動日期<期初日期的資料不允許修改
                        				alert('日期異常:'+t_productno+q_getMsg('lblOutdate')+'【'+t_datea+'】小於期初日期【'+as[0].begindate+'】 。');
-	                    			Unlock();
+	                    			Unlock(1);
 	                    			$('#txtMount_'+t_sel).focus();
 	                    			return;
                        			}
@@ -132,7 +132,7 @@
                        		}
                     		if(t_stkmount-t_mount<0){
                     			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
-                    			Unlock();
+                    			Unlock(1);
                     			$('#txtMount_'+t_sel).focus();
                     			return;
                     		}
@@ -147,7 +147,7 @@
                        			if(as[0].begindate > t_datea){
                        				//異動日期<期初日期的資料不允許修改
                        				alert('日期異常:'+t_productno+q_getMsg('lblOutdate')+'【'+t_datea+'】小於期初日期【'+as[0].begindate+'】 。');
-	                    			Unlock();
+	                    			Unlock(1);
 	                    			$('#txtMount_'+t_sel).focus();
 	                    			return;
                        			}
@@ -160,7 +160,7 @@
                        		}
                     		if(t_stkmount-t_mount<0){
                     			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
-                    			Unlock();
+                    			Unlock(1);
                     			$('#txtMount_'+t_sel).focus();
                     			return;
                     		}else{
@@ -174,25 +174,25 @@
             function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return false;
-                Unlock();
+                Unlock(1);
             }
 
             function btnOk() {
-                Lock();
+                Lock(1,{opacity:0});
                 if ($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())) {
                     alert(q_getMsg('lblDatea') + '錯誤。');
-                    Unlock();
+                    Unlock(1);
                     return;
                 }
                 if ($('#txtOutdate').val().length == 0 || !q_cd($('#txtOutdate').val())) {
                     alert(q_getMsg('lblOutdate') + '錯誤。');
-                    Unlock();
+                    Unlock(1);
                     return;
                 }
                 $('#txtMon').val($.trim($('#txtMon').val()));
                 if ($('#txtMon').val().length > 0 && !(/^[0-9]{3}\/(?:0?[1-9]|1[0-2])$/g).test($('#txtMon').val())) {
                     alert(q_getMsg('lblMon') + '錯誤。');
-                    Unlock();
+                    Unlock(1);
                     return;
                 }
                 for (var i = 0; i < q_bbsCount; i++) {
@@ -200,14 +200,14 @@
                 		if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtProductno_'+i).val())){
 						}else{
 							alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-							Unlock();
+							Unlock(1);
 							return;
 						}
                 	}
                     for (var j = 0; j < q_bbsCount; j++) {
                         if (i != j && $('#txtTireno_' + i).val() == $('#txtTireno_' + j).val() && $('#txtTireno_' + i).val() != '' && $('#txtTireno_' + j).val()) {
                             alert('胎號重複，請修改');
-                            Unlock();
+                            Unlock(1);
                             return;
                         }
                     }
@@ -266,9 +266,9 @@
                     	var t_noa = $.trim($('#txtNoa').val());
                     	var t_productno = $.trim($('#txtProductno_'+n).val());
                     	if(t_datea.length==0){
-                    		Lock();
+                    		Lock(1,{opacity:0});
                     		alert('請輸入'+q_getMsg('lblOutdate'));
-                    		Unlock();
+                    		Unlock(1);
                         }else if(t_productno.length>0){
                     		var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
 								+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
@@ -288,9 +288,9 @@
 							if($(this).val().length>0){
 								if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
 								}else{
-									Lock();
+									Lock(1,{opacity:0});
 									alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-									Unlock();
+									Unlock(1);
 								}
 							}
 		                });
@@ -300,9 +300,9 @@
                         	var t_noa = $.trim($('#txtNoa').val());
                         	var t_productno = $.trim($('#txtProductno_'+n).val());
                         	if(t_datea.length==0){
-                        		Lock();
+                        		Lock(1,{opacity:0});
                         		alert('請輸入'+q_getMsg('lblOutdate'));
-                        		Unlock();
+                        		Unlock(1);
                         	}else if(t_productno.length>0 && (/^(\w+|\w+\u002D\w+)$/g).test(t_productno)){
 								var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
 									+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"

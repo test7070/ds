@@ -53,9 +53,9 @@
 							t_where="where=^^ noa='"+$(this).val()+"'^^";
                     		q_gt('ucc', t_where, 0, 0, 0, "checkUccno_change", r_accy);
 						}else{
-							Lock();
+							Lock(1,{opacity:0});
 							alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-							Unlock();
+							Unlock(1);
 						}
 					}
                 });
@@ -81,7 +81,7 @@
                 		var as = _q_appendData("ucc", "", true);
                         if (as[0] != undefined){
                         	alert('已存在 '+as[0].noa+' '+as[0].product);
-                            Unlock();
+                            Unlock(1);
                             return;
                         }else{
                         	wrServer($('#txtNoa').val());
@@ -120,15 +120,15 @@
             function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return false;
-                Unlock();
+                Unlock(1);
             }
             function btnOk() {    
-            	Lock(); 
+            	Lock(1,{opacity:0}); 
             	$('#txtNoa').val($.trim($('#txtNoa').val()));   
             	if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
 				}else{
 					alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-					Unlock();
+					Unlock(1);
 					return;
 				}
                 if(q_cur ==1){

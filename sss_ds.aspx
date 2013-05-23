@@ -57,18 +57,18 @@
 							t_where="where=^^ noa='"+$(this).val()+"'^^";
                     		q_gt('sss', t_where, 0, 0, 0, "checkSssno_change", r_accy);
 						}else{
-							Lock();
+							Lock(1,{opacity:0});
 							alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-							Unlock();
+							Unlock(1);
 						}
 					}
                 });
                 $('#txtId').change(function() {
                 	$(this).val($.trim($(this).val()).toUpperCase()); 
                 	if ($(this).val().length > 0 && checkId($(this).val())!=1){
-                		Lock();
+                		Lock(1,{opacity:0});
 	            		alert(q_getMsg('lblId')+'錯誤。');
-	            		Unlock();
+	            		Unlock(1);
 	            	}
                 });
                 $('#txtBirthday').datepicker();
@@ -159,7 +159,7 @@
                 		var as = _q_appendData("sss", "", true);
                         if (as[0] != undefined){
                         	alert('已存在 '+as[0].noa+' '+as[0].namea);
-                            Unlock();
+                            Unlock(1);
                             return;
                         }else{
                         	wrServer($('#txtNoa').val());
@@ -221,35 +221,35 @@
 			function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return false;
-                Unlock();
+                Unlock(1);
             }
             function btnOk() {
-            	Lock(); 
+            	Lock(1,{opacity:0}); 
             	$('#txtNoa').val($.trim($('#txtNoa').val()));   	
             	if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
 				}else{
 					alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-					Unlock();
+					Unlock(1);
 					return;
 				}
             	if ($('#txtId').val().length > 0 && checkId($('#txtId').val())!=1){
             		alert(q_getMsg('lblId')+'錯誤。');
-            		Unlock();
+            		Unlock(1);
             		return;
             	}
                 if (!q_cd($('#txtBirthday').val())){
                 	alert(q_getMsg('lblBirthday')+'錯誤。');
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
                 if (!q_cd($('#txtIndate').val())){
                 	alert(q_getMsg('lblIndate')+'錯誤。');
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
                 if (!q_cd($('#txtOutdate').val())){
                 	alert(q_getMsg('lblOutdate')+'錯誤。');
-                	Unlock();
+                	Unlock(1);
                 	return;
                 }
                 $('#txtPart').val($('#cmbPartno').find(":selected").text());
