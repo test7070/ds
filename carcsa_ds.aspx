@@ -736,9 +736,8 @@
 			}
 			function checkDele(n){
 				alert(n);
-            	if(n<0){
-            		//回傳空值OR FALSE 就執行btnDele
-            		return false;
+            	if(n<0){	
+            		q_delef2();
             	}else{
             		var t_tranno = $.trim($('#txtTranno_'+n).val());
             		if(t_tranno.length>0){
