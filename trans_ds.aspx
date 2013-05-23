@@ -100,7 +100,7 @@
             		$('#txtPrice3').hide();
             		for(var i in this.calctype){
             			if(this.calctype[i].noa == $('#cmbCalctype').val()){
-            				if(this.calctype[i].isOutside){
+            				if(this.calctype[i].isoutside){
             					$('#lblPrice3').show();
             					$('#txtPrice3').show();
             				}else{
@@ -134,6 +134,7 @@
 	            			this.isoutside = this.calctype[i].isoutside;
 	            		}
 	        		}
+	        		
         			$('#txtDatea').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtTrandate').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			
@@ -342,7 +343,7 @@
 			        		}
 	        		
                         	if(t_isoutside)
-                        		q_gt('view_tres', "where=^^ tranno='"+$('#txtNoa').val()+"' and trannoq='"+$('#txtNoq').val()+"' ^^", 0, 0, 0, 'isTre',r_accy);	
+                        		q_gt('view_tres', "where=^^ tranno='"+$('#txtNoa').val()+"' ^^", 0, 0, 0, 'isTre',r_accy);	
                         	else
                         		q_gt('carsal', "where=^^ noa='"+$('#txtDatea').val().substring(0,6)+"' ^^", 0, 0, 0, 'isCarsal',r_accy);	
                         }
@@ -415,7 +416,7 @@
 								typea : as[i].typea,
 								discount : as[i].discount,
 								discount2 : as[i].discount2,
-								isOutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
+								isoutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
 							});
 						}
 						q_cmbParse("cmbCalctype", t_item);
@@ -447,7 +448,7 @@
 							}
 							if(trans.isoutside){
 								//外車
-								q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTre',r_accy);
+								q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' ^^", 0, 0, 0, 'checkTre',r_accy);
 							}else{
 								//公司車
 								q_gt('carsal', "where=^^ noa='"+t_datea.substring(0,6)+"' ^^", 0, 0, 0, 'checkCarsal',r_accy);

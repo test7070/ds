@@ -112,7 +112,7 @@
 					" where calctypes.isoutside=1 and view_tres102.tranno=trans102.noa)"+
 					" or exists(select carsal.noa from carsal"+
 					" left join calctypes on calctypes.noa+calctypes.noq= trans102.calctype"+
-					" where calctypes.isoutside=0 and carsal.noa=left(trans102.datea,6)) )";
+					" where calctypes.isoutside=0 and carsal.noa=left(trans102.datea,6) and carsal.lock=1) )";
 		       	}
 		       	if(t_tre=='N'){
 		       		t_where +="and not(exists(select view_tres102.noa from view_tres102"+ 
@@ -120,7 +120,7 @@
 					" where calctypes.isoutside=1 and view_tres102.tranno=trans102.noa)"+
 					" or exists(select carsal.noa from carsal"+
 					" left join calctypes on calctypes.noa+calctypes.noq= trans102.calctype"+
-					" where calctypes.isoutside=0 and carsal.noa=left(trans102.datea,6)) )";
+					" where calctypes.isoutside=0 and carsal.noa=left(trans102.datea,6) and carsal.lock=1) )";
 		       	}
 		        t_where = ' where=^^' + t_where + '^^ ';
 		        return t_where;
