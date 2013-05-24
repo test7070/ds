@@ -67,7 +67,7 @@
 					+q_sqlPara2("driverno", t_driverno)
 					+q_sqlPara2("tggno", t_tggno);
 				if (t_invono.length>0)
-                    t_where += " and (patindex('%" + t_invono + "%',invono)>0";
+                    t_where += " and patindex('%" + t_invono + "%',invono)>0";
 				if (t_productno.length>0)
                     t_where += " and exists(select noa from fixas where fixas.noa=fixa.noa and patindex('%" + t_productno + "%',fixas.productno)>0)";
 				t_where = ' where=^^' + t_where + '^^ ';

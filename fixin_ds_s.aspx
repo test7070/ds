@@ -52,7 +52,7 @@
 					+q_sqlPara2("noa", t_noa)
 					+q_sqlPara2("tggno", t_tggno);
 				if (t_invono.length>0)
-                    t_where += " and (patindex('%" + t_invono + "%',invono)>0";
+                    t_where += " and patindex('%" + t_invono + "%',invono)>0";
 				if (t_productno.length>0)
                     t_where += " and exists(select noa from fixins where fixins.noa=fixin.noa and patindex('%" + t_productno + "%',fixins.productno)>0)";
 				if (t_tireno.length>0)
