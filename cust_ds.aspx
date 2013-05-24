@@ -440,8 +440,8 @@
 						<td><input id="txtNoa"  type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblSerial" class="lbl"> </a></td>
 						<td><input id="txtSerial"  type="text"  class="txt c1"/></td>
-						<td><span> </span><a id="lblTypea" class="lbl"> </a></td>
-						<td><select id="cmbTypea"  class="txt c1"> </select></td>
+						<td><span> </span><a id="lblTypea" class="lbl" style="display:none;"> </a></td>
+						<td><select id="cmbTypea"  class="txt c1" style="display:none;"> </select></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblComp" class="lbl"> </a></td>

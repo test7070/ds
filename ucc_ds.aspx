@@ -374,12 +374,12 @@
 					<tr>
 						<td align="center" style="width:20px; color:black;"><a id="vewChk"> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id="vewNoa"> </a></td>
-						<td align="center" style="width:120px; color:black;"><a id="vewNick"> </a></td>
+						<td align="center" style="width:120px; color:black;"><a id="vewProduct"> </a></td>
 					</tr>
 					<tr>
 						<td ><input id="chkBrow.*" type="checkbox"/></td>
 						<td id="noa" style="text-align: center;">~noa</td>
-						<td id="nick" style="text-align: center;">~nick</td>
+						<td id="product" style="text-align: center;">~product</td>
 					</tr>
 				</table>
 			</div>
@@ -397,14 +397,12 @@
 					<tr>
 						<td><span> </span><a id="lblNoa" class="lbl"> </a></td>
 						<td><input id="txtNoa"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblTypea" class="lbl"> </a></td>
-						<td><select id="cmbTypea"  class="txt c1"> </select></td>
+						<td><span> </span><a id="lblTypea" class="lbl" style="display:none;"> </a></td>
+						<td><select id="cmbTypea"  class="txt c1" style="display:none;"> </select></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblProduct" class="lbl"> </a></td>
 						<td colspan="3"><input id="txtProduct" type="text" class="txt c1"/> </td>
-						<td><span> </span><a id="lblNick" class="lbl"> </a></td>
-						<td><input id="txtNick" type="text"  class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblEngpro" class="lbl"> </a></td>
