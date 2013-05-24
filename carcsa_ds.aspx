@@ -731,11 +731,9 @@
             }
 			
 			function q_delef(){
-				alert('x');
                 return checkDele(q_bbsCount-1);
 			}
 			function checkDele(n){
-				alert(n);
             	if(n<0){	
             		q_delef2();
             	}else{
