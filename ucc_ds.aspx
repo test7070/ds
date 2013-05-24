@@ -100,7 +100,7 @@
                 if (q_cur > 0 && q_cur < 4)// 1-3
                     return;
 
-                q_box('ucc_ds_s.aspx', q_name + '_s', "550px", "400px", q_getMsg("popSeek"));
+                q_box('ucc_s.aspx', q_name + '_s', "550px", "400px", q_getMsg("popSeek"));
             }
             function btnIns() {
                 _btnIns();
@@ -141,7 +141,7 @@
                 //------------------------------------
                 if(q_cur==1){
                 	t_where="where=^^ noa='"+$('#txtNoa').val()+"'^^";
-                    q_gt('cust', t_where, 0, 0, 0, "checkUccno_btnOk", r_accy);
+                    q_gt('ucc', t_where, 0, 0, 0, "checkUccno_btnOk", r_accy);
                 }else{
                 	wrServer($('#txtNoa').val());
                 }
