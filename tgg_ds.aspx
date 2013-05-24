@@ -183,6 +183,11 @@
             function btnPrint() {
                 q_box('z_tgg_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "90%", "600px", q_getMsg("popPrint"));
             }
+            function q_stPost() {
+                if (!(q_cur == 1 || q_cur == 2))
+                    return false;
+                Unlock(1);
+            }
             function btnOk() {
                 Lock(1,{opacity:0}); 
             	$('#txtNoa').val($.trim($('#txtNoa').val()));   
