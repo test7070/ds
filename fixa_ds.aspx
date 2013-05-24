@@ -21,7 +21,7 @@
 
 		    q_tables = 's';
 		    var q_name = "fixa";
-		    var q_readonly = ['txtNoa', 'txtWmoney', 'txtCmoney','txtMoney', 'txtTotal','txtWorker'];
+		    var q_readonly = ['txtNoa', 'txtWmoney', 'txtCmoney','txtMoney', 'txtTotal','txtWorker','txtWorker2'];
 		    var q_readonlys = ['txtMoney'];
 		    var bbmNum = new Array(['txtDiscount', 10, 0], ['txtWmoney', 10, 0], ['txtCmoney', 10, 0], ['txtMoney', 10, 0], ['txtTax', 10, 0], ['txtTotal', 10, 0]);
 		    var bbsNum = new Array(['txtPrice', 10, 1], ['txtMount', 10, 1], ['txtMoney', 10, 0]);
