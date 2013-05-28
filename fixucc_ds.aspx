@@ -136,6 +136,14 @@
 					Unlock(1);
 					return;
 				}
+				for(var i=0; i<$('input[name="typea"]').length;i++)
+            		if($('input[name="typea"]').eq(i).prop('checked'))
+            			$('#txtTypea').val($('input[name="typea"]').eq(i).attr('value'));
+				if($('#txtTypea').val().length==0){
+					alert('請設定'+q_getMsg('lblTypea'));
+					Unlock(1);
+					return;
+				}
 				if(q_cur ==1){
                 	$('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
@@ -165,6 +173,11 @@
 
             function refresh(recno) {
                 _refresh(recno);
+                for(var i=0; i<$('input[name="typea"]').length;i++){
+                	$('input[name="typea"]').eq(i).prop('checked',false);
+                	if($('input[name="typea"]').eq(i).val()==$('#txtTypea').val())
+                		$('input[name="typea"]').eq(i).prop('checked',true);
+                }
 				refreshBbm();
             }
 			function refreshBbm(){
@@ -173,6 +186,10 @@
             	}else{
             		$('#txtNoa').css('color','green').css('background','RGB(237,237,237)').attr('readonly','readonly');
             	}
+            	if(q_cur==1 || q_cur==2)
+                	$('input[name="typea"]').removeAttr('disabled');
+                else
+                	$('input[name="typea"]').attr('disabled','disabled');
             }
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
@@ -377,6 +394,16 @@
 					<tr>
 						<td><span> </span><a id='lblNoa' class="lbl"> </a></td>
 						<td><input id="txtNoa"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id='lblTypea' class="lbl"> </a></td>
+						<td colspan="3">
+							<input type="radio" name="typea" style="float:left;width:5%;" value="工資">
+							<a style="float:left;width:25%;color:black;">工資</a>
+							<input type="radio" name="typea" style="float:left;width:5%;" value="輪胎">
+							<a style="float:left;width:25%;color:black;">輪胎</a>
+							<input type="radio" name="typea" style="float:left;width:5%;" value="材料">
+							<a style="float:left;width:25%;color:black;">材料</a>
+							<input type="text" id="txtTypea" style="display:none;"/>
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id='lblNamea' class="lbl"> </a></td>
@@ -421,9 +448,9 @@
 					</tr>
 					<tr>
 						<td><span> </span><a id='lblWorker' class="lbl"> </a></td>
-						<td><input id="txtWorker" type="text" class="txt num c1" /></td>
+						<td><input id="txtWorker" type="text" class="txt c1" /></td>
 						<td><span> </span><a id='lblWorker2' class="lbl"> </a></td>
-						<td><input id="txtWorker2" type="text" class="txt num c1" /></td>
+						<td><input id="txtWorker2" type="text" class="txt c1" /></td>
 					</tr>
 				</table>
 			</div>

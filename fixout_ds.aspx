@@ -22,9 +22,9 @@
             q_desc = 1;
             q_tables = 's';
             var q_name = "fixout";
-            var q_readonly = ['txtNoa', 'txtMoney', 'txtWorker', 'txtWorker2'];
-            var q_readonlys = ['txtMoney'];
-            var bbmNum = new Array(['txtMoney', 10, 0, 1], ['txtMiles', 10, 0, 1]);
+            var q_readonly = ['txtNoa', 'txtWmoney', 'txtCmoney', 'txtDmoney', 'txtMoney', 'txtWorker', 'txtWorker2'];
+            var q_readonlys = ['txtTypea','txtMoney'];
+            var bbmNum = new Array(['txtWmoney', 10, 0, 1],['txtCmoney', 10, 0, 1],['txtDmoney', 10, 0, 1],['txtMoney', 10, 0, 1], ['txtMiles', 10, 0, 1]);
             var bbsNum = new Array(['txtPrice', 10, 2, 1], ['txtMount', 10, 2, 1], ['txtMoney', 10, 0, 1]);
             var bbmMask = [];
             var bbsMask = [];
@@ -33,7 +33,11 @@
             brwList = [];
             brwNowPage = 0;
             brwKey = 'Datea';
-            aPop = new Array(['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx'], ['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx'], ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,brand,unit,inprice', 'txtProductno_,txtProduct_,txtBrand_,txtUnit_,txtPrice_', 'fixucc_b.aspx'], ['txtTireno_', 'btnTirestk_', 'view_tirestk', 'noa,productno,product,brandno,brand,price', 'txtTireno_,txtProductno_,txtProduct_,txtBrandno_,txtBrand_,txtPrice_', 'tirestk_b.aspx']);
+            aPop = new Array(['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+            , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
+            , ['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx']
+            , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,brand,unit,inprice', 'txtProductno_,txtProduct_,txtTypea_,txtBrand_,txtUnit_,txtPrice_', 'fixucc_b.aspx']
+            , ['txtTireno_', 'btnTirestk_', 'view_tirestk', 'noa,productno,product,brandno,brand,price', 'txtTireno_,txtProductno_,txtProduct_,txtBrandno_,txtBrand_,txtPrice_', 'tirestk_b.aspx']);
 
             function currentData() {
             }
@@ -108,7 +112,33 @@
                             q_Seek_gtPost();
                         break;
                     default:
-                    	if(t_name.substring(0,15)=="checkStk_change"){
+                    	if(t_name.substring(0,10)=="getProduct"){
+                    		var n = parseFloat(t_name.split('_')[1]); 
+                    		var as = _q_appendData("fixucc", "", true);
+                       		if (as[0] != undefined) {
+                       			$('#txtTypea_'+n).val(as[0].typea);
+                       		}
+	                    	refreshBbs();
+	                    	var t_tireno = $.trim($('#txtTireno_'+n).val());
+	                    	if(t_tireno.length>0){
+	                    		var t_mount = q_float('txtMount_' + n);
+	                    		var t_price = q_float('txtPrice_' + n);
+	                    		$('#txtMoney_'+n).val(FormatNumber(t_mount.mul(t_price).round(0)));
+	                    	}
+	                    	var t_datea = $.trim($('#txtOutdate').val());
+	                    	var t_noa = $.trim($('#txtNoa').val());
+	                    	var t_productno = $.trim($('#txtProductno_'+n).val());
+	                    	if(t_datea.length==0){
+	                    		Lock(1,{opacity:0});
+	                    		alert('請輸入'+q_getMsg('lblOutdate'));
+	                    		Unlock(1);
+	                        }else if(t_productno.length>0){
+	                    		var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
+									+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
+									+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
+								q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_datea +"_"+t_productno +"_"+n, r_accy);
+	                    	}
+                    	}else if(t_name.substring(0,15)=="checkStk_change"){
                     		var t_datea = t_name.split('_')[2];
                     		var t_productno = t_name.split('_')[3];
                     		var t_sel = parseFloat(t_name.split('_')[4]);
@@ -130,7 +160,7 @@
                        				t_mount += q_float('txtMount_'+i);
                        			}
                        		}
-                    		if(t_stkmount-t_mount<0){
+                    		if($('#txtTypea_'+t_sel).val()!='工資' && t_stkmount-t_mount<0){
                     			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
                     			Unlock(1);
                     			$('#txtMount_'+t_sel).focus();
@@ -158,7 +188,7 @@
                        				t_mount += q_float('txtMount_'+i);
                        			}
                        		}
-                    		if(t_stkmount-t_mount<0){
+                    		if($('#txtTypea_'+t_sel).val()!='工資' && t_stkmount-t_mount<0){
                     			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
                     			Unlock(1);
                     			$('#txtMount_'+t_sel).focus();
@@ -255,26 +285,8 @@
                 switch (s1) {
                     case 'txtTireno_':
                     	var n = b_seq;
-                    	refreshBbs();
-                    	var t_tireno = $.trim($('#txtTireno_'+n).val());
-                    	if(t_tireno.length>0){
-                    		var t_mount = q_float('txtMount_' + n);
-                    		var t_price = q_float('txtPrice_' + n);
-                    		$('#txtMoney_'+n).val(FormatNumber(t_mount.mul(t_price).round(0)));
-                    	}
-                    	var t_datea = $.trim($('#txtOutdate').val());
-                    	var t_noa = $.trim($('#txtNoa').val());
-                    	var t_productno = $.trim($('#txtProductno_'+n).val());
-                    	if(t_datea.length==0){
-                    		Lock(1,{opacity:0});
-                    		alert('請輸入'+q_getMsg('lblOutdate'));
-                    		Unlock(1);
-                        }else if(t_productno.length>0){
-                    		var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
-								+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
-								+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
-							q_gt('fixuccstk', t_where, 0, 0, 0, "checkStk_change_"+t_datea +"_"+t_productno +"_"+n, r_accy);
-                    	}
+                    	var t_where = "where=^^ noa='"+$.trim($('#txtProductno_'+n).val())+"' ^^"
+                    	q_gt('fixucc', t_where, 0, 0, 0, "getProduct_"+n, r_accy);
                         break;
                 }
             }
@@ -367,12 +379,29 @@
             function sum() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return;
-                var t_money = 0;
-                for (var i = 0; i < q_bbsCount; i++) {
-                	$('#txtMoney_' + i).val(FormatNumber(q_float('txtMount_' + i).mul(q_float('txtPrice_' + i)).round(0)));
-                	t_money = t_money.add(q_float('txtMoney_' + i));
-                }
-                $('#txtMoney').val(FormatNumber(t_money));
+                var t_money=0,t_wmoney = 0, t_cmoney = 0, t_dmoney = 0, t_tax,t_discount;
+		        for(var i=0;i<q_bbsCount;i++){
+		        	t_money = q_float('txtMount_' + i).mul(q_float('txtPrice_' + i)).round(0);
+		        	$('#txtMoney_'+i).val(FormatNumber(t_money));
+		        	switch($('#txtTypea_' + i).val()){
+		        		case '工資':
+		        			t_wmoney = t_wmoney.add(t_money);
+		        			break;
+		        		case '輪胎':
+		        			t_cmoney = t_cmoney.add(t_money);
+		        			break;
+		        		case '材料':
+		        			t_dmoney = t_dmoney.add(t_money);
+		        			break;
+		        		default:
+		        			$('#txtMoney_'+i).val(0);
+		        			break;
+		        	}
+		        }	        
+		        $('#txtWmoney').val(FormatNumber(t_wmoney));
+		        $('#txtCmoney').val(FormatNumber(t_cmoney));
+		        $('#txtDmoney').val(FormatNumber(t_dmoney));
+		        $('#txtMoney').val(FormatNumber(t_wmoney.add(t_cmoney)));
             }
 
             function refresh(recno) {
@@ -514,7 +543,7 @@
             }
             .dview {
                 float: left;
-                width: 350px;
+                width: 450px;
                 border-width: 0px;
             }
             .tview {
@@ -534,7 +563,7 @@
             }
             .dbbm {
                 float: left;
-                width: 600px;
+                width: 500px;
                 /*margin: -1px;
                  border: 1px black solid;*/
                 border-radius: 5px;
@@ -691,6 +720,26 @@
 						<td rowspan="2"><img src="../image/ben.jpg" class="txt c1"/></td>
 					</tr>
 					<tr>
+						<td> </td>
+						<td> </td>
+						<td><span> </span><a id="lblWmoney" class="lbl"> </a></td>
+						<td><input id="txtWmoney" type="text" class="txt num c1" /></td>
+					</tr>
+						<td> </td>
+						<td> </td>
+						<td><span> </span><a id="lblCmoney" class="lbl"> </a></td>
+						<td><input id="txtCmoney" type="text" class="txt num c1" /></td>
+
+					</tr>
+					<tr>
+						<td> </td>
+						<td> </td>
+						<td><span> </span><a id="lblDmoney" class="lbl"> </a></td>
+						<td><input id="txtDmoney" type="text" class="txt num c1" /></td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td> </td>
 						<td><span> </span><a id="lblMoney" class="lbl"> </a></td>
 						<td><input id="txtMoney" type="text" class="txt num c1" /></td>
 					</tr>
@@ -722,6 +771,7 @@
 					<td align="center" style="width: 70px;"><a id='lblPrice_s'> </a></td>
 					<td align="center" style="width: 70px;"><a id='lblMount_s'> </a></td>
 					<td align="center" style="width: 70px;"><a id='lblMoney_s'> </a></td>
+					<td align="center" style="width: 40px;"><a id='lblTypea_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblMemo_s'> </a></td>
 					<td align="center" style="width: 50px;"><a id='lblPosition_s'> </a></td>
 				</tr>
@@ -742,6 +792,7 @@
 					<td><input id="txtPrice.*" type="text" style="width: 95%;text-align: right;"/></td>
 					<td><input id="txtMount.*" type="text" style="width: 95%;text-align: right;"/></td>
 					<td><input id="txtMoney.*" type="text" style="width: 95%;text-align: right;"/></td>
+					<td><input id="txtTypea.*" type="text" style="width: 95%;"/></td>
 					<td><input id="txtMemo.*" type="text" style="width: 95%;"/></td>
 					<td><select id="cmbPosition.*" style="width: 95%;"> </select></td>
 				</tr>
