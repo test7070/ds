@@ -83,13 +83,16 @@
                 	Lock(1,{opacity:0});
                     var t_noa = $.trim($('#txtNoa').val());
 					var t_tggno = $.trim($('#txtTggno').val());
-					if(t_tggno.length>0 && t_mon.length>0){
-						var t_where = "where=^^ (a.[money]!=0 or a.tax!=0 or a.discount!=0) and ((b.noa is null) or (b.noa is not null and b.noa='"+t_noa+"'))" 
-                    	+ " and a.tggno='"+t_tggno+"' and a.mon='"+t_mon+"' ^^";
-                    	var t_where1 = " where[1]=^^ (a.plusmoney!=0) and ((b.noa is null) or (b.noa is not null and b.noa='"+t_noa+"')) and a.tggno='"+t_tggno+"' ^^"
-                    	q_gt('payb_fix', t_where+t_where1, 0, 0, 0, "", r_accy);
+					if(t_tggno.length>0){
+						var t_where = " where=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[total]!=0 ^^" ;
+						t_where += " where[1]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[total]!=0 ^^" ;
+						t_where += " where[2]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[money]!=0 ^^" ;
+						t_where += " where[3]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[plusmoney]!=0 ^^" ;
+                   		t_where += " where[4]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 ^^" ;
+                   		
+                    	q_gt('payb_fix_ds',t_where, 0, 0, 0, "", r_accy);
 					}else{
-						alert('請輸入'+q_getMsg('lblMon')+'、'+q_getMsg('lblTgg'));	
+						alert('請輸入'+q_getMsg('lblTgg'));	
 						Unlock(1);					
 					}
                 });
@@ -149,10 +152,36 @@
 	                	Unlock(1);
                 		$('#txtMemo').focus();
                 		break;
-                    case 'payb_fix':
-                        var as = _q_appendData("payb_fix", "", true);
+                    case 'payb_fix_ds':
+                        var as = _q_appendData("payb_fix_ds", "", true);
                         if (as[0] != undefined) {
-                        	
+                        	for(var i=0;i<as.length;i++){
+                        		as[i].mount=1;
+                        		as[i].price=as[i].money;
+                        		switch(as[i].tablea){
+                        			case 'fixa':
+                        				as[i].memo = '維修,' + as[i].memo ; 
+                        				break;
+                        			case 'fixin':
+                        				as[i].memo = '維修入庫,' + as[i].memo ; 
+                        				break;
+                        			case 'chgcash':
+                        				as[i].memo = '零用金,' + as[i].memo ; 
+                        				break;
+                        			case 'custchg':
+                        				as[i].memo = '客戶加項,' + as[i].memo ; 
+                        				break;
+                        			case 'carchg':
+                        				as[i].memo = '司機減項,' + as[i].memo ; 
+                        				break;
+                        		}
+                        	}
+                        	for (var i = 0; i < q_bbsCount; i++) {
+			                    $('#btnMinus_' + i).click();
+			                }	
+                        	q_gridAddRow(bbsHtm, 'tbbs', 'txtRc2no,txtMount,txtPrice,txtMoney,txtInvono,txtTax,txtDiscount,txtTotal,txtMemo', as.length, as, 'noa,mount,price,money,invono,tax,discount,total,memo', 'txtRc2no', '');
+                        }else{
+                        	alert('無資料。');
                         }
                         sum();
                         Unlock(1);

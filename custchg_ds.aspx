@@ -159,10 +159,10 @@
             function btnOk() {
             	Lock(1,{opacity:0});
             	$('#txtDatea').val($.trim($('#txtDatea').val()));
-                if (checkId($('#txtDatea').val())==0){
-                	alert(q_getMsg('lblDatea')+'錯誤。');
-                	Unlock(1);
-                	return;
+                if ($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())) {
+                    alert(q_getMsg('lblDatea') + '錯誤。');
+                    Unlock();
+                    return;
                 }
                 sum();
                 if(q_cur ==1){
