@@ -30,6 +30,7 @@
             q_desc = 1;
             aPop = new Array(['txtCustno', 'lblCust', 'cust', 'noa,comp', 'txtCustno,txtComp', 'cust_b.aspx']
             , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx']
+            , ['txtCustno2', 'lblCust2', 'cust', 'noa,comp', 'txtCustno2,txtCust2', 'cust_b.aspx']
             , ['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
             , ['txtMinusitemno', 'lblMinusitem', 'chgitem', 'noa,item,acc1,acc2', 'txtMinusitemno,txtMinusitem,txtAcc1,txtAcc2', 'chgitem_b.aspx']
             , ['txtPlusitemno', 'lblPlusitem', 'chgitem', 'noa,item,acc1,acc2', 'txtPlusitemno,txtPlusitem,txtAcc1,txtAcc2', 'chgitem_b.aspx']
@@ -402,6 +403,8 @@
 						<td> </td>
 						<td> </td>
 						<td> </td>
+						<td> </td>
+						<td> </td>
 						<td class="tdZ"> </td>
 					</tr>
 					<tr>
@@ -427,36 +430,43 @@
 					<tr>
 						<td><span> </span><a id="lblMinusitem" class="lbl btn"> </a></td>
 						<td colspan="3">
-						<input id="txtMinusitemno"  type="text" style="float:left;width:40%;"/>
-						<input id="txtMinusitem"  type="text"  style="float:left;width:60%;"/>
+						<input id="txtMinusitemno"  type="text" style="float:left;width:30%;"/>
+						<input id="txtMinusitem"  type="text"  style="float:left;width:70%;"/>
 						</td>
 						<td><span> </span><a id="lblMinusmoney" class="lbl"> </a></td>
 						<td><input id="txtMinusmoney"  type="text" class="txt num c1"/></td>
 					</tr>
 					<tr>
+						<td><span> </span><a id="lblCust2" class="lbl btn"> </a></td>
+						<td colspan="3">
+							<input id="txtCustno2"  type="text" style="float:left;width:30%;"/>
+							<input id="txtCust2"  type="text" style="float:left;width:70%;"/>
+						</td>
+						<td><a class="lbl" style="text-align: left;">(應收立帳匯入)</a></td>
+					</tr>
+					<tr>
 						<td><span> </span><a id="lblPlusitem" class="lbl btn"> </a></td>
 						<td colspan="3">
-						<input id="txtPlusitemno"  type="text" style="float:left;width:40%;"/>
-						<input id="txtPlusitem"  type="text" style="float:left;width:60%;"/>
+						<input id="txtPlusitemno"  type="text" style="float:left;width:30%;"/>
+						<input id="txtPlusitem"  type="text" style="float:left;width:70%;"/>
 						</td>
 						<td><span> </span><a id="lblPlusmoney" class="lbl"> </a></td>
 						<td><input id="txtPlusmoney"  type="text" class="txt num c1" /></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblAcc1" class="lbl btn"> </a></td>
-						<td colspan="3">
-						<input id="txtAcc1" type="text" style="float:left;width:40%;"/>
-						<input id="txtAcc2" type="text" style="float:left;width:60%;"/>
-						</td>
-						
-					</tr>
-					<tr>
 						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
 						<td colspan="3">
-							<input id="txtTggno"  type="text" style="float:left;width:40%;"/>
-							<input id="txtTgg"  type="text" style="float:left;width:60%;"/>
+							<input id="txtTggno"  type="text" style="float:left;width:30%;"/>
+							<input id="txtTgg"  type="text" style="float:left;width:70%;"/>
 						</td>
 						<td><a class="lbl" style="text-align: left;">(應付立帳匯入)</a></td>
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblAcc1" class="lbl btn"> </a></td>
+						<td colspan="3">
+						<input id="txtAcc1" type="text" style="float:left;width:30%;"/>
+						<input id="txtAcc2" type="text" style="float:left;width:70%;"/>
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
