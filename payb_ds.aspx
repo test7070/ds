@@ -36,7 +36,7 @@
             aPop = new Array(['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
             , ['txtAcc1_', 'btnAcc_', 'acc', 'acc1,acc2', 'txtAcc1_,txtAcc2_', "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy + '_' + r_cno]
             , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtComp,txtNick', 'tgg_b.aspx']
-            , ['txtSalesno2', 'lblSales2', 'sss', 'noa,namea', 'txtSalesno2,txtSales2', 'sss_b.aspx']);
+            );
            
             $(document).ready(function() {
                 bbmKey = ['noa'];
@@ -57,21 +57,14 @@
             }
             function mainPost() {
                 q_getFormat();
-                bbmMask = [['txtIndate', r_picd],['txtDatea', r_picd], ['txtMon', r_picm], ['txtPaydate', r_picd]];
+                bbmMask = [['txtIndate', r_picd],['txtDatea', r_picd], ['txtPaydate', r_picd]];
                 q_mask(bbmMask);
                 $('#txtDatea').datepicker();
                 $('#txtPaydate').datepicker();
                 $('#txtIndate').datepicker();
                 
                 q_gt('acomp', '', 0, 0, 0, "");
-                q_gt('part', '', 0, 0, 0, "");
                 $("#cmbCno").focus(function() {
-                    var len = $(this).children().length > 0 ? $(this).children().length : 1;
-                    $(this).attr('size', len + "");
-                }).blur(function() {
-                    $(this).attr('size', '1');
-                });
-                $("#cmbPartno").focus(function() {
                     var len = $(this).children().length > 0 ? $(this).children().length : 1;
                     $(this).attr('size', len + "");
                 }).blur(function() {
@@ -90,7 +83,6 @@
                 	Lock(1,{opacity:0});
                     var t_noa = $.trim($('#txtNoa').val());
 					var t_tggno = $.trim($('#txtTggno').val());
-					var t_mon = $.trim($('#txtMon').val());				
 					if(t_tggno.length>0 && t_mon.length>0){
 						var t_where = "where=^^ (a.[money]!=0 or a.tax!=0 or a.discount!=0) and ((b.noa is null) or (b.noa is not null and b.noa='"+t_noa+"'))" 
                     	+ " and a.tggno='"+t_tggno+"' and a.mon='"+t_mon+"' ^^";
@@ -160,127 +152,10 @@
                     case 'payb_fix':
                         var as = _q_appendData("payb_fix", "", true);
                         if (as[0] != undefined) {
-                        	var n = 0;
-                        	var t_partno = $('#cmbPartno').val();
-                        	for(var i in as){
-                        		if(as[i].partno == t_partno)
-                        			n++;
-                        	}
-                        	q_gridAddRow(bbsHtm, 'tbbs', 'txtRc2no', as.length, as, 'noa', 'txtRc2no', '');
-                        	//reset
-	                        for (var j = 0; j < q_bbsCount; j++) {
-	                            $('#txtRc2no_'+j).val('');
-	                            $('#cmbKind_'+j).val('');
-	                            $('#txtInvono_'+j).val('');
-	                            $('#txtTax_'+j).val(0);
-	                            $('#txtMount_'+j).val(0);
-	                            $('#txtPrice_'+j).val(0);
-	                            $('#txtDiscount_'+j).val(0);
-	                            $('#txtMoney_'+j).val(0);
-	                            $('#txtTotal_'+j).val(0);
-	                            $('#txtMemo_'+j).val('');
-	                            $('#txtAcc1_'+j).val('');
-	                            $('#txtAcc2_'+j).val('');
-	                            $('#txtBal_'+j).val('');
-	                        }
-	                        //insert
-	                        var n = 0;
-	                        for(var i in as){
-	                        	if(as[i].partno == t_partno){
-	                        		if(as[i].wmoney!=0 && as[i].cmoney!=0){
-	                        			//維修&輪胎
-	                        			$('#txtRc2no_'+n).val(as[i].noa);
-			                            $('#cmbKind_'+n).val('維修');
-			                            $('#txtInvono_'+n).val(as[i].invono);
-			                            $('#txtTax_'+n).val(as[i].tax); 
-			                            $('#txtMount_'+n).val(1);
-			                            $('#txtPrice_'+n).val(as[i].wmoney);
-			                            $('#txtDiscount_'+n).val(as[i].discount);
-			                            $('#txtMoney_'+n).val(as[i].wmoney);
-			                            $('#txtTotal_'+n).val(as[i].wmoney);
-			                            $('#txtMemo_'+n).val(as[i].memo);
-			                            $('#txtAcc1_'+n).val(as[i].wacc1);
-			                            $('#txtAcc2_'+n).val(as[i].wacc2);
-			                            $('#txtBal_'+n).val('');
-			                            n++;
-			                            //----------------------
-			                            $('#txtRc2no_'+n).val(as[i].noa);
-			                            $('#cmbKind_'+n).val('費用');
-			                            $('#txtInvono_'+n).val('');
-			                            $('#txtTax_'+n).val(0); 
-			                            $('#txtMount_'+n).val(1);
-			                            $('#txtPrice_'+n).val(as[i].cmoney);
-			                            $('#txtDiscount_'+n).val(0);
-			                            $('#txtMoney_'+n).val(as[i].cmoney);
-			                            $('#txtTotal_'+n).val(as[i].cmoney);
-			                            $('#txtMemo_'+n).val(as[i].memo);
-			                            $('#txtAcc1_'+n).val(as[i].cacc1);
-			                            $('#txtAcc2_'+n).val(as[i].cacc2);
-			                            $('#txtBal_'+n).val('');
-	                        		}else if(as[i].wmoney!=0){
-	                        			//維修
-	                        			$('#txtRc2no_'+n).val(as[i].noa);
-			                            $('#cmbKind_'+n).val('維修');
-			                            $('#txtInvono_'+n).val(as[i].invono);
-			                            $('#txtTax_'+n).val(as[i].tax); 
-			                            $('#txtMount_'+n).val(1);
-			                            $('#txtPrice_'+n).val(as[i].wmoney);
-			                            $('#txtDiscount_'+n).val(as[i].discount);
-			                            $('#txtMoney_'+n).val(as[i].wmoney);
-			                            $('#txtTotal_'+n).val(as[i].wmoney);
-			                            $('#txtMemo_'+n).val(as[i].memo);
-			                            $('#txtAcc1_'+n).val(as[i].wacc1);
-			                            $('#txtAcc2_'+n).val(as[i].wacc2);
-			                            $('#txtBal_'+n).val('');
-	                        		}else if(as[i].cmoney!=0){
-	                        			//輪胎
-	                        			$('#txtRc2no_'+n).val(as[i].noa);
-			                            $('#cmbKind_'+n).val('費用');
-			                            $('#txtInvono_'+n).val(as[i].invono);
-			                            $('#txtTax_'+n).val(as[i].tax); 
-			                            $('#txtMount_'+n).val(1);
-			                            $('#txtPrice_'+n).val(as[i].cmoney);
-			                            $('#txtDiscount_'+n).val(as[i].discount);
-			                            $('#txtMoney_'+n).val(as[i].cmoney);
-			                            $('#txtTotal_'+n).val(as[i].cmoney);
-			                            $('#txtMemo_'+n).val(as[i].memo);
-			                            $('#txtAcc1_'+n).val(as[i].cacc1);
-			                            $('#txtAcc2_'+n).val(as[i].cacc2);
-			                            $('#txtBal_'+n).val('');
-	                        		}else{
-	                        			$('#txtRc2no_'+n).val(as[i].noa);
-			                            $('#cmbKind_'+n).val('費用');
-			                            $('#txtInvono_'+n).val(as[i].invono);
-			                            $('#txtTax_'+n).val(as[i].tax); 
-			                            $('#txtMount_'+n).val(1);
-			                            $('#txtPrice_'+n).val(as[i].money);
-			                            $('#txtDiscount_'+n).val(as[i].discount);
-			                            $('#txtMoney_'+n).val(as[i].money);
-			                            $('#txtTotal_'+n).val(as[i].money);
-			                            $('#txtMemo_'+n).val(as[i].memo);
-			                            $('#txtAcc1_'+n).val(as[i].acc1);
-			                            $('#txtAcc2_'+n).val(as[i].acc2);
-			                            $('#txtBal_'+n).val('');
-	                        		}
-	                        		n++;
-	                        	}
-	                        }
+                        	
                         }
                         sum();
                         Unlock(1);
-                        break;
-                    case 'part':
-                        var as = _q_appendData("part", "", true);
-                        if (as[0] != undefined) {
-                            var t_item = "";
-                            for ( i = 0; i < as.length; i++) {
-                                t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].part;
-                            }
-                            q_cmbParse("cmbPartno", t_item);
-                            if (abbm[q_recno] != undefined) {
-                                $("#cmbPartno").val(abbm[q_recno].partno);
-                            }
-                        }
                         break;
                     case 'acomp':
                         var as = _q_appendData("acomp", "", true);
@@ -329,7 +204,6 @@
                 if ($.trim($('#txtNick').val()).length == 0)
                     $('#txtNick').val($('#txtComp').val());
                 $('#txtAcomp').val($('#cmbCno').find(":selected").text());
-                $('#txtPart').val($('#cmbPartno').find(":selected").text());
 
                 if($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())){
 					alert(q_getMsg('lblDatea')+'錯誤。');
@@ -346,11 +220,6 @@
                 	Unlock(1);
                 	return;
                 }
-               	if ($('#txtMon').val().length > 0 && !(/^[0-9]{3}\/(?:0?[1-9]|1[0-2])$/g).test($('#txtMon').val())) {
-                    alert(q_getMsg('lblMon') + '錯誤。');
-                    Unlock(1);
-                    return;
-                }       
                 sum();
                 var yufu=false;
                 for (var j = 0; j < q_bbsCount; j++) {
@@ -428,7 +297,6 @@
                 _btnIns();
                 $('#txtNoa').val('AUTO');
                 $('#txtDatea').val(q_date());
-                $('#txtMon').val(q_date().substr(0, 6));
                 $('#txtDatea').focus();
             }
 
@@ -765,21 +633,6 @@
 					<tr>
 						<td><span> </span><a id='lblDatea' class="lbl"> </a></td>
 						<td><input id="txtDatea"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id='lblMon' class="lbl"> </a></td>
-						<td><input id="txtMon"  type="text"  class="txt c1" /></td>			
-						
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblPart" class="lbl btn" > </a></td>
-						<td>
-							<select id="cmbPartno" class="txt c1"> </select>
-							<input id="txtPart"  type="text" style="display: none;"/>
-						</td>
-						<td><span> </span><a id="lblSales2" class="lbl btn" > </a></td>
-						<td colspan="2">
-							<input id="txtSalesno2" type="text" style="float:left; width:50%;"/>
-							<input id="txtSales2" type="text" style="float:left; width:50%;"/>
-						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTgg"  class="lbl btn"> </a></td>
