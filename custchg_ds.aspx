@@ -437,12 +437,12 @@
 						<td><input id="txtMinusmoney"  type="text" class="txt num c1"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblCust2" class="lbl btn"> </a></td>
+						<td><span> </span><a id="lblCust2" class="lbl btn" style="text-align: left;display:none;"> </a></td>
 						<td colspan="3">
-							<input id="txtCustno2"  type="text" style="float:left;width:30%;"/>
-							<input id="txtCust2"  type="text" style="float:left;width:70%;"/>
+							<input id="txtCustno2"  type="text" style="float:left;width:30%;display:none;"/>
+							<input id="txtCust2"  type="text" style="float:left;width:70%;display:none;"/>
 						</td>
-						<td><a class="lbl" style="text-align: left;">(應收立帳匯入)</a></td>
+						<td><a class="lbl" style="text-align: left;display:none;">(應收立帳匯入)</a></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblPlusitem" class="lbl btn"> </a></td>

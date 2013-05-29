@@ -527,12 +527,12 @@
 						<td><input id="txtPlusmoney"  type="text" class="txt num c1" /></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
+						<td><span> </span><a id="lblTgg" class="lbl btn" style="display:none;"> </a></td>
 						<td colspan="3">
-							<input id="txtTggno"  type="text" style="float:left;width:30%;"/>
-							<input id="txtTgg"  type="text" style="float:left;width:70%;"/>
+							<input id="txtTggno"  type="text" style="float:left;width:30%;display:none;"/>
+							<input id="txtTgg"  type="text" style="float:left;width:70%;display:none;"/>
 						</td>
-						<td><a class="lbl" style="text-align: left;">(應收立帳匯入)</a></td>
+						<td><a class="lbl" style="text-align: left;display:none;">(應收立帳匯入)</a></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblAcc1" class="lbl btn"> </a></td>
