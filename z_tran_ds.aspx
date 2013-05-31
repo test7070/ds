@@ -153,6 +153,10 @@
                         type : '5',
                         name : 'xsort05',
                         value : q_getMsg('tsort05').split('&')
+                    }, {/*19-[26]-其他設定(折扣)*/
+                        type : '8',
+                        name : 'xoption07',
+                        value : q_getMsg('toption07').split('&')
                     }]
                 });
                 q_popAssign();
