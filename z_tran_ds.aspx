@@ -157,6 +157,12 @@
                         type : '8',
                         name : 'xoption07',
                         value : q_getMsg('toption07').split('&')
+                    }, {/*20-[27]加項金額*///*5-4
+                        type : '6',
+                        name : 'zplusmoney'
+                    }, {/*21-[28]減項金額*///*5-8
+                        type : '6',
+                        name : 'zminusmoney'
                     }]
                 });
                 q_popAssign();
