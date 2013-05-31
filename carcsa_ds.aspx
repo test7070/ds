@@ -268,6 +268,8 @@
 									$('#btnMinus_' + t_sel).data('info').isTre = true;
 								var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
             					q_gt('view_trds', t_where, 0, 0, 0, "checkBbs_trds_"+t_accy+"_"+t_tranno+"_"+t_sel, t_accy);             		
+							}else{
+								checkBbs(t_sel-1);
 							}
                     	}else if(t_name.substring(0,8)=="btnDele1"){
                     		var t_tranno = t_name.split('_')[1];
@@ -288,15 +290,15 @@
                     		var as = _q_appendData("calctypes", "", true);
                     		if(as[0]!=undefined){
                     			var t_isoutside = (as[0].isoutside == "false" || as[0].isoutside == "0" || as[0].isoutside == undefined ? false : true);
-                    			if(t_isoutside){
+                    			//if(t_isoutside){
 									//外車    
 									var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
 									q_gt('view_tres', t_where, 0, 0, 0, "btnDele3_"+t_tranno+"_"+t_sel, r_accy);             		                				
-                    			}else{
+                    			/*}else{
                     				//公司車
                     				var t_where = "where=^^ noa='"+ t_date.substring(0,6) +"' ^^";
 									q_gt('carsal', t_where, 0, 0, 0, "btnDele4_"+t_tranno+"_"+t_date.substring(0,6)+"_"+t_sel, r_accy);  
-                    			}
+                    			}*/
                     		}else{
                     			alert('資料異常，查計算類別【'+t_calctype+'】禁止刪除。');
 								return '資料異常，查計算類別【'+t_calctype+'】禁止刪除。';
@@ -540,13 +542,13 @@
             		var t_mon = $('#txtTrandate').val().substring(0,6);
             		var t_tranno = $.trim($('#txtTranno_'+n).val());
             		if(t_tranno.length>0){
-            			if($('#btnMinus_' + n).data('info').isoutside){
+            			//if($('#btnMinus_' + n).data('info').isoutside){
                     		var t_where = "where=^^ tranno='"+ t_tranno +"' ^^";
         					q_gt('view_tres', t_where, 0, 0, 0, "checkBbs_tres_"+t_accy+"_"+t_tranno+"_"+n, t_accy);
-                    	}else{
+                    	/*}else{
                     		var t_where = "where=^^ noa='"+t_mon+"' ^^";
                     		q_gt('carsal', t_where , 0, 0, 0, "checkBbs_carsal_"+t_accy+"_"+t_tranno+"_"+n,t_accy);	
-                    	}
+                    	}*/
             		}else{
             			checkBbs(n-1);
             		}

@@ -342,10 +342,10 @@
 			            		}
 			        		}
 	        		
-                        	if(t_isoutside)
+                        	//if(t_isoutside)
                         		q_gt('view_tres', "where=^^ tranno='"+$('#txtNoa').val()+"' ^^", 0, 0, 0, 'isTre',r_accy);	
-                        	else
-                        		q_gt('carsal', "where=^^ noa='"+$('#txtDatea').val().substring(0,6)+"' ^^", 0, 0, 0, 'isCarsal',r_accy);	
+                        	//else
+                        		//q_gt('carsal', "where=^^ noa='"+$('#txtDatea').val().substring(0,6)+"' ^^", 0, 0, 0, 'isCarsal',r_accy);	
                         }
 						break;
 					case 'btnDele':
@@ -373,8 +373,8 @@
                         Unlock(1);
 	                	Lock(1,{opacity:0});
 						_btnModi();
-						trans.refresh();
 						trans.checkData();
+						trans.refresh();
 						$('#txtDatea').focus();
                 		break; 
 					case 'getPrice':
@@ -448,13 +448,13 @@
 			        			$('#txtPton').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtPrice').removeAttr('readonly').css('color','black').css('background','white');
 							}
-							if(trans.isoutside){
+							//if(trans.isoutside){
 								//外車
 								q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' ^^", 0, 0, 0, 'checkTre',r_accy);
-							}else{
+							//}else{
 								//公司車
-								q_gt('carsal', "where=^^ noa='"+t_datea.substring(0,6)+"' ^^", 0, 0, 0, 'checkCarsal',r_accy);
-							}
+							//	q_gt('carsal', "where=^^ noa='"+t_datea.substring(0,6)+"' ^^", 0, 0, 0, 'checkCarsal',r_accy);
+							//}
 						}else if(t_name.substring(0,8)=='checkTre'){
 							var as = _q_appendData("view_tres", "", true);
 							if(as[0]!=undefined){
