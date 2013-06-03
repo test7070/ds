@@ -167,7 +167,8 @@
 		                        t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
 		                    }
 		                    q_cmbParse("cmbCarteamno", t_item);
-		                    $("#cmbCarteamno").val(abbm[q_recno].carteamno);
+		                    if (abbm[q_recno] != undefined)
+		                    	$("#cmbCarteamno").val(abbm[q_recno].carteamno);
 		                }
 		                break;
 		            case 'part':
@@ -178,8 +179,7 @@
 		                        t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].part;
 		                    }
 		                    q_cmbParse("cmbPartno", t_item, 's');
-
-		                    refresh(q_recno);  /// �Ĥ@���ݭn���s��J
+		                    refresh(q_recno);  
 		                }
 		                break;
 		            case 'chgpart':
@@ -190,7 +190,8 @@
 		                        t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].part;
 		                    }
 		                    q_cmbParse("cmbChgpartno", t_item);
-		                    $("#cmbChgpartno").val(abbm[q_recno].chgpartno);
+		                    if (abbm[q_recno] != undefined)
+		                    	$("#cmbChgpartno").val(abbm[q_recno].chgpartno);
 		                }
 		                break;
 		            case q_name:
