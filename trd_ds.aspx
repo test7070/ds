@@ -368,7 +368,7 @@
             }
 
             function btnPrint() {
-                q_box('z_trd.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+                q_box('z_trd_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
             }
 
             function wrServer(key_value) {
