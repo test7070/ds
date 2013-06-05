@@ -549,9 +549,10 @@
 				curData.paste();
 				$('#txtNoa').val('AUTO');
 				$('#txtNoq').val('001');
-				if($('#cmbCalctype').val().length==0)
+				if($('#cmbCalctype').val().length==0){
 					$('#cmbCalctype').val(trans.calctype[0].noa);
-				trans.calctypeChange();
+					trans.calctypeChange();
+				}
 				trans.refresh();
 				trans.checkData();
 				$('#txtDatea').focus();
