@@ -86,6 +86,7 @@
             	isInit : false, 
             	isTrd : null,
             	isTre : null,
+            	isOrde : null,
             	isoutside : null,
             	init : function(){
             		Lock(1,{opacity:0});
@@ -164,19 +165,16 @@
         			$('#txtTolls').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#cmbCalctype').attr('disabled','disabled');
         			$('#cmbCarteamno').attr('disabled','disabled');
-        			if($('#txtOrdeno').val().length>0){
-        				//轉來的一律不可改日期
-        			}else{
-        				var t_tranno = $.trim($('#txtNoa').val());
-        				var t_trannoq = $.trim($('#txtNoq').val());
-        				var t_datea = $.trim($('#txtDatea').val());
-        				if(q_cur==2 && (t_tranno.length==0 || t_trannoq.length==0 || t_datea.length==0)){
-        					alert('資料異常。 code:1');
-        				}else{
-        					//檢查是否已立帳
-        					q_gt('view_trds', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTrd_'+t_tranno+'_'+t_trannoq+'_'+t_datea,r_accy);
-        				}
-        			}
+        			
+    				var t_tranno = $.trim($('#txtNoa').val());
+    				var t_trannoq = $.trim($('#txtNoq').val());
+    				var t_datea = $.trim($('#txtDatea').val());
+    				if(q_cur==2 && (t_tranno.length==0 || t_trannoq.length==0 || t_datea.length==0)){
+    					alert('資料異常。 code:1');
+    				}else{
+    					//檢查是否已立帳
+    					q_gt('view_trds', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTrd_'+t_tranno+'_'+t_trannoq+'_'+t_datea,r_accy);
+    				}
             	}
             }
             trans = new transData();
@@ -350,11 +348,7 @@
 			            			t_isoutside.isoutside = trans.calctype[i].isoutside;
 			            		}
 			        		}
-	        		
-                        	//if(t_isoutside)
-                        		q_gt('view_tres', "where=^^ tranno='"+$('#txtNoa').val()+"' ^^", 0, 0, 0, 'isTre',r_accy);	
-                        	//else
-                        		//q_gt('carsal', "where=^^ noa='"+$('#txtDatea').val().substring(0,6)+"' ^^", 0, 0, 0, 'isCarsal',r_accy);	
+                        	q_gt('view_tres', "where=^^ tranno='"+$('#txtNoa').val()+"' ^^", 0, 0, 0, 'isTre',r_accy);	
                         }
 						break;
 					case 'btnDele':
@@ -374,13 +368,11 @@
                 		var as = _q_appendData("trans", "", true);
                         if (as[0] != undefined) {
                         	if(as[0].ordeno.length>0){
-                        		alert('轉來的單據禁止修改。');
-                        		Unlock(1);
-                        		return;
+                        		trans.isOrde = true;
+                        	}else{
+                        		trans.isOrde = false;
                         	}
                         }
-                        Unlock(1);
-	                	Lock(1,{opacity:0});
 						_btnModi();
 						trans.checkData();
 						trans.refresh();
@@ -468,41 +460,41 @@
 							if(as[0]!=undefined){
 								trans.isTrd = true;
 							}else{
-								$('#txtCustno').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtComp').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtStraddrno').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtStraddr').removeAttr('readonly').css('color','black').css('background','white');
-								$('#txtInmount').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtPton').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtPrice').removeAttr('readonly').css('color','black').css('background','white');
+								if(!trans.isOrde){
+									$('#txtCustno').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtComp').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtStraddrno').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtStraddr').removeAttr('readonly').css('color','black').css('background','white');
+									$('#txtInmount').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtPton').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtPrice').removeAttr('readonly').css('color','black').css('background','white');
+								}
 							}
-							//if(trans.isoutside){
-								//外車
-								q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' ^^", 0, 0, 0, 'checkTre',r_accy);
-							//}else{
-								//公司車
-							//	q_gt('carsal', "where=^^ noa='"+t_datea.substring(0,6)+"' ^^", 0, 0, 0, 'checkCarsal',r_accy);
-							//}
+							q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' ^^", 0, 0, 0, 'checkTre',r_accy);
 						}else if(t_name.substring(0,8)=='checkTre'){
 							var as = _q_appendData("view_tres", "", true);
 							if(as[0]!=undefined){
 								trans.isTre = true;
 							}else{
-								$('#txtCarno').removeAttr('readonly').css('color','black').css('background','white');
-								$('#txtDriverno').removeAttr('readonly').css('color','black').css('background','white');
-								$('#txtDriver').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtOutmount').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtPton2').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
-								$('#cmbCalctype').removeAttr('disabled');
-        						$('#cmbCarteamno').removeAttr('disabled');
+								if(!trans.isOrde){
+									$('#txtCarno').removeAttr('readonly').css('color','black').css('background','white');
+									$('#txtDriverno').removeAttr('readonly').css('color','black').css('background','white');
+									$('#txtDriver').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtOutmount').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtPton2').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
+									$('#cmbCalctype').removeAttr('disabled');
+	        						$('#cmbCarteamno').removeAttr('disabled');
+        						}
 							}
 							if(!trans.isTrd && !trans.isTre){
-								$('#txtDatea').removeAttr('readonly').css('color','black').css('background','white');
-								$('#txtTrandate').removeAttr('readonly').css('color','black').css('background','white');
+								if(!trans.isOrde){
+									$('#txtDatea').removeAttr('readonly').css('color','black').css('background','white');
+									$('#txtTrandate').removeAttr('readonly').css('color','black').css('background','white');
+								}
 							}
 							sum();
 							Unlock(1);
@@ -579,6 +571,7 @@
 					$('#cmbCalctype').val(trans.calctype[0].noa);
 					trans.calctypeChange();
 				}
+				trans.isOrde = false;
 				trans.refresh();
 				trans.checkData();
 				$('#txtDatea').focus();
@@ -588,12 +581,13 @@
 					return;
 				//避免資料不同步
 				if($.trim($('#txtOrdeno').val()).length>0){
-					alert('轉來的單據禁止修改。');
+					trans.isOrde = true;
 				}else{
-					Lock(1,{opacity:0});
-	                t_where=" where=^^ noa='"+$('#txtNoa').val()+"'^^";
-	            	q_gt('trans', t_where, 0, 0, 0, "btnModi", r_accy);
+					trans.isOrde = false;
 				}
+				Lock(1,{opacity:0});
+                t_where=" where=^^ noa='"+$('#txtNoa').val()+"'^^";
+            	q_gt('trans', t_where, 0, 0, 0, "btnModi", r_accy);
 			}
 			function btnPrint() {
 				q_box('z_trans_ds.aspx' + "?;;;;" + r_accy, '', "95%", "95%", q_getMsg("popPrint"));
