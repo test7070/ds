@@ -22,27 +22,28 @@
             q_desc = 1;
             q_tables = 's';
             var q_name = "tire";
-            var q_readonly = ['txtNoa','txtWorker','txtWorker2'];
+            var q_readonly = ['txtNoa','txtWorker','txtWorker2','txtCmoney'];
             var q_readonlys = [];
             var bbmNum = [['txtMiles',10,0,1],['txtWmoney',10,0,1],['txtCmoney',10,0,1],['txtDmoney',10,0,1]];
-            var bbsNum = [];
+            var bbsNum = [['txtPrice',10,0,1]];
             var bbmMask = [];
             var bbsMask = [];
             q_sqlCount = 6;
             brwCount = 6;
             brwList = [];
             brwNowPage = 0;
-            brwKey = 'Datea';
+            brwKey = 'noa';
+            brwCount2 = 6;
             //ajaxPath = "";
             aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa','txtCarno', 'car2_b.aspx'],
+            		['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate', 'txtCarplateno', 'carplate_b.aspx'],
             		['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'],
-            		['txtEtireno_', '', 'tirestk', 'noa,product','txtEtireno_', 'tirestk_b.aspx']);
+            		['txtEtireno_', '', 'view_tirestk', 'noa,price,product','txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
             $(document).ready(function() {
                 bbmKey = ['noa'];
                 bbsKey = ['noa', 'noq'];
-                brwCount2 = 6;
                 q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1)
+                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy)
             });
       
             function main() {
@@ -51,12 +52,7 @@
                     return;
                 }
                 mainForm(1);
-            }///  end Main()
-
-            function pop(form) {
-                b_pop = form;
             }
-
             function mainPost() {
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd]];
@@ -64,58 +60,82 @@
                 q_cmbParse("cmbPosition", q_getPara('tire.position'),'s');
                 q_cmbParse("cmbAction", q_getPara('tire.action'),'s');
             }
-			function q_popFunc(id,key_value){
+			function q_popFunc(id){
             	switch(id) {
                     case 'txtCarno':
-                    	var t_where = "where=^^carno='"+key_value+"'^^order=^^position^^";
-                    	q_gt('tirestk', t_where, 0, 0, 0, "");
+                    	var t_carno = $.trim($('#txtCarno').val());
+                    	if(t_carno.length>0){
+                    		var t_where = "where=^^carno='"+t_carno+"' and len(isnull(carplateno,''))=0^^";
+                    		q_gt('view_tirestatus', t_where, 0, 0, 0, "tirestatus_carno", r_accy);
+                    	}
+                    	break;
+                    case 'txtCarplateno':
+                    	var t_carplateno = $.trim($('#txtCarplateno').val());
+                    	if(t_carplateno.length>0){
+                    		var t_where = "where=^^carplateno='"+t_carplateno+"'^^";
+                    		q_gt('view_tirestatus', t_where, 0, 0, 0, "tirestatus_carplateno", r_accy);
+                    	}
                     	break;
                 }
+			}
+			function q_popPost(id) {
+				switch(id) {
+					case 'txtEtireno_':
+						sum();
+						break;
+				}
 			}
             function q_boxClose(s2) {
                 var ret;
                 switch (b_pop) {
                     case q_name + '_s':
                         q_boxClose2(s2);
-                        ///   q_boxClose 3/4
                         break;
-                }   /// end Switch
+                } 
             }
 
             function q_gtPost(t_name) {
                 switch (t_name) {
-                	case 'tirestk':
-                        var as = _q_appendData("tirestk", "", true);
-
+                	case 'tirestatus_carno':
+                        var as = _q_appendData("view_tirestatus", "", true);
                         q_gridAddRow(bbsHtm, 'tbbs', 'txtBtireno,cmbPosition', as.length, as, 'noa,position', '', '');
-
-                        /*for( i = 0; i < q_bbsCount; i++) {
-                            _btnMinus("btnMinus_" + i);
-                            if(i < as.length) {
-                                $('#txtOrdeno_' + i).val(as[i].ordeno);
-                               
-                            }
-                        }*/
+                       	sum();
                         break;
-                        
+                    case 'tirestatus_carplateno':
+                        var as = _q_appendData("view_tirestatus", "", true);
+                        q_gridAddRow(bbsHtm, 'tbbs', 'txtBtireno,cmbPosition', as.length, as, 'noa,position', '', '');
+                        sum();
+                        break;   
                     case q_name:
                         if (q_cur == 4)
                             q_Seek_gtPost();
-
-                        if (q_cur == 1 || q_cur == 2)
-                            q_changeFill(t_name, ['txtGrpno', 'txtGrpname'], ['noa', 'comp']);
-
                         break;
-                }  /// end switch
+                    default:
+                        break;
+                }
             }
 
+            function q_stPost() {
+                Unlock(1);
+            }
             function btnOk() {
-                t_err = q_chkEmpField([['txtNoa', q_getMsg('lblNoa')]]);
-                if (t_err.length > 0) {
-                    alert(t_err);
-                    return;
-                }
-                $('#txtWorker').val(r_name)
+            	Lock(1,{opacity:0});
+            	if($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())){
+					alert(q_getMsg('lblDatea')+'錯誤。');
+            		Unlock(1);
+            		return;
+				}
+				if($.trim($('#txtNick')).length==0){
+					$('#txtNick').val($('#txtTgg').val().substring(0,4));
+				}
+                if(q_cur ==1){
+                	$('#txtWorker').val(r_name);
+                }else if(q_cur ==2){
+                	$('#txtWorker2').val(r_name);
+                }else{
+                	alert("error: btnok!")
+                }   
+                sum();
                 var t_noa = trim($('#txtNoa').val());
                 var t_date = trim($('#txtDatea').val());
                 if (t_noa.length == 0 || t_noa == "AUTO")
@@ -127,9 +147,17 @@
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)// 1-3
                     return;
-                q_box('tire_s.aspx', q_name + '_s', "500px", "330px", q_getMsg("popSeek"));
+                q_box('tire_ds_s.aspx', q_name + '_s', "500px", "600px", q_getMsg("popSeek"));
             }
             function bbsAssign() {
+                for (var i = 0; i < q_bbsCount; i++) {
+                    $('#lblNo_' + i).text(i + 1);
+                    if (!$('#btnMinus_' + i).hasClass('isAssign')) {
+                		$('#txtPrice_'+i).change(function(){
+                			sum();
+                		});
+                    }
+                }
                 _bbsAssign();
             }
 
@@ -148,7 +176,7 @@
             }
 
             function btnPrint() {
-			q_box('z_tire.aspx', '', "800px", "600px", q_getMsg("popPrint"));
+			q_box('z_tire_ds.aspx', '', "800px", "600px", q_getMsg("popPrint"));
             }
 
             function wrServer(key_value) {
@@ -167,10 +195,13 @@
             }
 
             function sum() {
-                var t1 = 0, t_unit, t_mount, t_weight = 0;
-                for (var j = 0; j < q_bbsCount; j++) {
-
-                }// j
+                var t_money = 0;
+                for (var i = 0; i < q_bbsCount; i++) {
+                	if($.trim($('#txtEtireno_'+i).val).length==0)
+                		$('#txtPrice_'+i).val(0);
+					t_money += q_float('txtPrice_'+i);
+                }
+                $('#txtCmoney').val(FormatNumber(t_money));
             }
 
             function refresh(recno) {
@@ -234,6 +265,63 @@
             function btnCancel() {
                 _btnCancel();
             }
+            function FormatNumber(n) {
+            	var xx = "";
+            	if(n<0){
+            		n = Math.abs(n);
+            		xx = "-";
+            	}     		
+                n += "";
+                var arr = n.split(".");
+                var re = /(\d{1,3})(?=(\d{3})+$)/g;
+                return xx+arr[0].replace(re, "$1,") + (arr.length == 2 ? "." + arr[1] : "");
+            }
+			Number.prototype.round = function(arg) {
+			    return Math.round(this * Math.pow(10,arg))/ Math.pow(10,arg);
+			}
+			Number.prototype.div = function(arg) {
+			    return accDiv(this, arg);
+			}
+            function accDiv(arg1, arg2) {
+			    var t1 = 0, t2 = 0, r1, r2;
+			    try { t1 = arg1.toString().split(".")[1].length } catch (e) { }
+			    try { t2 = arg2.toString().split(".")[1].length } catch (e) { }
+			    with (Math) {
+			        r1 = Number(arg1.toString().replace(".", ""))
+			        r2 = Number(arg2.toString().replace(".", ""))
+			        return (r1 / r2) * pow(10, t2 - t1);
+			    }
+			}
+			Number.prototype.mul = function(arg) {
+			    return accMul(arg, this);
+			}
+			function accMul(arg1, arg2) {
+			    var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+			    try { m += s1.split(".")[1].length } catch (e) { }
+			    try { m += s2.split(".")[1].length } catch (e) { }
+			    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m)
+			}
+			Number.prototype.add = function(arg) {
+		   		return accAdd(arg, this);
+			}
+			function accAdd(arg1, arg2) {
+			    var r1, r2, m;
+			    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
+			    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
+			    m = Math.pow(10, Math.max(r1, r2))
+			    return (arg1 * m + arg2 * m) / m
+			}
+			Number.prototype.sub = function(arg) {
+			    return accSub(this,arg);
+			}
+			function accSub(arg1, arg2) {
+			    var r1, r2, m, n;
+			    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
+			    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
+			    m = Math.pow(10, Math.max(r1, r2));
+			    n = (r1 >= r2) ? r1 : r2;
+			    return parseFloat(((arg1 * m - arg2 * m) / m).toFixed(n));
+			}
 		</script>
 		<style type="text/css">
             #dmain {
@@ -435,10 +523,11 @@
 					<input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  />
 					</td>
 					<td align="center" style="width:20px;"> </td>
-					<td align="center" style="width:50px;"><a id='lblPosition_s'> </a></td>
+					<td align="center" style="width:80px;"><a id='lblPosition_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblBtireno_s'> </a></td>
-					<td align="center" style="width:50px;"><a id='lblAction_s'> </a></td>
+					<td align="center" style="width:80px;"><a id='lblAction_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblEtireno_s'> </a></td>
+					<td align="center" style="width:80px;"><a id='lblPrice_s'> </a></td>
 					<td align="center" style="width:200px;"><a id='lblMemo_s'> </a></td>
 				</tr>
 				<tr style='background:#cad3ff;'>
@@ -451,6 +540,7 @@
 					<td><input type="text" id="txtBtireno.*" style="width:95%;"/></td>
 					<td><select id="cmbAction.*" style="width:95%;"> </select></td>
 					<td><input type="text" id="txtEtireno.*" style="width:95%;"/></td>
+					<td><input type="text" id="txtPrice.*" style="width:95%;text-align: right;"/></td>
 					<td><input type="text" id="txtMemo.*" style="width:95%;"/></td>
 				</tr>
 			</table>
