@@ -29,47 +29,6 @@
                 q_gf('', 'z_fixa_ds');
             });
             function q_gfPost() {
-                q_gt('carteam', '', 0, 0, 0, "load_1");
-            }
-
-            var sssno = '';
-            function q_gtPost(t_name) {
-                switch (t_name) {
-                    case 'load_1':
-                        t_carteam = '';
-                        var as = _q_appendData("carteam", "", true);
-                        for ( i = 0; i < as.length; i++) {
-                            t_carteam += (t_carteam.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
-                        }
-                        q_gt('calctype2', '', 0, 0, 0, "load_2");
-                        break;
-                    case 'load_2':
-                        t_calctypes = '';
-                        var as = _q_appendData("calctypes", "", true);
-                        for ( i = 0; i < as.length; i++) {
-                            t_calctypes += (t_calctypes.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
-                        }
-                        q_gt('carkind', '', 0, 0, 0, "load_3");
-                        break;
-                    case 'load_3':
-                        t_carkind = '';
-                        var as = _q_appendData("carkind", "", true);
-                        if (as[0] != undefined) {
-                            for ( i = 0; i < as.length; i++) {
-                                t_carkind += (t_carkind.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].kind;
-                            }
-                        }
-                        LoadFinish();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            function q_boxClose(t_name) {
-            }
-
-            function LoadFinish() {
                 $('#q_report').q_report({
                     fileName : 'z_fixa_ds',
                     options : [{/*[1]-會計年度*/
@@ -83,10 +42,7 @@
                     }, {/*1-[3],[4]*/
                         type : '1',
                         name : 'date'
-                    }, {/*2-[5],[6]*/
-                        type : '1',
-                        name : 'mon'
-                    }, {/*3-[7],[8]-廠商*/
+                    },, {/*3-[7],[8]-廠商*/
                         type : '2',
                         name : 'tgg',
                         dbf : 'tgg',
@@ -98,13 +54,6 @@
                     }, {/*5-[10]-板台*/
                         type : '6',
                         name : 'xcarplateno'
-                    }, {/*6-[11]*/
-                        type : '6',
-                        name : 'xmoney'
-                    }, {/*14-[21]*/
-                        type : '5',
-                        name : 'xsort01',
-                        value : q_getMsg('tsort01').split('&')
                     }]
                 });
                 q_popAssign();
@@ -114,13 +63,9 @@
                 $('#txtDate1').datepicker();
                 $('#txtDate2').mask('999/99/99');
                 $('#txtDate2').datepicker();
-                $('#txtMon1').mask('999/99');
-                $('#txtMon2').mask('999/99');
+            }
 
-                $('#txtXcheckrate').val(q_getMsg('trate1'));
-                $('#chkXcarkind').children('input').attr('checked', 'checked');
-                $('#chkXcarteam').children('input').attr('checked', 'checked');
-                $('#chkXcalctype').children('input').attr('checked', 'checked');
+            function q_boxClose(t_name) {
             }
 		</script>
 	</head>
