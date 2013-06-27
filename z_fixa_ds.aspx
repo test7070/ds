@@ -23,7 +23,8 @@
             var t_carteam = null;
             var t_calctypes = null;
             aPop = new Array(['txtXcarno', 'lblXcarno', 'car2', 'a.noa,driverno,driver', 'txtXcarno', 'car2_b.aspx']
-            , ['txtXaddr', 'lblXaddr', 'addr', 'noa,addr', 'txtXaddr', 'addr_b.aspx']);
+            , ['txtXaddr', 'lblXaddr', 'addr', 'noa,addr', 'txtXaddr', 'addr_b.aspx']
+            , ['txtXtireno', '', 'view_tirestatus', 'noa','txtXtireno', 'tirestk_b.aspx']);
             $(document).ready(function() {
                 _q_boxClose();
                 q_getId();
@@ -59,6 +60,9 @@
                         type : '8',
                         name : 'xoption01',
                         value : q_getMsg('toption01').split('&')
+                    }, {
+                        type : '6',
+                        name : 'xtireno'
                     }]
                 });
                 q_popAssign();
