@@ -22,7 +22,8 @@
             var t_carkind = null;
             var t_carteam = null;
             var t_calctypes = null;
-            aPop = new Array(['txtXcarno', 'lblXcarno', 'car2', 'a.noa,driverno,driver', 'txtXcarno', 'car2_b.aspx'], ['txtXaddr', 'lblXaddr', 'addr', 'noa,addr', 'txtXaddr', 'addr_b.aspx']);
+            aPop = new Array(['txtXcarno', 'lblXcarno', 'car2', 'a.noa,driverno,driver', 'txtXcarno', 'car2_b.aspx']
+            , ['txtXaddr', 'lblXaddr', 'addr', 'noa,addr', 'txtXaddr', 'addr_b.aspx']);
             $(document).ready(function() {
                 _q_boxClose();
                 q_getId();
@@ -31,29 +32,33 @@
             function q_gfPost() {
                 $('#q_report').q_report({
                     fileName : 'z_fixa_ds',
-                    options : [{/*[1]-會計年度*/
+                    options : [{
                         type : '0',
                         name : 'accy',
                         value : q_getId()[4]
-                    }, {/*[2]-使用者*/
+                    }, {
                         type : '0',
                         name : 'xname',
-                        value : r_name
-                    }, {/*1-[3],[4]*/
+                        value : r_name 
+                    }, {
                         type : '1',
                         name : 'date'
-                    },, {/*3-[7],[8]-廠商*/
+                    }, {
                         type : '2',
                         name : 'tgg',
                         dbf : 'tgg',
                         index : 'noa,comp',
                         src : 'tgg_b.aspx'
-                    }, {/*4-[9]-車牌*/
+                    }, {
                         type : '6',
                         name : 'xcarno'
-                    }, {/*5-[10]-板台*/
+                    }, {
                         type : '6',
-                        name : 'xcarplateno'
+                        name : 'xmoney'
+                    }, {
+                        type : '8',
+                        name : 'xoption01',
+                        value : q_getMsg('toption01').split('&')
                     }]
                 });
                 q_popAssign();
@@ -63,10 +68,49 @@
                 $('#txtDate1').datepicker();
                 $('#txtDate2').mask('999/99/99');
                 $('#txtDate2').datepicker();
+                $('#txtXmoney').css('text-align','right').keydown(function(e) {
+                	//alert(e.which);
+                	if(e.which==8 || e.which==9 || e.which==13 || e.which==37 || e.which==38 || e.which==39 || e.which==40 || e.which==46){
+                		
+                	}else if(e.which==229 ){
+                		if($('#__divMsg').length==0){
+                			$('body').append('<div id="__divMsg" style="position: absolute; z-index:998;width:150px;height:30px;background:rgb(200,200,200);color:red;"> <div>');
+                		}else{
+                			$('#__divMsg').show();
+                		}
+                		var pos = GetAbsPos(document.getElementById('txtXmoney'));
+                		$('#__divMsg').css('top',pos.y+$(e.target).height()+5).css('left',pos.x).html('請關閉中文輸入法。');
+                		e.preventDefault();
+                	}else if(!((e.which>=48 && e.which<=57) || (e.which>=96 && e.which<=105) || e.which==110 || e.which==190 || e.which==16 || e.which==17 || e.which==18) || (e.which!=16 && e.shiftKey) || (e.which!=17 && e.ctrlKey) || (e.which!=18 && e.altKey)){                		
+                		if($('#__divMsg').length==0){
+                			$('body').append('<div id="__divMsg" style="position: absolute; z-index:998; width:150px;height:25px;background:rgb(200,200,200);color:red;"> <div>');
+                		}else{
+                			$('#__divMsg').show();
+                		}
+                		var pos = GetAbsPos(document.getElementById('txtXmoney'));
+                		$('#__divMsg').css('top',pos.y+$(e.target).height()+5).css('left',pos.x).html('只能輸入數字。');
+                		e.preventDefault();
+                	}else{
+                		$('#__divMsg').hide();
+                	}
+                });
             }
 
             function q_boxClose(t_name) {
             }
+            function q_gtPost(s2) {
+			}
+			
+			function GetAbsPos(o) {
+			    var pos = {x:0, y:0};
+			    while (o!=null)
+			    {
+				    pos.x += o.offsetLeft;
+				    pos.y += o.offsetTop;
+				    o = o.offsetParent; //若區塊外還有父元素，就繼續往外推
+			    }
+			    return pos;
+			}
 		</script>
 	</head>
 	<body ondragstart="return false" draggable="false"
@@ -74,10 +118,10 @@
 	ondragover="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
-		<div id="q_menu"></div>
+		<div id="q_menu"> </div>
 		<div style="position: absolute;top: 10px;left:50px;z-index: 1;width:2000px;">
 			<div id="container">
-				<div id="q_report"></div>
+				<div id="q_report"> </div>
 			</div>
 			<div class="prt" style="margin-left: -40px;">
 				<!--#include file="../inc/print_ctrl.inc"-->

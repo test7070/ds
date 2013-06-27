@@ -472,8 +472,8 @@
 					<tr>
 						<td><span> </span><a id="lblCarno" class="lbl"> </a></td>
 						<td><input id="txtCarno"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblCarplate" class="lbl"> </a></td>
-						<td><input id="txtCarplateno"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblCarplate" class="lbl" style="display:none;"> </a></td>
+						<td><input id="txtCarplateno"  type="text" class="txt c1" style="display:none;"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTgg" class="lbl btn" > </a></td>

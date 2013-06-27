@@ -581,7 +581,7 @@
 							<input id="txtDriver" type="text" style="float:left;width:50%;"/>
 						</td> 
 					</tr>
-					<tr>
+					<tr style="display:none;">
 						<td><span> </span><a id="lblCarplateno" class="lbl btn"> </a></td>
 						<td><input id="txtCarplateno" type="text" class="txt c1"/></td>
 					</tr>

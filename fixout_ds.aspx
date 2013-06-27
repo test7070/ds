@@ -712,8 +712,8 @@
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblCarplate" class="lbl btn"> </a></td>
-						<td><input id="txtCarplateno" type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblCarplate" class="lbl btn" style="display:none;"> </a></td>
+						<td><input id="txtCarplateno" type="text" class="txt c1" style="display:none;"/></td>
 						<td><span> </span><a id="lblMiles" class="lbl"> </a></td>
 						<td><input id="txtMiles" type="text" class="txt c1 num"/></td>
 						<td> </td>
