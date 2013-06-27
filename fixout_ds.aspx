@@ -34,7 +34,7 @@
             brwNowPage = 0;
             brwKey = 'Datea';
             aPop = new Array(['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
-            , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
+            , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', '0txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
             , ['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx']
             , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,brand,unit,inprice', 'txtProductno_,txtProduct_,txtTypea_,txtBrand_,txtUnit_,txtPrice_', 'fixucc_b.aspx']
             , ['txtTireno_', 'btnTirestk_', 'view_tirestk', 'noa,productno,product,brandno,brand,price', 'txtTireno_,txtProductno_,txtProduct_,txtBrandno_,txtBrand_,txtPrice_', 'tirestk_b.aspx']);
