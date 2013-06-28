@@ -235,6 +235,7 @@
             	q_gt('paybs', t_where, 0, 0, 0, "btnModi", r_accy);
 		    }
 		    function btnPrint() {
+		    	q_box("z_fixa_ds.aspx?;;;;"+r_accy, 'z_fixa_ds', "95%", "95%", q_getMsg("popFixa"));
 		    }
 		    function wrServer(key_value) {
 		        var i;
