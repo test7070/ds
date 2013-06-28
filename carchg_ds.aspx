@@ -227,7 +227,7 @@
 			}
 
 			function btnPrint() {
-				q_box('z_carchg.aspx?;;;'+r_accy, '', "95%", "95%", q_getMsg("popPrint"));
+				q_box('z_carchg_ds.aspx?;;;'+r_accy, '', "95%", "95%", q_getMsg("popPrint"));
 			}
 
 			function btnOk() {
