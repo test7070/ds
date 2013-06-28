@@ -58,7 +58,7 @@
                 bbmMask = [['txtDatea', r_picd]];
                 q_mask(bbmMask);
                 q_cmbParse("cmbPosition", q_getPara('tire.position'),'s');
-                q_cmbParse("cmbAction", q_getPara('tire.action'),'s');
+                q_cmbParse("cmbAction", q_getMsg('action').replace(/\&/g,','),'s');
             }
 			function q_popFunc(id){
             	switch(id) {
