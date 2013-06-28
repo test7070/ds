@@ -13,56 +13,67 @@
 		<script src="css/jquery/ui/jquery.ui.widget.js"> </script>
 		<script src="css/jquery/ui/jquery.ui.datepicker_tw.js"> </script>
 		<script type="text/javascript">
-            var q_name = "fixin_s";
-			var aPop = new Array(['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno', 'tgg_b.aspx'],
-			['txtProductno', 'lblProductno', 'fixucc', 'noa,namea', 'txtProductno', 'fixucc_b.aspx']);
-            $(document).ready(function() {
-                main();
-            });
-            /// end ready
+			var q_name = "fixout_s";
+			var aPop = new Array(
+				['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno', 'tgg_b.aspx'], 
+				['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno', 'driver_b.aspx'], 
+				['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno', 'car2_b.aspx'], 
+				['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx'],
+				['txtProductno', 'lblProductno', 'fixucc', 'noa,namea', 'txtProductno', 'fixucc_b.aspx']);
+				
+			$(document).ready(function() {
+				main();
+			});
 
-            function main() {
-                mainSeek();
-                q_gf('', q_name);
-            }
-            function q_gfPost() {
-                q_getFormat();
-                q_langShow();
+			function main() {
+				mainSeek();
+				q_gf('', q_name);
+			}
 
-                bbmMask = [['txtBdate', r_picd], ['txtEdate', r_picd], ['txtMon', r_picm]];
-                q_mask(bbmMask);
+			function q_gfPost() {
+				q_getFormat();
+				q_langShow();
+
+				bbmMask = [['txtBdate', r_picd], ['txtEdate', r_picd],['txtBoutdate', r_picd], ['txtEoutdate', r_picd], ['txtMon', r_picm]];
+				q_mask(bbmMask);
 				$('#txtBdate').datepicker();
 				$('#txtEdate').datepicker(); 
-                $('#txtNoa').focus();
-            }
+				$('#txtEoutdate').datepicker();
+				$('#txtBoutdate').datepicker(); 
+				$('#txtNoa').focus();
+			}
 
-            function q_seekStr() {
-                t_bdate = $.trim($('#txtBdate').val());
+			function q_seekStr() {
+				t_bdate = $.trim($('#txtBdate').val());
 				t_edate = $.trim($('#txtEdate').val());
-				t_mon = $.trim($('#txtMon').val());
+				t_boutdate = $.trim($('#txtBoutdate').val());
+				t_eoutdate = $.trim($('#txtEoutdate').val());
 				t_noa = $.trim($('#txtNoa').val());
+				t_carno = $.trim($('#txtCarno').val());
+				t_carplateno = $.trim($('#txtCarplateno').val());
+				t_driverno = $.trim($('#txtDriverno').val());
 				t_tggno = $.trim($('#txtTggno').val());
-				t_invono = $.trim($('#txtInvono').val());
 				t_productno = $.trim($('#txtProductno').val());
 				t_tireno = $.trim($('#txtTireno').val());
 				
-                var t_where = " 1=1 "
+				var t_where = " 1=1 "
 					+q_sqlPara2("datea", t_bdate, t_edate)
-					+q_sqlPara2("mon", t_mon)
+					+q_sqlPara2("outdate", t_boutdate, t_eoutdate)
 					+q_sqlPara2("noa", t_noa)
+					+q_sqlPara2("carno", t_carno)
+					+q_sqlPara2("carplateno", t_carplateno)
+					+q_sqlPara2("driverno", t_driverno)
 					+q_sqlPara2("tggno", t_tggno);
-				if (t_invono.length>0)
-                    t_where += " and patindex('%" + t_invono + "%',invono)>0";
 				if (t_productno.length>0)
-                    t_where += " and exists(select noa from fixins where fixins.noa=fixin.noa and patindex('%" + t_productno + "%',fixins.productno)>0)";
+                    t_where += " and exists(select noa from fixouts where fixouts.noa=fixout.noa and patindex('%" + t_productno + "%',fixouts.productno)>0)";
 				if (t_tireno.length>0)
-                    t_where += " and exists(select noa from fixins where fixins.noa=fixin.noa and patindex('%" + t_tireno + "%',fixins.tireno)>0)";
+                    t_where += " and exists(select noa from fixouts where fixouts.noa=fixin.noa and patindex('%" + t_tireno + "%',fixouts.tireno)>0)";
 				t_where = ' where=^^' + t_where + '^^ ';
-                return t_where;
-            }
+				return t_where;
+			}
 		</script>
 		<style type="text/css">
-            .seek_tr {
+			.seek_tr {
 				color: white;
 				text-align: center;
 				font-weight: bold;
@@ -82,9 +93,11 @@
 					</td>
 				</tr>
 				<tr class='seek_tr'>
-					<td class='seek'  style="width:20%;"><a id='lblMon'></a></td>
-					<td>
-					<input class="txt" id="txtMon" type="text" style="width:215px; font-size:medium;" />
+					<td style="width:35%;" ><a id='lblOutdate'></a></td>
+					<td style="width:65%;  ">
+					<input class="txt" id="txtBoutdate" type="text" style="width:90px; font-size:medium;" />
+					<span style="display:inline-block; vertical-align:middle">&sim;</span>
+					<input class="txt" id="txtEoutdate" type="text" style="width:93px; font-size:medium;" />
 					</td>
 				</tr>
 				<tr class='seek_tr'>
@@ -94,15 +107,27 @@
 					</td>
 				</tr>
 				<tr class='seek_tr'>
-					<td class='seek'  style="width:20%;"><a id='lblTggno'></a></td>
+					<td class='seek'  style="width:20%;"><a id='lblCarno'></a></td>
 					<td>
-					<input class="txt" id="txtTggno" type="text" style="width:215px; font-size:medium;" />
+					<input class="txt" id="txtCarno" type="text" style="width:215px; font-size:medium;" />
+					</td>
+				</tr>
+				<tr class='seek_tr' style="display:none;">
+					<td class='seek'  style="width:20%;"><a id='lblCarplate'></a></td>
+					<td>
+					<input class="txt" id="txtCarplateno" type="text" style="width:215px; font-size:medium;" />
 					</td>
 				</tr>
 				<tr class='seek_tr'>
-					<td class='seek'  style="width:20%;"><a id='lblInvono'></a></td>
+					<td class='seek'  style="width:20%;"><a id='lblDriver'></a></td>
 					<td>
-					<input class="txt" id="txtInvono" type="text" style="width:215px; font-size:medium;" />
+					<input class="txt" id="txtDriverno" type="text" style="width:215px; font-size:medium;" />
+					</td>
+				</tr>
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblTggno'></a></td>
+					<td>
+					<input class="txt" id="txtTggno" type="text" style="width:215px; font-size:medium;" />
 					</td>
 				</tr>
 				<tr class='seek_tr'>

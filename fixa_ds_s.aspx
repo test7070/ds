@@ -120,7 +120,7 @@
 					<input class="txt" id="txtCarno" type="text" style="width:215px; font-size:medium;" />
 					</td>
 				</tr>
-				<tr class='seek_tr'>
+				<tr class='seek_tr' style="display:none;">
 					<td class='seek'  style="width:20%;"><a id='lblCarplate'></a></td>
 					<td>
 					<input class="txt" id="txtCarplateno" type="text" style="width:215px; font-size:medium;" />
