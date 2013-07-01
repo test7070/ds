@@ -24,7 +24,7 @@
             var q_name = "tre";
             var q_readonly = ['txtCarchgno','txtAccno', 'txtNoa', 'txtMoney', 'txtTotal', 'txtTolls', 'txtWorker2', 'txtWorker', 'txtRc2ano', 'txtPaydate', 'txtPlusmoney', 'txtMinusmoney', 'txtAccno', 'txtAccno2', 'txtYear2', 'txtYear1'];
             var q_readonlys = ['txtOrdeno', 'txtTranno', 'txtTrannoq'];
-            var bbmNum = [['txtUnopay', 10, 0], ['txtMoney', 10, 0], ['txtTolls', 10, 0], ['txtTotal', 10, 0], ['txtPlusmoney', 10, 0], ['txtMinusmoney', 10, 0]];
+            var bbmNum = [['txtMoney', 10, 0], ['txtTolls', 10, 0], ['txtTotal', 10, 0], ['txtPlusmoney', 10, 0], ['txtMinusmoney', 10, 0]];
             var bbsNum = [['txtMount', 10, 3], ['txtPrice', 10, 3], ['txtDiscount', 10, 3], ['txtMoney', 10, 0], ['txtTolls', 10, 0]];
             var bbmMask = [];
             var bbsMask = [];
@@ -65,7 +65,7 @@
 
             function mainPost() {
                 q_getFormat();
-                bbmMask = [['txtDatea', r_picd], ['txtDate2', r_picd], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtPaydate', r_picd], ['txtMon', r_picm]];
+                bbmMask = [['txtDatea_import', r_picd],['txtBdate_import', r_picd], ['txtEdate_import', r_picd],['txtDatea', r_picd], ['txtDate2', r_picd], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtPaydate', r_picd], ['txtMon', r_picm]];
                 q_mask(bbmMask);
 
                 q_gt('carteam', '', 0, 0, 0, "");
@@ -85,9 +85,6 @@
                 $('#txtMinusmoney').change(function(e) {
                     sum();
                 });
-                $('#txtUnopay').change(function(e) {
-                    sum();
-                });
                 $('#btnTrans').click(function(e) {
                     if (q_cur != 1 && q_cur != 2) {
                         if (r_accy.substring(0, 3) != $('#txtDate2').val().substring(0, 3)) {
@@ -101,16 +98,79 @@
                     }
                 });
                 $("#btnCarchg").click(function(e) {
-                    var t_carchgno = '';
-                    if (curData.isLoad) {
-                        for (var i = 0; i < curData.carchgno.length; i++)
-                            t_carchgno += (t_carchgno.length > 0 ? ',' : '') + curData.carchgno[i];
-                        t_carchgno = 'carchgno=' + t_carchgno;
+                	Lock(1,{opacity:0});
+                	if ($('#txtCarno').val().length == 0) {
+                        alert('請輸入車牌!');
+                        Unlock(1);
+                        return;
                     }
+                    if ($('#txtDriverno').val().length == 0) {
+                        alert('請輸入司機!');
+                        Unlock(1);
+                        return;
+                    }
+                    
+                    t_carchgno = 'carchgno=' + $('#txtCarchgno').val();
                     t_where = "  carno='" + $('#txtCarno').val() + "' and driverno='" + $('#txtDriverno').val() + "' and  (treno='" + $('#txtNoa').val() + "' or len(isnull(treno,''))=0) ";
-                    q_box("carchg_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_carchgno + ";", 'carchg', "95%", "650px", q_getMsg('popCarchg'));
-
+                    q_box("carchg_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_carchgno + ";", 'carchg', "95%", "650px", q_getMsg('popCarchg'));  
                 });
+                $('#lblCarchgno').click(function(e){
+					var t_where = "1!=1";
+					var t_carchgno = $('#txtCarchgno').val().split(',');
+					for(var i in t_carchgno){
+						if(t_carchgno[i].length>0)
+							t_where += " or noa='"+t_carchgno[i]+"'";
+					}
+					q_box("carchg.aspx?"+ r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno, 'carchg', "95%", "95%", q_getMsg("popCarchg"));
+				});
+				//-----------------------------------------------
+                $('#divImport').mousedown(function(e) {
+                    if (e.button == 2) {
+                        $(this).data('xtop', parseInt($(this).css('top')) - e.clientY);
+                        $(this).data('xleft', parseInt($(this).css('left')) - e.clientX);
+                    }
+                }).mousemove(function(e) {
+                    if (e.button == 2 && e.target.nodeName != 'INPUT') {
+                        $(this).css('top', $(this).data('xtop') + e.clientY);
+                        $(this).css('left', $(this).data('xleft') + e.clientX);
+                    }
+                }).bind('contextmenu', function(e) {
+                    if (e.target.nodeName != 'INPUT')
+                        e.preventDefault();
+                });
+
+                $('#btnImport').click(function() {
+                    $('#divImport').toggle();
+                    $('#txtDatea_import').focus();
+                });
+                $('#btnCancel_import').click(function() {
+                    $('#divImport').toggle();
+                });
+                $('#btnImport_trans').click(function() {
+                   if(q_cur != 1 && q_cur != 2){
+                		if(r_accy.substring(0,3)!=$('#txtDatea_import').val().substring(0,3)){
+		            		alert('年度異常!');
+		            		return;
+		            	}
+						Lock(1,{opacity:0});
+	                	q_func('tre.import',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name);
+                	}
+                });
+                $('#txtDatea_import').keydown(function(e) {
+                    if (e.which == 13)
+                        $('#txtBdate_import').focus();
+                });
+                $('#txtBdate_import').keydown(function(e) {
+                    if (e.which == 13)
+                        $('#txtEdate_import').focus();
+                });
+                $('#txtEdate_import').keydown(function(e) {
+                    if (e.which == 13)
+                        $('#cmbCarteamno_import').focus();
+                });
+                $('#txtDatea_import').datepicker();
+                $('#txtBdate_import').datepicker();
+                $('#txtEdate_import').datepicker();
             }
 
             function q_funcPost(t_func, result) {
@@ -131,13 +191,14 @@
                     case 'carchg':
                         if (b_ret != null) {
                             var t_where = '1!=1';
-                            curData.isLoad = true;
-                            curData.carchgno = new Array();
+                            $('#txtCarchgno').val('');           
                             for (var i = 0; i < b_ret.length; i++) {
-                                curData.carchgno.push(b_ret[i].noa);
+                                $('#txtCarchgno').val($('#txtCarchgno').val()+($('#txtCarchgno').val().length>0?',':'')+b_ret[i].noa);
                                 t_where += " or noa='" + b_ret[i].noa + "'";
                             }
                             q_gt('carchg', "where=^^" + t_where + "^^", 0, 0, 0, "");
+                        }else{
+                        	Unlock(1);
                         }
                         break;
                     case q_name + '_s':
@@ -149,11 +210,6 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
-                    case 'holiday':
-                        holiday = _q_appendData("holiday", "", true);
-                        endacheck($('#txtDatea').val(), q_getPara('sys.modiday2'));
-                        //單據日期,幾天後關帳
-                        break;
                     case 'carteam':
                         var as = _q_appendData("carteam", "", true);
                         var t_item = "@";
@@ -161,6 +217,7 @@
                             t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
                         }
                         q_cmbParse("cmbCarteamno", t_item);
+                        q_cmbParse("cmbCarteamno_import", t_item);
                         if (abbm[q_recno] != undefined) {
                             $("#cmbCarteamno").val(abbm[q_recno].carteamno);
                         }
@@ -176,6 +233,7 @@
                         $('#txtPlusmoney').val(t_plusmoney);
                         $('#txtMinusmoney').val(t_minusmoney);
                         sum();
+                        Unlock(1);
                         break;
                     case q_name:
                         if (q_cur == 4)
@@ -183,42 +241,33 @@
                         break;
                 }
             }
-
+			function q_stPost() {
+                if (!(q_cur == 1 || q_cur == 2))
+                    return false;
+                Unlock(1);
+            }
             function btnOk() {
+            	Lock(1,{opacity:0});
                 $('#txtDatea').val($.trim($('#txtDatea').val()));
-                $('#txtUnopay').val(q_float('txtUnopay'));
-                if (q_float('txtUnopay') != 0 && $('#txtTggno').val() == '') {
-                    alert('請填寫' + q_getMsg('lblTgg'));
-                    return;
-                }
-                if (checkId($('#txtDatea').val()) == 0) {
-                    alert(q_getMsg('lblDatea') + '錯誤。');
-                    return;
-                }
-                $('#txtPaydate').val($.trim($('#txtPaydate').val()));
-                if ($('#txtPaydate').val().length > 0 && checkId($('#txtPaydate').val()) == 0)
-                    alert(q_getMsg('lblPaydate') + '錯誤。');
-                $('#txtMon').val($.trim($('#txtMon').val()));
-                if ($('#txtMon').val().length > 0 && !(/^[0-9]{3}\/(?:0?[1-9]|1[0-2])$/g).test($('#txtMon').val()))
+                if($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())){
+					alert(q_getMsg('lblDatea')+'錯誤。');
+            		Unlock(1);
+            		return;
+				}
+				if($('#txtDatea').val().substring(0,3)!=r_accy){
+					alert('年度異常錯誤，請切換到【'+$('#txtDatea').val().substring(0,3)+'】年度再作業。');
+					Unlock(1);
+            		return;
+				}
+                if ($('#txtMon').val().length > 0 && !(/^[0-9]{3}\/(?:0?[1-9]|1[0-2])$/g).test($('#txtMon').val())){
                     alert(q_getMsg('lblMon') + '錯誤。');
+                    Unlock(1);
+					return;
+				}
                 if (q_cur == 1)
                     $('#txtWorker').val(r_name);
                 else
                     $('#txtWorker2').val(r_name);
-                t_err = q_chkEmpField([['txtNoa', q_getMsg('lblNoa')]]);
-                if (t_err.length > 0) {
-                    alert(t_err);
-                    return;
-                }
-                //-------------------------------------------------
-                //回寫CARCHG
-                if (curData.isLoad) {
-                    var t_carchgno = '';
-                    for (var i = 0; i < curData.carchgno.length; i++)
-                        t_carchgno += (t_carchgno.length > 0 ? ',' : '') + curData.carchgno[i];
-                    $('#txtCarchgno').val(t_carchgno);
-                }
-                //-------------------------------------------------
                 sum();
                 var t_noa = trim($('#txtNoa').val());
                 var t_date = trim($('#txtDatea').val());
@@ -247,19 +296,13 @@
                 $('#txtNoa').val('AUTO');
                 $('#txtDatea').val(q_date());
                 $('#txtDatea').focus();
-                curData = new tre();
             }
 
             function btnModi() {
                 if (emp($('#txtNoa').val()))
                     return;
-                if (checkenda) {
-                    alert('超過' + q_getPara('sys.modiday2') + '天' + '已關帳!!');
-                    return;
-                }
                 _btnModi();
                 $('#txtDatea').focus();
-                curData = new tre();
                 sum();
             }
 
@@ -294,8 +337,7 @@
                 }
                 t_plusmoney = q_float('txtPlusmoney');
                 t_minusmoney = q_float('txtMinusmoney');
-                t_unopay = q_float('txtUnopay');
-                t_total = t_money + t_tolls + t_plusmoney - t_minusmoney - t_unopay;
+                t_total = t_money + t_tolls + t_plusmoney - t_minusmoney;
                 $('#txtTolls').val(t_tolls);
                 $('#txtMoney').val(t_money);
                 $('#txtTotal').val(t_total);
@@ -303,31 +345,18 @@
 
             function refresh(recno) {
                 _refresh(recno);
-                if (r_rank <= 7)
-                    q_gt('holiday', "where=^^ noa>='" + $('#txtDatea').val() + "'^^", 0, 0, 0, "", r_accy);
-                //單據日期之後的假日
-                else
-                    checkenda = false;
             }
 
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
-
                 if (q_cur == 1 || q_cur == 2) {
-                    $('#lblDate2').hide();
-                    $('#txtDate2').hide();
-                    $('#btnTrans').hide();
                     $('#btnCarchg').removeAttr('disabled');
+                    $('#btnImport').attr('disabled','disabled');
+                	$('#divImport').hide();
                 } else {
-                    $('#lblDate2').show();
-                    $('#txtDate2').show();
-                    $('#btnTrans').show();
                     $('#btnCarchg').attr('disabled', 'disabled');
+                    $('#btnImport').removeAttr('disabled');
                 }
-                $('#txtDate2').removeAttr('readonly').removeAttr('disabled').css('background-color', 'white');
-                $('#txtBdate').removeAttr('readonly').removeAttr('disabled').css('background-color', 'white');
-                $('#txtEdate').removeAttr('readonly').removeAttr('disabled').css('background-color', 'white');
-                $('#cmbCarteamno').removeAttr('readonly').removeAttr('disabled').css('background-color', 'white');
             }
 
             function btnMinus(id) {
@@ -376,46 +405,11 @@
             }
 
             function btnDele() {
-                if (checkenda) {
-                    alert('超過' + q_getPara('sys.modiday2') + '天' + '已關帳!!');
-                    return;
-                }
                 _btnDele();
             }
 
             function btnCancel() {
                 _btnCancel();
-            }
-
-            function checkId(str) {
-                if ((/^[a-z,A-Z][0-9]{9}$/g).test(str)) {//身分證字號
-                    var key = 'ABCDEFGHJKLMNPQRSTUVWXYZIO';
-                    var s = (key.indexOf(str.substring(0, 1)) + 10) + str.substring(1, 10);
-                    var n = parseInt(s.substring(0, 1)) * 1 + parseInt(s.substring(1, 2)) * 9 + parseInt(s.substring(2, 3)) * 8 + parseInt(s.substring(3, 4)) * 7 + parseInt(s.substring(4, 5)) * 6 + parseInt(s.substring(5, 6)) * 5 + parseInt(s.substring(6, 7)) * 4 + parseInt(s.substring(7, 8)) * 3 + parseInt(s.substring(8, 9)) * 2 + parseInt(s.substring(9, 10)) * 1 + parseInt(s.substring(10, 11)) * 1;
-                    if ((n % 10) == 0)
-                        return 1;
-                } else if ((/^[0-9]{8}$/g).test(str)) {//統一編號
-                    var key = '12121241';
-                    var n = 0;
-                    var m = 0;
-                    for (var i = 0; i < 8; i++) {
-                        n = parseInt(str.substring(i, i + 1)) * parseInt(key.substring(i, i + 1));
-                        m += Math.floor(n / 10) + n % 10;
-                    }
-                    if ((m % 10) == 0 || ((str.substring(6, 7) == '7' ? m + 1 : m) % 10) == 0)
-                        return 2;
-                } else if ((/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/g).test(str)) {//西元年
-                    var regex = new RegExp("^(?:(?:([0-9]{4}(-|\/)(?:(?:0?[1,3-9]|1[0-2])(-|\/)(?:29|30)|((?:0?[13578]|1[02])(-|\/)31)))|([0-9]{4}(-|\/)(?:0?[1-9]|1[0-2])(-|\/)(?:0?[1-9]|1\\d|2[0-8]))|(((?:(\\d\\d(?:0[48]|[2468][048]|[13579][26]))|(?:0[48]00|[2468][048]00|[13579][26]00))(-|\/)0?2(-|\/)29))))$");
-                    if (regex.test(str))
-                        return 3;
-                } else if ((/^[0-9]{3}\/[0-9]{2}\/[0-9]{2}$/g).test(str)) {//民國年
-                    str = (parseInt(str.substring(0, 3)) + 1911) + str.substring(3);
-                    var regex = new RegExp("^(?:(?:([0-9]{4}(-|\/)(?:(?:0?[1,3-9]|1[0-2])(-|\/)(?:29|30)|((?:0?[13578]|1[02])(-|\/)31)))|([0-9]{4}(-|\/)(?:0?[1-9]|1[0-2])(-|\/)(?:0?[1-9]|1\\d|2[0-8]))|(((?:(\\d\\d(?:0[48]|[2468][048]|[13579][26]))|(?:0[48]00|[2468][048]00|[13579][26]00))(-|\/)0?2(-|\/)29))))$");
-                    if (regex.test(str))
-                        return 4
-                }
-                return 0;
-                //錯誤
             }
 		</script>
 		<style type="text/css">
@@ -549,6 +543,49 @@
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
 		<!--#include file="../inc/toolbar.inc"-->
+		<div id="divImport" style="position:absolute; top:400px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+			<table style="width:100%;">
+				<tr style="height:1px;">
+					<td style="width:150px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblDatea_import" style="float:right; color: blue; font-size: medium;"> </a></td>
+					<td colspan="4">
+					<input id="txtDatea_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblDate_import" style="float:right; color: blue; font-size: medium;"> </a></td>
+					<td colspan="4">
+					<input id="txtBdate_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					<span style="float:left; display:block; width:25px;"><a>～</a></span>
+					<input id="txtEdate_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblCarteamno_import" style="float:right; color: blue; font-size: medium;"> </a></td>
+					<td colspan="4">
+						<select id="cmbCarteamno_import" type="text" style="float:left; width:100px; font-size: medium;"> </select>
+					</td>
+				</tr>
+				<tr style="height:35px;"> </tr>
+				<tr style="height:35px;">
+					<td> </td>
+					<td>
+					<input id="btnImport_trans" type="button" value="匯入"/>
+					</td>
+					<td></td>
+					<td></td>
+					<td>
+					<input id="btnCancel_import" type="button" value="關閉"/>
+					</td>
+				</tr>
+			</table>
+		</div>
 		<div id='dmain' >
 			<div class="dview" id="dview">
 				<table class="tview" id="tview">
@@ -607,6 +644,8 @@
 							<input id="txtDriverno" type="text" style="float:left;width:45%;"/>
 							<input id="txtDriver" type="text" style="float:left;width:55%;"/>
 						</td>
+						<td> </td>
+						<td><input id="btnImport" type="button" class="txt c1" value="匯入"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblDatea" class="lbl"> </a></td>
@@ -634,7 +673,7 @@
 						<td><input id="txtTolls" type="text" class="txt c1 num"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
+						<td><span> </span><a id="lblTggno" class="lbl btn"> </a></td>
 						<td colspan="3">
 							<input id="txtTggno" type="text"  class="txt c2"/>
 							<input id="txtTggcomp" type="text"  class="txt c3"/>

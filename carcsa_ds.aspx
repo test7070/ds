@@ -734,6 +734,12 @@
             }
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
+                if(q_cur==1 || q_cur==2){
+                	$('#btnExport').attr('disabled','disabled');
+                	$('#divExport').hide();
+                }else{
+                	$('#btnExport').removeAttr('disabled');
+                }
             }
 
             function btnMinus(id) {
