@@ -171,7 +171,7 @@
 						return;
 					}
 					$('#btnExport_trans').attr('disabled','disabled').val('請稍後。');
-					q_func('carcsb.export',t_bdate+','+t_edate);
+					q_func('carcsa.export',t_bdate+','+t_edate);
 				});
 				$('#txtBdate_export').keydown(function(e) {
 					if(e.which==13)
@@ -473,7 +473,15 @@
 				else
 					wrServer(t_noa);
             }
-
+			function q_funcPost(t_func, result) {
+                switch(t_func) {
+                    case 'carcsa.export':
+						alert(result);
+						$('#btnExport_trans').removeAttr('disabled','disabled').val('匯至出車單');
+						location.reload();
+                        break;
+                }
+            }
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)// 1-3
                     return;
