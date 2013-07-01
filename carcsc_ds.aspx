@@ -131,6 +131,21 @@
 	            $('#txtEdate_export').focusout(function () {
                  	   q_cd( $(this).val() ,$(this));
                 });	
+                //-----------------------------------------------
+				$('#divExport').mousedown(function(e) {
+                	if(e.button==2){               		
+	                	$(this).data('xtop',parseInt($(this).css('top')) - e.clientY);
+	                	$(this).data('xleft',parseInt($(this).css('left')) - e.clientX);
+                	}
+                }).mousemove(function(e) {
+                	if(e.button==2 && e.target.nodeName!='INPUT'){             	
+                		$(this).css('top',$(this).data('xtop')+e.clientY);
+                		$(this).css('left',$(this).data('xleft')+e.clientX);
+                	}
+                }).bind('contextmenu', function(e) {
+	            	if(e.target.nodeName!='INPUT')
+                		e.preventDefault();
+		        });
                 $('#btnExport').click(function(){
 					$('#divExport').toggle();
 					$('#txtBdate_export').focus();
@@ -531,7 +546,7 @@
         ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
      >
 		<!--#include file="../inc/toolbar.inc"-->
-		<div id="divExport" style="position:absolute; top:300px; left:500px; display:none; width:300px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+		<div id="divExport" style="position:absolute; top:300px; left:500px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
 			<table style="width:100%;">
 				<tr style="height:1px;">
 					<td style="width:80px;"> </td>

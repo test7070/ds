@@ -28,7 +28,7 @@
             ,['txtInmoney',10,0,1]
             ,['txtOutmoney',10,0,1]];
             var bbsNum = [['txtWeight',10,3,1],['txtMount',10,3,1],['txtDiscount',10,3,1],['txtInmoney',10,0,1],['txtOutmoney',10,0,1],['txtOutprice',10,3,1]];
-            var bbmMask = [['txtTrandate', '999/99/99'], ['txtBtime', '99:99'], ['txtEtime', '99:99'], ['txtMon', '999/99']];
+            var bbmMask = [['txtDatea', '999/99/99'],['txtTrandate', '999/99/99'], ['txtBtime', '99:99'], ['txtEtime', '99:99'], ['txtMon', '999/99'],['txtBdate_export', '999/99'], ['txtEdate_export', '999/99']];
             var bbsMask = [];
             q_sqlCount = 6;
             brwCount = 6;
@@ -140,18 +140,49 @@
                 $('#lblType').click(function(){
                 	q_box("carcsatype.aspx?" + r_userno + ";" + r_name + ";" + q_time, 'carcsatype', "95%", "95%", q_getMsg('popCarcsatype'));
                 });
-                $('#btnTran').click(function(){
-                	var t_where = '',t_tranno='';
-                    for (var i = 0; i < q_bbsCount; i++) {
-                    	t_tranno = $.trim($('#txtTranno_'+i).val());
-                    	if(t_tranno.length>0)
-                    		t_where += (t_where.length > 0 ? ' or ' : '') + "noa='" + t_tranno + "'";
-                    }
-                   	if(t_where.length>0)
-                   		q_pop('', "trans_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno+";", 'trans', 'noa', 'datea', "95%", "95%", q_getMsg('popTrans'), true);
-               		else
-               			alert('無出車單號。');
-                });
+                //-----------------------------------------------
+				$('#divExport').mousedown(function(e) {
+                	if(e.button==2){               		
+	                	$(this).data('xtop',parseInt($(this).css('top')) - e.clientY);
+	                	$(this).data('xleft',parseInt($(this).css('left')) - e.clientX);
+                	}
+                }).mousemove(function(e) {
+                	if(e.button==2 && e.target.nodeName!='INPUT'){             	
+                		$(this).css('top',$(this).data('xtop')+e.clientY);
+                		$(this).css('left',$(this).data('xleft')+e.clientX);
+                	}
+                }).bind('contextmenu', function(e) {
+	            	if(e.target.nodeName!='INPUT')
+                		e.preventDefault();
+		        });
+		        
+				$('#btnExport').click(function(){
+					$('#divExport').toggle();
+					$('#txtBdate_export').focus();
+				});
+				$('#btnCancel_export').click(function(){
+					$('#divExport').toggle();
+				});
+				$('#btnExport_trans').click(function(){
+					var t_bdate = $.trim($('#txtBdate_export').val());
+					var t_edate = $.trim($('#txtEdate_export').val());
+					if(t_bdate.length==0 || t_edate.length==0){
+						alert('請輸入匯入條件!');
+						return;
+					}
+					$('#btnExport_trans').attr('disabled','disabled').val('請稍後。');
+					q_func('carcsb.export',t_bdate+','+t_edate);
+				});
+				$('#txtBdate_export').keydown(function(e) {
+					if(e.which==13)
+						$('#txtEdate_export').focus();
+				});
+				$('#txtEdate_export').keydown(function(e) {
+					if(e.which==13)
+						$('#btnExport_trans').focus();
+				});
+				$('#txtBdate_export').datepicker();
+				$('#txtEdate_export').datepicker(); 
             }
 			function browTrans(obj){
 				var noa = $.trim($(obj).val());
@@ -942,6 +973,34 @@
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
 		<!--#include file="../inc/toolbar.inc"-->
+		<div id="divExport" style="position:absolute; top:300px; left:500px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+			<table style="width:100%;">
+				<tr style="height:1px;">
+					<td style="width:80px;"> </td>
+					<td style="width:80px;"> </td>
+					<td style="width:80px;"> </td>
+					<td style="width:80px;"> </td>
+					<td style="width:80px;"> </td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblDate_export" style="float:right; color: blue; font-size: medium;"> </a></td>
+					<td colspan="4">
+						<input id="txtBdate_export"  type="text" style="float:left; width:80px; font-size: medium;"/>
+						<span style="float:left; display:block; width:20px;"><a>～</a></span>
+						<input id="txtEdate_export"  type="text" style="float:left; width:80px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;"> </tr>
+				<tr style="height:35px;"> </tr>
+				<tr style="height:35px;">
+					<td> </td>
+					<td><input id="btnExport_trans" type="button" value="匯至出車單"/></td>			
+					<td> </td>
+					<td> </td>
+					<td><input id="btnCancel_export" type="button" value="關閉"/></td>			
+				</tr>
+			</table>
+		</div>
 		<div id='dmain' >
 			<div class="dview" id="dview">
 				<table class="tview" id="tview">
@@ -991,10 +1050,18 @@
 					<tr>
 						<td><span> </span><a id="lblNoa" class="lbl"> </a></td>
 						<td><input id="txtNoa"  type="text" class="txt c1" /></td>
+						<td><span> </span><a id="lblDatea" class="lbl"> </a></td>
+						<td><input id="txtDatea" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblTrandate" class="lbl"> </a></td>
 						<td><input id="txtTrandate" type="text" class="txt c1"/></td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td> </td>
+						<td> </td>
+						<td> </td>
 						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
-						<td><input id="txtMon" type="text" class="txt c1"/></td>
+						<td><input id="txtMon" type="text" class="txt c1"/> </td>
 						<td><span> </span><a id="lblInterval" class="lbl"> </a></td>
 						<td><select id="cmbInterval" class="txt c1"> </select></td>
 					</tr>
@@ -1080,8 +1147,7 @@
 						<td><input id="txtWorker2"  type="text"  class="txt c1"/></td>
 						<td> </td>
 						<td> </td>
-						<td> </td>
-						<td><input type="button" id="btnTran" value="出車單明細"/> </td>
+						<td><input id="btnExport" type="button" class="txt c1" value="匯出"/></td>
 					</tr>
 				</table>
 			</div>
