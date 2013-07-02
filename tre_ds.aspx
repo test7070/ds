@@ -210,6 +210,44 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'btnDele':
+                		var as = _q_appendData("pays", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "",t_paysale=0;
+                        	for(var i=0;i<as.length;i++){
+                        		t_paysale = parseFloat(as[i].paysale.length==0?"0":as[i].paysale);
+                        		if(t_paysale!=0)
+                        			t_msg += String.fromCharCode(13)+'付款單號【'+as[i].noa+'】 '+FormatNumber(t_paysale);
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已沖帳:'+ t_msg);
+                        		Unlock(1);
+                        		return;
+                        	}
+                        }
+                    	_btnDele();
+                    	Unlock(1);
+                		break;
+                	case 'btnModi':
+                		var as = _q_appendData("pays", "", true);
+                        if (as[0] != undefined) {
+                        	var t_msg = "",t_paysale=0;
+                        	for(var i=0;i<as.length;i++){
+                        		t_paysale = parseFloat(as[i].paysale.length==0?"0":as[i].paysale);
+                        		if(t_paysale!=0)
+                        			t_msg += String.fromCharCode(13)+'付款單號【'+as[i].noa+'】 '+FormatNumber(t_paysale);
+                        	}
+                        	if(t_msg.length>0){
+                        		alert('已沖帳:'+ t_msg);
+                        		Unlock(1);
+                        		return;
+                        	}
+                        }
+                    	_btnModi();
+		                sum();
+		                Unlock(1);
+		                $('#txtDatea').focus();
+                		break;
                     case 'carteam':
                         var as = _q_appendData("carteam", "", true);
                         var t_item = "@";
@@ -301,9 +339,9 @@
             function btnModi() {
                 if (emp($('#txtNoa').val()))
                     return;
-                _btnModi();
-                $('#txtDatea').focus();
-                sum();
+                Lock(1,{opacity:0});
+                var t_where =" where=^^ rc2no='"+ $('#txtNoa').val()+"'^^";
+                q_gt('pays', t_where, 0, 0, 0, 'btnModi',r_accy);
             }
 
             function btnPrint() {
@@ -405,12 +443,71 @@
             }
 
             function btnDele() {
-                _btnDele();
+                Lock(1,{opacity:0});
+                var t_where =" where=^^ vccno='"+ $('#txtNoa').val()+"'^^";
+                q_gt('umms', t_where, 0, 0, 0, 'btnDele',r_accy);
             }
 
             function btnCancel() {
                 _btnCancel();
             }
+            function FormatNumber(n) {
+            	var xx = "";
+            	if(n<0){
+            		n = Math.abs(n);
+            		xx = "-";
+            	}     		
+                n += "";
+                var arr = n.split(".");
+                var re = /(\d{1,3})(?=(\d{3})+$)/g;
+                return xx+arr[0].replace(re, "$1,") + (arr.length == 2 ? "." + arr[1] : "");
+            }
+			Number.prototype.round = function(arg) {
+			    return Math.round(this * Math.pow(10,arg))/ Math.pow(10,arg);
+			}
+			Number.prototype.div = function(arg) {
+			    return accDiv(this, arg);
+			}
+            function accDiv(arg1, arg2) {
+			    var t1 = 0, t2 = 0, r1, r2;
+			    try { t1 = arg1.toString().split(".")[1].length } catch (e) { }
+			    try { t2 = arg2.toString().split(".")[1].length } catch (e) { }
+			    with (Math) {
+			        r1 = Number(arg1.toString().replace(".", ""))
+			        r2 = Number(arg2.toString().replace(".", ""))
+			        return (r1 / r2) * pow(10, t2 - t1);
+			    }
+			}
+			Number.prototype.mul = function(arg) {
+			    return accMul(arg, this);
+			}
+			function accMul(arg1, arg2) {
+			    var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+			    try { m += s1.split(".")[1].length } catch (e) { }
+			    try { m += s2.split(".")[1].length } catch (e) { }
+			    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m)
+			}
+			Number.prototype.add = function(arg) {
+		   		return accAdd(arg, this);
+			}
+			function accAdd(arg1, arg2) {
+			    var r1, r2, m;
+			    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
+			    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
+			    m = Math.pow(10, Math.max(r1, r2))
+			    return (arg1 * m + arg2 * m) / m
+			}
+			Number.prototype.sub = function(arg) {
+			    return accSub(this,arg);
+			}
+			function accSub(arg1, arg2) {
+			    var r1, r2, m, n;
+			    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
+			    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
+			    m = Math.pow(10, Math.max(r1, r2));
+			    n = (r1 >= r2) ? r1 : r2;
+			    return parseFloat(((arg1 * m - arg2 * m) / m).toFixed(n));
+			}
 		</script>
 		<style type="text/css">
             #dmain {
