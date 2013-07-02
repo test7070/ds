@@ -426,13 +426,18 @@
 	                	return;
                 	}
                 }
+                if ($('#txtDatea').val().length==0 || !q_cd($('#txtDatea').val())){
+                	alert(q_getMsg('lblDatea')+'錯誤。');
+                	Unlock(1);
+                	return;
+                }
             	if ($('#txtTrandate').val().length==0 || !q_cd($('#txtTrandate').val())){
                 	alert(q_getMsg('lblTrandate')+'錯誤。');
                 	Unlock(1);
                 	return;
                 }
-            	if($('#txtTrandate').val().substring(0,3)!=r_accy){
-					alert('年度異常錯誤，請切換到【'+$('#txtTrandate').val().substring(0,3)+'】年度再作業。');
+            	if($('#txtDatea').val().substring(0,3)!=r_accy){
+					alert('年度異常錯誤，請切換到【'+$('#txtDatea').val().substring(0,3)+'】年度再作業。');
 					Unlock(1);
             		return;
 				}
@@ -467,7 +472,7 @@
                 sum();
 
                 var t_noa = trim($('#txtNoa').val());
-				var t_date = trim($('#txtTrandate').val()); /*!!!!!!!!!!*/
+				var t_date = trim($('#txtDatea').val()); /*!!!!!!!!!!*/
 				if (t_noa.length == 0 || t_noa == "AUTO")
 					q_gtnoa(q_name, replaceAll(q_getPara('sys.key_carcsa') + (t_date.length == 0 ? q_date() : t_date), '/', ''));
 				else
@@ -536,14 +541,16 @@
                 _btnIns();
                 curData.paste();
                 $('#txtNoa').val('AUTO');
-                $('#combType').val(0);
+                $('#combType').val('');
+                if($('#txtDatea').val().length==0)
+               		$('#txtDatea').val(q_date());
                 if($('#txtTrandate').val().length==0)
                		$('#txtTrandate').val(q_date());
                	if(q_cur==1 || q_cur==2)
                 	$('#combType').removeAttr('disabled');
                 else
                 	$('#combType').attr('disabled','disabled');
-                $('#txtTrandate').focus();
+                $('#txtDatea').focus();
             }
 
             function btnModi() {
