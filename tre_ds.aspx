@@ -34,7 +34,7 @@
             brwNowPage = 0;
             brwKey = 'Datea';
             q_desc = 1;
-            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx'], ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTggcomp', 'tgg_b.aspx'], ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], ['txtBdriverno', '', 'driver', 'noa,namea', 'txtBdriverno', 'driver_b.aspx'], ['txtEdriverno', '', 'driver', 'noa,namea', 'txtEdriverno', 'driver_b.aspx']);
+            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx'], ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx'], ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], ['txtBdriverno', '', 'driver', 'noa,namea', 'txtBdriverno', 'driver_b.aspx'], ['txtEdriverno', '', 'driver', 'noa,namea', 'txtEdriverno', 'driver_b.aspx']);
 
             q_xchg = 1;
             brwCount2 = 20;
@@ -444,8 +444,8 @@
 
             function btnDele() {
                 Lock(1,{opacity:0});
-                var t_where =" where=^^ vccno='"+ $('#txtNoa').val()+"'^^";
-                q_gt('umms', t_where, 0, 0, 0, 'btnDele',r_accy);
+                var t_where =" where=^^ rc2no='"+ $('#txtNoa').val()+"'^^";
+                q_gt('pays', t_where, 0, 0, 0, 'btnDele',r_accy);
             }
 
             function btnCancel() {
@@ -773,7 +773,7 @@
 						<td><span> </span><a id="lblTggno" class="lbl btn"> </a></td>
 						<td colspan="3">
 							<input id="txtTggno" type="text"  class="txt c2"/>
-							<input id="txtTggcomp" type="text"  class="txt c3"/>
+							<input id="txtTgg" type="text"  class="txt c3"/>
 						</td>
 						<td> </td>
 						<td> </td>
