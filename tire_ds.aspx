@@ -40,12 +40,10 @@
             		['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'],
             		['txtEtireno_', '', 'view_tirestk', 'noa,price,product','txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
             $(document).ready(function() {
-                bbmKey = ['noa'];
-                bbsKey = ['noa', 'noq'];
-                q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy)
+            	q_gt('carkind', "", 0, 0, 0, "", r_accy);
             });
-      
+      	
+      		var t_carkind = new Array();
             function main() {
                 if (dataErr) {
                     dataErr = false;
@@ -57,8 +55,13 @@
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd]];
                 q_mask(bbmMask);
-                q_cmbParse("cmbPosition", q_getPara('tire.position'),'s');
                 q_cmbParse("cmbAction", q_getMsg('action').replace(/\&/g,','),'s');
+            	for(var i=0;i<t_carkind.length;i++){
+            		if(t_carkind[i].item.length>0){
+            			q_cmbParse("combCarkind"+t_carkind[i].noa, t_carkind[i].item,'s');
+            		}	
+            	}
+                
             }
 			function q_popFunc(id){
             	switch(id) {
@@ -96,6 +99,26 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'carkind':
+                		var as = _q_appendData("carkind", "", true);
+                		var ass = _q_appendData("carkinds", "", true);
+                		if (as[0] != undefined && ass[0] != undefined){
+                			for(var i = 0;i<as.length;i++){
+                				t_item = "";
+                				for(var j = 0;j<ass.length;j++){
+                					if(ass[j].noa==as[i].noa && ass[j].position.length>0){
+                						t_item += (t_item.length>0?',':'') + ass[j].position+'@'+ass[j].namea;
+                					}
+                				}
+                				t_carkind.push({noa:as[i].noa,kind:as[i].kind,item:t_item});
+                				$('#combSelect').clone().attr('id','combCarkind'+as[i].noa+'.*').appendTo($('.position').parent().eq(0));
+                			}
+                		}
+                		bbmKey = ['noa'];
+		                bbsKey = ['noa', 'noq'];
+		                q_brwCount();
+		                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy)
+                		break;
                 	case 'tirestatus_carno':
                         var as = _q_appendData("view_tirestatus", "", true);
                         q_gridAddRow(bbsHtm, 'tbbs', 'txtBtireno,cmbPosition', as.length, as, 'noa,position', '', '');
@@ -206,7 +229,6 @@
 
             function refresh(recno) {
                 _refresh(recno);
-
             }
 
             function readonly(t_para, empty) {
@@ -437,6 +459,7 @@
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
 		<!--#include file="../inc/toolbar.inc"-->
+		<select id="combSelect" style="width:95%;display:none;"> </select>
 		<div id="dmain">
 			<div class="dview" id="dview">
 				<table class="tview" id="tview">
@@ -536,7 +559,9 @@
 					<input id="txtNoq.*" type="text" style="display: none;" />
 					</td>
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
-					<td><select id="cmbPosition.*" style="width:95%;"> </select></td>
+					<td>
+						<input type="text" id="txtPosition.*" class="position" style="width:95%;"/>
+					</td>
 					<td><input type="text" id="txtBtireno.*" style="width:95%;"/></td>
 					<td><select id="cmbAction.*" style="width:95%;"> </select></td>
 					<td><input type="text" id="txtEtireno.*" style="width:95%;"/></td>
