@@ -15,8 +15,8 @@
 		<script src="css/jquery/ui/jquery.ui.widget.js"></script>
 		<script src="css/jquery/ui/jquery.ui.datepicker_tw.js"></script>
 		<script type="text/javascript">
-		aPop = new Array(['txtXcarno', 'lblXcarno', 'car2', 'a.noa,driverno,driver', 'txtXcarno', 'car2_b.aspx']);
-			t_item = "";
+			t_carteam = "";
+			t_acomp = "";
 			if (location.href.indexOf('?') < 0) {
 				location.href = location.href + "?;;;;" + ((new Date()).getUTCFullYear() - 1911);
 			}
@@ -33,10 +33,17 @@
 					case 'carteam':
 						var as = _q_appendData("carteam", "", true);
 						for ( i = 0; i < as.length; i++) {
-							t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
+							t_carteam = t_carteam + (t_carteam.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
 						}
-						loadFinish();
+						q_gt('acomp', '', 0, 0, 0);
 						break;
+					case 'acomp':
+                        var as = _q_appendData("acomp", "", true);
+                        for ( i = 0; i < as.length; i++) {
+                            t_acomp += ',' + as[i].acomp;
+                        }
+                        loadFinish();
+                        break;
 				}
 			}
 			function loadFinish(){
@@ -56,10 +63,20 @@
 						index : 'noa,comp',
 						src : 'tgg_b.aspx'
 					}, {
+						type : '2',
+						name : 'driver',
+						dbf : 'driver',
+						index : 'noa,namea',
+						src : 'driver_b.aspx'
+					}, {
 						type : '8', //select
 						name : 'xcarteam',
-						value : t_item.split(',')
-					}]
+						value : t_carteam.split(',')
+					}, {
+                        type : '5',
+                        name : 'xacomp',
+                        value : t_acomp.split(',')
+                    }]
 				});
 				q_popAssign();
                 q_langShow();
