@@ -62,6 +62,9 @@
                         }
                     }
                 });
+                $('input[name="img"]').click(function(){
+                	$('#img').attr('src','../image/'+$(this).attr('value'));
+                });
             }
 
             function q_boxClose(s2) {
@@ -137,6 +140,9 @@
                     Unlock();
                     return;
                 }
+                for(var i=0; i<$('input[name="img"]').length;i++)
+            		if($('input[name="img"]').eq(i).prop('checked'))
+            			$('#txtImg').val($('input[name="img"]').eq(i).attr('value'));
                 for(var i=0;i<q_bbsCount;i++){
                 	n = q_float($('txtPosition_'+i).val());
                 	if(n<10){
@@ -174,6 +180,14 @@
             }
             function refresh(recno) {
                 _refresh(recno);
+                for(var i=0; i<$('input[name="img"]').length;i++){
+                	$('#img').removeAttr('src');
+                	$('input[name="img"]').eq(i).prop('checked',false);
+                	if($('input[name="img"]').eq(i).val()==$('#txtImg').val()){
+                		$('input[name="img"]').eq(i).prop('checked',true);
+                		$('#img').attr('src','../image/'+$('input[name="img"]').eq(i).attr('value'));
+                	}
+                }
                 refreshBbm();
             }
 
@@ -187,6 +201,11 @@
 
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
+                if(q_cur==1 || q_cur==2){
+                	$('input[name="img"]').removeAttr('disabled');
+                }else{
+                	$('input[name="img"]').attr('disabled','disabled');
+                }
             }
 
             function btnMinus(id) {
@@ -272,7 +291,7 @@
             }
             .dbbm {
                 float: left;
-                width: 450px;
+                width: 300px;
                 /*margin: -1px;        
                 border: 1px black solid;*/
                 border-radius: 5px;
@@ -393,9 +412,40 @@
 					</tr>
 					<tr>
 						<td><span> </span><a id='lblKind' class="lbl"> </a></td>
-						<td colspan="3"><input id="txtKind" type="text" class="txt c1" /></td>
-					</tr>		
+						<td colspan="4"><input id="txtKind" type="text" class="txt c1" /></td>
+					</tr>	
+					<tr>
+						<td><input type="text" id="txtImg" style="display:none;"/></td>
+						<td colspan="3">
+							<input type="radio" name="img" style="float:left;width:5%;" value="car6.png">
+							<a style="float:left;width:25%;color:black;">車-六輪</a>
+						</td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td colspan="3">	
+							<input type="radio" name="img" style="float:left;width:5%;" value="car10.png">
+							<a style="float:left;width:25%;color:black;">車-十輪</a>
+						</td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td colspan="3">
+							<input type="radio" name="img" style="float:left;width:5%;" value="ben8.png">
+							<a style="float:left;width:25%;color:black;">板-八輪</a>
+						</td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td colspan="3">
+							<input type="radio" name="img" style="float:left;width:5%;" value="ben10.png">
+							<a style="float:left;width:25%;color:black;">板-十輪</a>	
+						</td>	
+					</tr>
 				</table>
+			</div>
+			<div style="width:200px;height:200px;float:left;background:gray;">
+				<img id="img" style="width:100%;height:100%;">
 			</div>
 		</div>
 		<div class='dbbs'>

@@ -73,12 +73,17 @@
                 }
             };
             var curData = new currentData();
+            function fixout_dsData(){}
+			fixout_dsData.prototype = {
+				carkind : new Array(),
+				combRefresh : function(){
+					q_gt('car2', "where=^^ carno='"+$.trim($('#txtCarno').val())+"'^^", 0, 0, 0, "combRefresh", r_accy);
+				}
+			}
+			var fixout_ds = new fixout_dsData();
+			
             $(document).ready(function() {
-                bbmKey = ['noa'];
-                bbsKey = ['noa', 'noq'];
-                q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1)
-
+                q_gt('carkind', "", 0, 0, 0, "", r_accy);
             });
             function main() {
                 if (dataErr) {
@@ -92,9 +97,7 @@
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd], ['txtOutdate', r_picd], ['txtMon', r_picm]];
                 q_mask(bbmMask);
-                q_cmbParse("cmbPosition", q_getPara('tire.position'), 's');
             }
-
             function q_boxClose(s2) {
                 var ret;
                 switch (b_pop) {
@@ -107,6 +110,63 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'carkind':
+                		var as = _q_appendData("carkind", "", true);
+                		var ass = _q_appendData("carkinds", "", true);
+                		if (as[0] != undefined && ass[0] != undefined){
+                			for(var i = 0;i<as.length;i++){
+                				t_item = new Array();
+                				for(var j = 0;j<ass.length;j++){
+                					if(ass[j].noa==as[i].noa && ass[j].position.length>0){
+                						t_item.push({position:ass[j].position,namea:ass[j].namea})
+                					}
+                				}
+                				fixout_ds.carkind.push({noa:as[i].noa,kind:as[i].kind,img:as[i].img,item:t_item});
+                			}
+                		}
+                		bbmKey = ['noa'];
+		                bbsKey = ['noa', 'noq'];
+		                q_brwCount();
+		                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
+                		break;
+                	case 'combRefresh':
+                		var as = _q_appendData("car2", "", true);
+                		var t_index = -1;
+                		$('#img').attr('src','');
+                		if (as[0] != undefined){
+                			for(var i=0;i<fixout_ds.carkind.length;i++){
+                				if(fixout_ds.carkind[i].noa==as[0].carkindno){
+                					$('#img').attr('src','../image/'+fixout_ds.carkind[i].img);
+                					t_index = i;
+                					string = '<option></option>';
+                					for(var j=0;j<fixout_ds.carkind[i].item.length;j++){
+                						string += '<option value="'+fixout_ds.carkind[i].item[j].position+'">'+fixout_ds.carkind[i].item[j].namea+'</option>';
+                					}
+                					$('.position').html(string);
+                					if(q_cur==1 || q_cur==2){
+					                	$('.position').removeAttr('disabled');
+					                }else{
+					                	$('.position').attr('disabled','disabled');
+					                }
+                					break;
+                				}
+                			}
+                		}else{
+                			$('.position').html('');
+                		}
+                		for(var i=0;i<q_bbsCount;i++){
+                			$('#combPosition_'+i).val('');
+                			if(t_index!=-1){
+                				t_position = $.trim($('#txtPosition_'+i).val());
+                				for(var j=0;j<fixout_ds.carkind[t_index].item.length;j++){
+                					if(fixout_ds.carkind[t_index].item[j].position==t_position){
+                						$('#combPosition_'+i).val(t_position);
+                						break;
+                					}
+                				}
+                			}
+                		}
+                		break;
                     case q_name:
                         if (q_cur == 4)
                             q_Seek_gtPost();
@@ -283,6 +343,9 @@
 
             function q_popPost(s1) {
                 switch (s1) {
+                	case 'txtCarno':
+                    	fixout_ds.combRefresh();
+                    	break;
                     case 'txtTireno_':
                     	var n = b_seq;
                     	var t_where = "where=^^ noa='"+$.trim($('#txtProductno_'+n).val())+"' ^^"
@@ -330,6 +393,10 @@
                         $('#txtMoney_' + i).change(function(e) {
                             sum();
                         });
+                        $('#combPosition_'+i).change(function(){
+                			var n = $(this).attr('id').replace('combPosition_','');
+                			$('#txtPosition_'+n).val($(this).attr('value'));
+                		});
                     }
                 }
                 _bbsAssign();
@@ -406,6 +473,7 @@
 
             function refresh(recno) {
                 _refresh(recno);
+                fixout_ds.combRefresh();
                 refreshBbs();
             }
             function refreshBbs(){
@@ -425,6 +493,11 @@
 
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
+                if(q_cur==1 || q_cur==2){
+                	$('.position').removeAttr('disabled');
+                }else{
+                	$('.position').attr('disabled','disabled');
+                }
             }
 
             function btnMinus(id) {
@@ -434,6 +507,7 @@
 
             function btnPlus(org_htm, dest_tag, afield) {
                 _btnPlus(org_htm, dest_tag, afield);
+                fixout_ds.combRefresh();
             }
 
             function q_appendData(t_Table) {
@@ -543,7 +617,7 @@
             }
             .dview {
                 float: left;
-                width: 450px;
+                width: 400px;
                 border-width: 0px;
             }
             .tview {
@@ -563,7 +637,7 @@
             }
             .dbbm {
                 float: left;
-                width: 500px;
+                width: 400px;
                 /*margin: -1px;
                  border: 1px black solid;*/
                 border-radius: 5px;
@@ -685,7 +759,6 @@
 						<td> </td>
 						<td> </td>
 						<td> </td>
-						<td> </td>
 						<td class="tdZ"> </td>
 					</tr>
 					<tr>
@@ -698,9 +771,7 @@
 						<td><span> </span><a id="lblOutdate" class="lbl"> </a></td>
 						<td><input id="txtOutdate" type="text" class="txt c1"/></td>	
 						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
-						<td><input id="txtMon" type="text" class="txt c1"/></td>	
-						<td> </td>
-						<td rowspan="2"><img  src="../image/car.jpg" class="txt c1"/></td>			
+						<td><input id="txtMon" type="text" class="txt c1"/></td>			
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblCarno" class="lbl btn"> </a></td>
@@ -716,8 +787,6 @@
 						<td><input id="txtCarplateno" type="text" class="txt c1" style="display:none;"/></td>
 						<td><span> </span><a id="lblMiles" class="lbl"> </a></td>
 						<td><input id="txtMiles" type="text" class="txt c1 num"/></td>
-						<td> </td>
-						<td rowspan="2"><img src="../image/ben.jpg" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td> </td>
@@ -754,6 +823,9 @@
 						<td><input id="txtWorker2" type="text" class="txt c1" /></td>
 					</tr>
 				</table>
+			</div>
+			<div style="width:200px;height:200px;float:left;background:gray;">
+				<img id="img" style="width:100%;height:100%;">
 			</div>
 		</div>
 		<div class='dbbs'>
@@ -794,7 +866,10 @@
 					<td><input id="txtMoney.*" type="text" style="width: 95%;text-align: right;"/></td>
 					<td><input id="txtTypea.*" type="text" style="width: 95%;"/></td>
 					<td><input id="txtMemo.*" type="text" style="width: 95%;"/></td>
-					<td><select id="cmbPosition.*" style="width: 95%;"> </select></td>
+					<td>
+						<input type="text" id="txtPosition.*" style="width:20%;"/>
+						<select id="combPosition.*" class="position" style="width:70%;"> </select>
+					</td>
 				</tr>
 			</table>
 		</div>

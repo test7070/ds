@@ -22,7 +22,7 @@
             q_desc = 1;
             q_tables = 's';
             var q_name = "tire";
-            var q_readonly = ['txtNoa','txtWorker','txtWorker2','txtCmoney'];
+            var q_readonly = ['txtNoa','txtWorker','txtWorker2','txtCmoney','txtPosition'];
             var q_readonlys = [];
             var bbmNum = [['txtMiles',10,0,1],['txtWmoney',10,0,1],['txtCmoney',10,0,1],['txtDmoney',10,0,1]];
             var bbsNum = [['txtPrice',10,0,1]];
@@ -39,11 +39,18 @@
             		['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate', 'txtCarplateno', 'carplate_b.aspx'],
             		['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'],
             		['txtEtireno_', '', 'view_tirestk', 'noa,price,product','txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
+			function tire_dsData(){}
+			tire_dsData.prototype = {
+				carkind : new Array(),
+				combRefresh : function(){
+					q_gt('car2', "where=^^ carno='"+$.trim($('#txtCarno').val())+"'^^", 0, 0, 0, "combRefresh", r_accy);
+				}
+			}
+			var tire_ds = new tire_dsData();
+			        
             $(document).ready(function() {
             	q_gt('carkind', "", 0, 0, 0, "", r_accy);
             });
-      	
-      		var t_carkind = new Array();
             function main() {
                 if (dataErr) {
                     dataErr = false;
@@ -56,16 +63,10 @@
                 bbmMask = [['txtDatea', r_picd]];
                 q_mask(bbmMask);
                 q_cmbParse("cmbAction", q_getMsg('action').replace(/\&/g,','),'s');
-            	for(var i=0;i<t_carkind.length;i++){
-            		if(t_carkind[i].item.length>0){
-            			q_cmbParse("combCarkind"+t_carkind[i].noa, t_carkind[i].item,'s');
-            		}	
-            	}
-                
             }
-			function q_popFunc(id){
-            	switch(id) {
-                    case 'txtCarno':
+			function q_popPost(id) {
+				switch(id) {
+					case 'txtCarno':
                     	var t_carno = $.trim($('#txtCarno').val());
                     	if(t_carno.length>0){
                     		var t_where = "where=^^carno='"+t_carno+"' and len(isnull(carplateno,''))=0^^";
@@ -79,10 +80,6 @@
                     		q_gt('view_tirestatus', t_where, 0, 0, 0, "tirestatus_carplateno", r_accy);
                     	}
                     	break;
-                }
-			}
-			function q_popPost(id) {
-				switch(id) {
 					case 'txtEtireno_':
 						sum();
 						break;
@@ -104,29 +101,67 @@
                 		var ass = _q_appendData("carkinds", "", true);
                 		if (as[0] != undefined && ass[0] != undefined){
                 			for(var i = 0;i<as.length;i++){
-                				t_item = "";
+                				t_item = new Array();
                 				for(var j = 0;j<ass.length;j++){
                 					if(ass[j].noa==as[i].noa && ass[j].position.length>0){
-                						t_item += (t_item.length>0?',':'') + ass[j].position+'@'+ass[j].namea;
+                						t_item.push({position:ass[j].position,namea:ass[j].namea})
                 					}
                 				}
-                				t_carkind.push({noa:as[i].noa,kind:as[i].kind,item:t_item});
-                				$('#combSelect').clone().attr('id','combCarkind'+as[i].noa+'.*').appendTo($('.position').parent().eq(0));
+                				tire_ds.carkind.push({noa:as[i].noa,kind:as[i].kind,img:as[i].img,item:t_item});
                 			}
                 		}
                 		bbmKey = ['noa'];
 		                bbsKey = ['noa', 'noq'];
 		                q_brwCount();
-		                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy)
+		                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
+                		break;
+                	case 'combRefresh':
+                		var as = _q_appendData("car2", "", true);
+                		var t_index = -1;
+                		$('#img').attr('src','');
+                		if (as[0] != undefined){
+                			for(var i=0;i<tire_ds.carkind.length;i++){
+                				if(tire_ds.carkind[i].noa==as[0].carkindno){
+                					$('#img').attr('src','../image/'+tire_ds.carkind[i].img);
+                					t_index = i;
+                					string = '<option></option>';
+                					for(var j=0;j<tire_ds.carkind[i].item.length;j++){
+                						string += '<option value="'+tire_ds.carkind[i].item[j].position+'">'+tire_ds.carkind[i].item[j].namea+'</option>';
+                					}
+                					$('.position').html(string);
+                					if(q_cur==1 || q_cur==2){
+					                	$('.position').removeAttr('disabled');
+					                }else{
+					                	$('.position').attr('disabled','disabled');
+					                }
+                					break;
+                				}
+                			}
+                		}else{
+                			$('.position').html('');
+                		}
+                		for(var i=0;i<q_bbsCount;i++){
+                			$('#combPosition_'+i).val('');
+                			if(t_index!=-1){
+                				t_position = $.trim($('#txtPosition_'+i).val());
+                				for(var j=0;j<tire_ds.carkind[t_index].item.length;j++){
+                					if(tire_ds.carkind[t_index].item[j].position==t_position){
+                						$('#combPosition_'+i).val(t_position);
+                						break;
+                					}
+                				}
+                			}
+                		}
                 		break;
                 	case 'tirestatus_carno':
                         var as = _q_appendData("view_tirestatus", "", true);
-                        q_gridAddRow(bbsHtm, 'tbbs', 'txtBtireno,cmbPosition', as.length, as, 'noa,position', '', '');
+                        q_gridAddRow(bbsHtm, 'tbbs', 'txtBtireno,txtPosition', as.length, as, 'noa,position', '', '');
+                       	tire_ds.combRefresh();
                        	sum();
                         break;
                     case 'tirestatus_carplateno':
                         var as = _q_appendData("view_tirestatus", "", true);
-                        q_gridAddRow(bbsHtm, 'tbbs', 'txtBtireno,cmbPosition', as.length, as, 'noa,position', '', '');
+                        q_gridAddRow(bbsHtm, 'tbbs', 'txtBtireno,txtPosition', as.length, as, 'noa,position', '', '');
                         sum();
                         break;   
                     case q_name:
@@ -179,6 +214,10 @@
                 		$('#txtPrice_'+i).change(function(){
                 			sum();
                 		});
+                		$('#combPosition_'+i).change(function(){
+                			var n = $(this).attr('id').replace('combPosition_','');
+                			$('#txtPosition_'+n).val($(this).attr('value'));
+                		});
                     }
                 }
                 _bbsAssign();
@@ -229,10 +268,16 @@
 
             function refresh(recno) {
                 _refresh(recno);
+                tire_ds.combRefresh();
             }
 
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
+                if(q_cur==1 || q_cur==2){
+                	$('.position').removeAttr('disabled');
+                }else{
+                	$('.position').attr('disabled','disabled');
+                }
             }
 
             function btnMinus(id) {
@@ -242,6 +287,7 @@
 
             function btnPlus(org_htm, dest_tag, afield) {
                 _btnPlus(org_htm, dest_tag, afield);
+                tire_ds.combRefresh();
             }
 
             function q_appendData(t_Table) {
@@ -459,7 +505,6 @@
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
 		<!--#include file="../inc/toolbar.inc"-->
-		<select id="combSelect" style="width:95%;display:none;"> </select>
 		<div id="dmain">
 			<div class="dview" id="dview">
 				<table class="tview" id="tview">
@@ -534,9 +579,8 @@
 					</tr>
 				</table>
 			</div>
-			<div style="width:150px;float:left;">
-				<img src="../image/car.jpg"/>
-				<img src="../image/ben.jpg"/>
+			<div style="width:200px;height:200px;float:left;background:gray;">
+				<img id="img" style="width:100%;height:100%;">
 			</div>
 		</div>
 		<div class='dbbs'>
@@ -560,7 +604,8 @@
 					</td>
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
 					<td>
-						<input type="text" id="txtPosition.*" class="position" style="width:95%;"/>
+						<input type="text" id="txtPosition.*" style="width:20%;"/>
+						<select id="combPosition.*" class="position" style="width:70%;"> </select>
 					</td>
 					<td><input type="text" id="txtBtireno.*" style="width:95%;"/></td>
 					<td><select id="cmbAction.*" style="width:95%;"> </select></td>
