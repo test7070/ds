@@ -507,8 +507,10 @@
 
             function btnPlus(org_htm, dest_tag, afield) {
                 _btnPlus(org_htm, dest_tag, afield);
-                fixout_ds.combRefresh();
             }
+            function btnPlus2() {
+			    fixout_ds.combRefresh();
+			}
 
             function q_appendData(t_Table) {
                 return _q_appendData(t_Table);
@@ -845,7 +847,7 @@
 					<td align="center" style="width: 70px;"><a id='lblMoney_s'> </a></td>
 					<td align="center" style="width: 40px;"><a id='lblTypea_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblMemo_s'> </a></td>
-					<td align="center" style="width: 50px;"><a id='lblPosition_s'> </a></td>
+					<td align="center" style="width:180px;"><a id='lblPosition_s'> </a></td>
 				</tr>
 				<tr  style='background:#cad3ff;'>
 					<td align="center">

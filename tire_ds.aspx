@@ -287,8 +287,10 @@
 
             function btnPlus(org_htm, dest_tag, afield) {
                 _btnPlus(org_htm, dest_tag, afield);
-                tire_ds.combRefresh();
             }
+            function btnPlus2() {
+			    tire_ds.combRefresh();
+			}
 
             function q_appendData(t_Table) {
                 return _q_appendData(t_Table);
@@ -590,7 +592,7 @@
 					<input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  />
 					</td>
 					<td align="center" style="width:20px;"> </td>
-					<td align="center" style="width:80px;"><a id='lblPosition_s'> </a></td>
+					<td align="center" style="width:180px;"><a id='lblPosition_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblBtireno_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblAction_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblEtireno_s'> </a></td>
