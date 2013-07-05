@@ -138,10 +138,6 @@
 					case 'car2':
 						var as = _q_appendData("car2", "", true);
 						if (as[0] != undefined) {
-							/*var now_acc1 = $('#txtAcc1').val();
-							var now_acc2 = $('#txtAcc2').val();
-							$('#txtAcc1').val(now_acc1 + as[0].carownerno);
-							$('#txtAcc2').val(now_acc2 + '-' + as[0].carowner);*/
 							var t_acc1 = '1123.'+as[0].carownerno
 							$('#txtAcc1').val(t_acc1);
 							var t_where = "where=^^ acc1='"+t_acc1+"' ^^"
@@ -161,7 +157,8 @@
 							t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
 						}
 						q_cmbParse("cmbCarteamno", t_item);
-						$("#cmbCarteamno").val(abbm[q_recno].carteamno);
+						if(abbm[q_recno]!=undefined)
+							$("#cmbCarteamno").val(abbm[q_recno].carteamno);
 						q_gridv('tview', browHtm, fbrow, abbm, aindex, brwNowPage, brwCount);
 						break;
 					case q_name:

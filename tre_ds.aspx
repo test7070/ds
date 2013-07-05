@@ -121,7 +121,7 @@
 						if(t_carchgno[i].length>0)
 							t_where += " or noa='"+t_carchgno[i]+"'";
 					}
-					q_box("carchg.aspx?"+ r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno, 'carchg', "95%", "95%", q_getMsg("popCarchg"));
+					q_box("carchg_ds.aspx?"+ r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno, 'carchg', "95%", "95%", q_getMsg("popCarchg"));
 				});
 				//-----------------------------------------------
                 $('#divImport').mousedown(function(e) {
