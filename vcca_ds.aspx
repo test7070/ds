@@ -42,6 +42,10 @@
             function currentData() {
             }
             currentData.prototype = {
+            	origin : '',
+				orgcustno : '',
+				custno : '',
+				cust : '',
                 data : [],
                 /*新增時複製的欄位*/
                 include : ['txtDatea', 'txtCno', 'txtAcomp', 'txtCustno', 'txtComp', 'txtNick', 'txtSerial', 'txtAddress', 'txtMon', 'txtNoa', 'txtBuyerno', 'txtBuyer'],
@@ -92,6 +96,20 @@
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm]];
                 q_mask(bbmMask);
+                if(q_getId()[5]!=undefined){
+					var str=decodeURI(q_getId()[5]).split('&');
+					for(var i in str){
+						if(str[i].toUpperCase().substring(0,7)=='ORIGIN=')
+							curData.origin = str[i].substring(7).toUpperCase();	
+						else if(str[i].toUpperCase().substring(0,10)=='ORGCUSTNO=')
+							curData.orgcustno = str[i].substring(10).toUpperCase();	
+						else if(str[i].toUpperCase().substring(0,8)=='CUSTNO2=')
+							curData.custno = str[i].substring(8).toUpperCase();	
+						else if(str[i].toUpperCase().substring(0,6)=='CUST2=')
+							curData.cust = str[i].substring(6).toUpperCase();	
+					}
+				}
+				
                 q_cmbParse("cmbTaxtype", q_getPara('sys.taxtype'));
                 $('#cmbTaxtype').focus(function() {
                     var len = $(this).children().length > 0 ? $(this).children().length : 1;
@@ -220,7 +238,14 @@
                 curData.copy();
                 _btnIns();
                 curData.paste();
-
+				if(curData.origin=='TRD'){
+					$('#txtCustno').val(curData.custno);
+					$('#txtComp').val(curData.cust);
+				}
+				if(curData.orgcustno.length>0){
+					t_where = " where=^^ noa='"+ curData.orgcustno +"' ^^";
+					q_gt('cust', t_where, 0, 0, 0, "", r_accy);
+				}
                 //發票號碼+1
                 var t_noa = trim($('#txtNoa').val());
                 if(t_noa.length>0){
@@ -233,8 +258,8 @@
                 $('#txtDatea').val(q_date());
                 $('#txtDatea').focus();
             }
-
             function btnModi() {
+            	q_xchgForm();
                 if (emp($('#txtNoa').val()))
                     return;
                 _btnModi();
@@ -267,7 +292,19 @@
             function sum() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return;
-                $('#txtTax').attr('readonly', 'readonly');
+
+                $('#txtCustno').removeAttr('readonly').css('color','black').css('background','white');
+                $('#txtComp').removeAttr('readonly').css('color','black').css('background','white');
+                $('#txtSerial').removeAttr('readonly').css('color','black').css('background','white');
+                $('#txtMoney').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+                $('#txtMon').removeAttr('readonly').css('color','black').css('background','white');
+                $('#txtTax').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+                $('#txtTotal').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+                $('#txtChkno').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+                $('#txtAccno').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+                $('#txtBuyerno').removeAttr('readonly').css('color','black').css('background','white');
+                $('#txtBuyer').removeAttr('readonly').css('color','black').css('background','white');
+                
                 var t_mounts, t_prices, t_moneys, t_mount = 0, t_money = 0, t_taxrate, t_tax, t_total;
 
                 for (var k = 0; k < q_bbsCount; k++) {
@@ -304,45 +341,44 @@
                         break;
                     case '5':
                         // 自定
-                        $('#txtTax').removeAttr('readonly');
+                        $('#txtTax').removeAttr('readonly').css('color','black').css('background','white');
                         t_tax = q_float('txtTax').round(0);
                         t_total = t_money.add(t_tax);
                         break;
                     case '6':
                         // 作廢-清空資料
                         t_money = 0, t_tax = 0, t_total = 0;
-                        $('#txtCustno').val('');
                         //銷貨客戶
-                        $('#txtCustno').attr('readonly', true);
+                        $('#txtCustno').val('');
+                        $('#txtCustno').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         $('#txtComp').val('');
-                        $('#txtComp').attr('readonly', true);
-                        $('#txtSerial').val('');
+                        $('#txtComp').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         //統一編號
-                        $('#txtSerial').attr('readonly', true);
-                        $('#txtMoney').val(0);
+                        $('#txtSerial').val('');
+                        $('#txtSerial').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         //產品金額
-                        $('#txtMoney').attr('readonly', true);
-                        $('#txtMon').val('');
+                        $('#txtMoney').val(0);
+                        $('#txtMoney').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         //帳款月份
-                        $('#txtMon').attr('readonly', true);
-                        $('#txtTax').val(0);
+                        $('#txtMon').val('');
+                        $('#txtMon').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         //營業稅
-                        $('#txtTax').attr('readonly', true);
-                        $('#txtTotal').val(0);
+                        $('#txtTax').val(0);
+                        $('#txtTax').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         //總計
-                        $('#txtTotal').attr('readonly', true);
-                        $('#txtChkno').val('');
+                        $('#txtTotal').val(0);
+                        $('#txtTotal').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         //檢查號碼
-                        $('#txtChkno').attr('readonly', true);
-                        $('#txtAccno').val('');
+                        $('#txtChkno').val('');
+                        $('#txtChkno').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         //轉會計傳票編號
-                        $('#txtAccno').attr('readonly', true);
-                        $('#txtBuyerno').val('');
+                        $('#txtAccno').val('');
+                        $('#txtAccno').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         //買受人
-                        $('#txtBuyerno').attr('readonly', true);
+                        $('#txtBuyerno').val('');
+                        $('#txtBuyerno').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         $('#txtBuyer').val('');
-                        //
-                        $('#txtBuyer').attr('readonly', true);
+                        $('#txtBuyer').attr('readonly', true).css('color','green').css('background','rgb(237,237,237)');
                         $('#txtMemo').val('');
                         //發票備註
                         break;
