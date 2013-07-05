@@ -33,8 +33,8 @@
             brwNowPage = 0;
             brwKey = 'Noa';
             aPop = new Array(['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
-            , ['txtCustno', 'lblCust', 'cust', 'noa,comp,nick,zip_invo,addr_invo,serial', 'txtCustno,txtComp,txtNick,txtZip,txtAddress,txtSerial', 'cust_b.aspx']
-            , ['txtBuyerno', 'lblBuyer', 'cust', 'noa,comp', 'txtBuyerno,txtBuyer', 'cust_b.aspx']
+            , ['txtCustno', 'lblCust', 'cust', 'noa,comp,nick,zip_invo,addr_invo,serial', '0txtCustno,txtComp,txtNick,txtZip,txtAddress,txtSerial', 'cust_b.aspx']
+            , ['txtBuyerno', 'lblBuyer', 'cust', 'noa,comp', '0txtBuyerno,txtBuyer', 'cust_b.aspx']
             , ['txtProductno_', 'btnProductno_', 'ucca', 'noa,product,unit', 'txtProductno_,txtProduct_,txtUnit_', 'ucca_b.aspx']);
             q_xchg = 1;
             brwCount2 = 20;
@@ -113,7 +113,7 @@
                     q_pop('txtAccno', "accc.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";accc3='" + $('#txtAccno').val() + "';" + $('#txtDatea').val().substring(0, 3) + '_' + r_cno, 'accc', 'accc3', 'accc2', "92%", "1054px", q_getMsg('popAccc'), true);
                 });
                 $('#lblTrdno').click(function() {
-                    q_pop('txtTrdno', "trd.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";noa='" + $('#txtTrdno').val() + "';" + r_accy + '_' + r_cno, 'trd', 'noa', 'datea', "95%", "95%", q_getMsg('popTrd'), true);
+                    q_pop('txtTrdno', "trd_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";noa='" + $('#txtTrdno').val() + "';" + r_accy + '_' + r_cno, 'trd', 'noa', 'datea', "95%", "95%", q_getMsg('popTrd'), true);
                 });
             }
             function q_boxClose(s2) {
@@ -216,6 +216,7 @@
             }
 
             function btnIns() {
+            	q_xchgForm();
                 curData.copy();
                 _btnIns();
                 curData.paste();

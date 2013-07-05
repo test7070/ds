@@ -562,6 +562,7 @@
 			}
 
 			function btnIns() {
+				q_xchgForm();
 				Lock(1,{opacity:0});
 				curData.copy();
 				_btnIns();
