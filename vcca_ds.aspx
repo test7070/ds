@@ -48,30 +48,29 @@
 				cust : '',
                 data : [],
                 /*新增時複製的欄位*/
-                include : ['txtDatea', 'txtCno', 'txtAcomp', 'txtCustno', 'txtComp', 'txtNick', 'txtSerial', 'txtAddress', 'txtMon', 'txtNoa', 'txtBuyerno', 'txtBuyer'],
+                include : ['datea', 'cno', 'acomp', 'custno', 'comp', 'nick', 'serial', 'address', 'mon', 'noa', 'buyerno', 'buyer'],
                 /*記錄當前的資料*/
-                copy : function() {
-                    curData.data = new Array();
-                    for (var i in fbbm) {
-                        var isInclude = false;
-                        for (var j in curData.include) {
-                            if (fbbm[i] == curData.include[j]) {
-                                isInclude = true;
-                                break;
-                            }
-                        }
-                        if (isInclude) {
-                            curData.data.push({
-                                field : fbbm[i],
-                                value : $('#' + fbbm[i]).val()
-                            });
-                        }
+                copy : function(recno) {
+                    this.data = new Array();
+                    for (var i in this.include) {
+                    	if(abbm[recno][this.include[i]]!=undefined){
+                    		this.data.push({
+                    			field : this.include[i],
+                    			value : abbm[recno][this.include[i]]
+                    		});
+                    	}
                     }
                 },
                 /*貼上資料*/
                 paste : function() {
-                    for (var i in curData.data) {
-                        $('#' + curData.data[i].field).val(curData.data[i].value);
+                    for(var i=0;i<this.data.length;i++){
+                    	t_txt = "#txt"+this.data[i].field.substring(0,1).toUpperCase()+this.data[i].field.substring(1);
+                    	t_cmb = "#cmb"+this.data[i].field.substring(0,1).toUpperCase()+this.data[i].field.substring(1);
+                    	if($(t_txt).length>0){
+                    		$(t_txt).val(this.data[i].value);
+                    	}else if($(t_cmb).length>0){
+                    		$(t_cmb).val(this.data[i].value);
+                    	}
                     }
                 }
             };
@@ -146,6 +145,14 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'cust':
+						var as = _q_appendData("cust", "", true);
+						if (as[0] != undefined) {
+							$('#txtBuyerno').val(as[0].noa);
+							$('#txtBuyer').val(as[0].comp);
+							$('#txtSerial').val(as[0].serial);
+						}
+						break;
                     case 'vccar':
                         var as = _q_appendData("vccar", "", true);
                         if (as[0] == undefined) {
@@ -234,8 +241,7 @@
             }
 
             function btnIns() {
-            	q_xchgForm();
-                curData.copy();
+                curData.copy(q_recno);
                 _btnIns();
                 curData.paste();
 				if(curData.origin=='TRD'){
@@ -247,11 +253,11 @@
 					q_gt('cust', t_where, 0, 0, 0, "", r_accy);
 				}
                 //發票號碼+1
-                var t_noa = trim($('#txtNoa').val());
+                var t_noa = $.trim($('#txtNoa').val());
                 if(t_noa.length>0){
                 	var str = '00000000' + (parseInt(t_noa.substring(2, 10)) + 1);
 	                str = str.substring(str.length - 8, str.length);
-	                t_noa = t_noa.substring(0, 2) + str;
+	                t_noa = $.trim(t_noa.substring(0, 2) + str);
 	                $('#txtNoa').val(t_noa);
                 }
                 $('#cmbTaxtype').val(1);
@@ -330,7 +336,7 @@
                         break;
                     case '3':
                         // 內含
-                        t_tax = t_money.div((t_taxrate.add(1)).mul(t_taxrate)).round(0);
+                        t_tax = t_money.div(t_taxrate.add(1)).mul(t_taxrate).round(0);
                         t_total = t_money;
                         t_money = t_total.sub(t_tax);
                         break;
