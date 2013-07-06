@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" >
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title></title>
+		<title> </title>
 		<script src="../script/jquery.min.js" type="text/javascript"></script>
 		<script src='../script/qj2.js' type="text/javascript"></script>
 		<script src='qset.js' type="text/javascript"></script>
@@ -21,15 +21,15 @@
             var t_carkind = null;
             var t_carteam = null;
             var t_calctypes = null;
-            aPop = new Array(['txtXcarno', 'lblXcarno', 'car2', 'a.noa,driverno,driver', 'txtXcarno', 'car2_b.aspx']);
+            aPop = [];
             $(document).ready(function() {
                 _q_boxClose();
                 q_getId();
-                q_gf('', 'z_carchg_ds');
+                q_gf('', 'z_custchg_ds');
             });
             function q_gfPost() {
                 $('#q_report').q_report({
-                    fileName : 'z_carchg_ds',
+                    fileName : 'z_custchg_ds',
                     options : [{
                         type : '0',
                         name : 'accy',
@@ -42,8 +42,11 @@
                         type : '1',
                         name : 'date'
                     }, {
-                        type : '6',
-                        name : 'xcarno'
+                        type : '2',
+                        name : 'custno',
+                        dbf : 'cust',
+                        index : 'noa,comp',
+                        src : 'cust_b.aspx'
                     }, {
                         type : '8',
                         name : 'xoption01',

@@ -27,6 +27,7 @@
             brwList = [];
             brwNowPage = 0;
             brwKey = 'noa';
+            brwCount2 = 15;
 
             $(document).ready(function() {
                 bbmKey = ['noa'];
@@ -111,7 +112,7 @@
                 if(q_cur > 0 && q_cur < 4)// 1-3
                     return;
 
-                q_box('driver_s.aspx', q_name + '_s', "550px", "400px", q_getMsg("popSeek"));
+                q_box('driver_s_ds.aspx', q_name + '_s', "550px", "400px", q_getMsg("popSeek"));
             }
 
             function btnIns() {
@@ -129,7 +130,7 @@
             }
 
             function btnPrint() {
-				q_box('z_driver.aspx' + "?;;;;" + r_accy, '', "95%", "95%", q_getMsg("popPrint"));
+				q_box('z_driver_ds.aspx' + "?;;;;" + r_accy, '', "95%", "95%", q_getMsg("popPrint"));
             }
 			function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))

@@ -223,7 +223,7 @@
             }
 
             function btnPrint() {
-                q_box('z_carcs.aspx' + "?;;;;" + r_accy, '', "95%", "95%", q_getMsg("popPrint"));
+                q_box('z_carcs_ds.aspx' + "?;;;;" + r_accy, '', "95%", "95%", q_getMsg("popPrint"));
             }
 
             function btnOk() {
