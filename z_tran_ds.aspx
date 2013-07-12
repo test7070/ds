@@ -163,7 +163,11 @@
                     }, {/*21-[28]減項金額*///*5-8
                         type : '6',
                         name : 'zminusmoney'
-                    }]
+                    }, {/*22-[29]-排序方式*//*08*/
+						type : '8',
+						name : 'xoption08',
+						value : q_getMsg('toption08').split('&')
+					}]
                 });
                 q_popAssign();
                 q_langShow();
