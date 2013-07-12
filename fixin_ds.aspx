@@ -517,8 +517,8 @@
 		        $('#txtWmoney').val(FormatNumber(t_wmoney));
 		        $('#txtCmoney').val(FormatNumber(t_cmoney));
 		        $('#txtDmoney').val(FormatNumber(t_dmoney));
-		        $('#txtMoney').val(FormatNumber(t_wmoney.add(t_cmoney)));
-		        $('#txtTotal').val(FormatNumber(t_wmoney.add(t_cmoney).add(t_tax).sub(t_discount)));
+		        $('#txtMoney').val(FormatNumber(t_wmoney.add(t_cmoney).add(t_dmoney)));
+		        $('#txtTotal').val(FormatNumber(t_wmoney.add(t_cmoney).add(t_dmoney).add(t_tax).sub(t_discount)));
             }
             function refresh(recno) {
                 _refresh(recno);

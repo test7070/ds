@@ -468,7 +468,7 @@
 		        $('#txtWmoney').val(FormatNumber(t_wmoney));
 		        $('#txtCmoney').val(FormatNumber(t_cmoney));
 		        $('#txtDmoney').val(FormatNumber(t_dmoney));
-		        $('#txtMoney').val(FormatNumber(t_wmoney.add(t_cmoney)));
+		        $('#txtMoney').val(FormatNumber(t_wmoney.add(t_cmoney).add(t_dmoney)));
             }
 
             function refresh(recno) {
