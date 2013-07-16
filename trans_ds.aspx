@@ -41,6 +41,7 @@
 			,['txtUccno', '', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
 			,['txtSalesno', 'lblSales', 'sss', 'noa,namea', 'txtSalesno,txtSales', 'sss_b.aspx']
 			,['txtStraddrno', '', 'addr', 'noa,addr,productno,product,salesno,sales', 'txtStraddrno,txtStraddr,txtUccno,txtProduct,txtSalesno,txtSales,txtStraddr', 'addr_b.aspx'] 
+			,['txtCardealno', 'lblCardeal', 'acomp', 'noa,acomp', 'txtCardealno,txtCardeal', 'acomp_b.aspx']
 			);
 			function currentData() {
             }
@@ -1094,6 +1095,9 @@
 						<td><span> </span><a id="lblTgg" class="lbl"> </a></td>
 						<td><input id="txtTggno" type="text" class="txt c1"/></td>
 						<td colspan="2"><input id="txtTgg" class="txt c1"/></td>
+						<td><span> </span><a id="lblCardeal" class="lbl btn"> </a></td>
+						<td><input id="txtCardealno" type="text" class="txt c1"/></td>
+						<td colspan="2"><input id="txtCardeal" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblNoa" class="lbl"> </a></td>

@@ -30,7 +30,13 @@
             brwNowPage = 0;
             brwKey = 'noa';
 
-            aPop = new Array(['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], ['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtCustnick', 'cust_b.aspx'], ['txtTggno', '', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx'], ['txtUccno', 'lblUcc', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx'], ['txtAddrno', 'lblAddr', 'addr', 'noa,addr', 'txtAddrno,txtAddr', 'addr_b.aspx'], ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']);
+            aPop = new Array(['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+            , ['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtCustnick', 'cust_b.aspx']
+            , ['txtTggno', '', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx']
+            , ['txtUccno', 'lblUcc', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
+            , ['txtAddrno', 'lblAddr', 'addr', 'noa,addr', 'txtAddrno,txtAddr', 'addr_b.aspx']
+            , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
+            ,['txtCardealno', 'lblCardeal', 'acomp', 'noa,acomp', 'txtCardealno,txtCardeal', 'acomp_b.aspx']);
 
             var tmp_discount = new Array();
             $(document).ready(function() {
@@ -707,6 +713,9 @@
 						<td colspan="2">
 						<input id="txtTgg" class="txt c1"/>
 						</td>
+						<td><span> </span><a id="lblCardeal" class="lbl btn"> </a></td>
+						<td><input id="txtCardealno" type="text" class="txt c1"/></td>
+						<td colspan="2"><input id="txtCardeal" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTranno" class="lbl btn"> </a></td>

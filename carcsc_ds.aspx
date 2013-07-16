@@ -38,7 +38,8 @@
             , ['txtUccno', 'lblUcc', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
             , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
             , ['txtBoatno', 'lblBoatno', 'boat', 'noa,boat', '0txtBoatno,txtBoat', 'boat_b.aspx']
-            ,['txtAddrno', 'lblAddr', 'addr', 'noa,addr,productno,product', 'txtAddrno,txtAddr,txtUccno,txtProduct', 'addr_b.aspx']);
+            ,['txtAddrno', 'lblAddr', 'addr', 'noa,addr,productno,product', 'txtAddrno,txtAddr,txtUccno,txtProduct', 'addr_b.aspx']
+            ,['txtCardealno', 'lblCardeal', 'acomp', 'noa,acomp', 'txtCardealno,txtCardeal', 'acomp_b.aspx']);
 			
 			var calctypeItem = new Array();
 			function currentData() {}
@@ -698,6 +699,9 @@
 						<td><span> </span><a id="lblTgg" class="lbl"> </a></td>
 						<td><input id="txtTggno" type="text" class="txt c1"/></td>
 						<td colspan="2"><input id="txtTgg" class="txt c1"/></td>
+						<td><span> </span><a id="lblCardeal" class="lbl btn"> </a></td>
+						<td><input id="txtCardealno" type="text" class="txt c1"/></td>
+						<td colspan="2"><input id="txtCardeal" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblWorker" class="lbl"> </a></td>
