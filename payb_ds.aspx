@@ -89,6 +89,7 @@
 						t_where += " where[2]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[money]!=0 ^^" ;
 						t_where += " where[3]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[plusmoney]!=0 ^^" ;
                    		t_where += " where[4]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 ^^" ;
+                   		t_where += " where[5]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[wmoney]!=0 ^^" ;
                    		
                     	q_gt('payb_fix_ds',t_where, 0, 0, 0, "", r_accy);
 					}else{

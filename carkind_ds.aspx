@@ -424,6 +424,13 @@
 					<tr>
 						<td> </td>
 						<td colspan="3">	
+							<input type="radio" name="img" style="float:left;width:5%;" value="car8.png">
+							<a style="float:left;width:25%;color:black;">車-八輪</a>
+						</td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td colspan="3">	
 							<input type="radio" name="img" style="float:left;width:5%;" value="car10.png">
 							<a style="float:left;width:25%;color:black;">車-十輪</a>
 						</td>

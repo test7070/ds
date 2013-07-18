@@ -34,7 +34,7 @@
             brwNowPage = 0;
             brwKey = 'Datea';
             aPop = new Array(['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
-            , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', '0txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
+            , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx']
             , ['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx']
             , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,brand,unit,inprice', 'txtProductno_,txtProduct_,txtTypea_,txtBrand_,txtUnit_,txtPrice_', 'fixucc_b.aspx']
             , ['txtTireno_', 'btnTirestk_', 'view_tirestk', 'noa,productno,product,brandno,brand,price', 'txtTireno_,txtProductno_,txtProduct_,txtBrandno_,txtBrand_,txtPrice_', 'tirestk_b.aspx']);
@@ -784,9 +784,13 @@
 							<input id="txtDriver" type="text" style="float:left; width:50%;"/>
 						</td>
 					</tr>
+					<tr style="display:none;">
+						<td><span> </span><a id="lblCarplateno" class="lbl btn"> </a></td>
+						<td><input id="txtCarplateno" type="text" class="txt c1"/></td>
+					</tr>
 					<tr>
-						<td><span> </span><a id="lblCarplate" class="lbl btn" style="display:none;"> </a></td>
-						<td><input id="txtCarplateno" type="text" class="txt c1" style="display:none;"/></td>
+						<td><span> </span><a id="lblCardno" class="lbl btn"> </a></td>
+						<td><input id="txtCardno" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblMiles" class="lbl"> </a></td>
 						<td><input id="txtMiles" type="text" class="txt c1 num"/></td>
 					</tr>

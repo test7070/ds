@@ -35,7 +35,7 @@
             brwKey = 'noa';
             brwCount2 = 6;
             //ajaxPath = "";
-            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa','txtCarno', 'car2_b.aspx'],
+            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,cardno', 'txtCarno,txtCardno', 'car2_b.aspx'],
             		['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate', 'txtCarplateno', 'carplate_b.aspx'],
             		['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'],
             		['txtEtireno_', '', 'view_tirestk', 'noa,price,product','txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
@@ -542,8 +542,12 @@
 					<tr>
 						<td><span> </span><a id="lblCarno" class="lbl"> </a></td>
 						<td><input id="txtCarno"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblCarplate" class="lbl" style="display:none;"> </a></td>
-						<td><input id="txtCarplateno"  type="text" class="txt c1" style="display:none;"/></td>
+						<td><span> </span><a id="lblCardno" class="lbl btn"> </a></td>
+						<td><input id="txtCardno" type="text" class="txt c1"/></td>
+					</tr>
+					<tr style="display:none;">
+						<td><span> </span><a id="lblCarplateno" class="lbl btn"> </a></td>
+						<td><input id="txtCarplateno" type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTgg" class="lbl btn" > </a></td>

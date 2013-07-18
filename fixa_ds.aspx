@@ -34,7 +34,7 @@
 		    brwKey = 'Datea';
 		    //ajaxPath = "";
 		    aPop = new Array(
-		    	['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx'],
+		    	['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx'],
 		    	['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], 
 		    	['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'], 
 		    	['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx'], 
@@ -572,7 +572,6 @@
 						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
 						<td><input id="txtMon" type="text" class="txt c1"/></td>				
 					</tr>
-					
 					<tr>
 						<td><span> </span><a id="lblCarno" class="lbl btn"> </a></td>
 						<td><input id="txtCarno" type="text" class="txt c1"/></td>
@@ -581,6 +580,10 @@
 							<input id="txtDriverno" type="text" style="float:left;width:50%;"/>
 							<input id="txtDriver" type="text" style="float:left;width:50%;"/>
 						</td> 
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblCardno" class="lbl btn"> </a></td>
+						<td><input id="txtCardno" type="text" class="txt c1"/></td>
 					</tr>
 					<tr style="display:none;">
 						<td><span> </span><a id="lblCarplateno" class="lbl btn"> </a></td>
