@@ -222,7 +222,7 @@
 								isOutside : false
 							});
 						for ( i = 0; i < as.length; i++) {
-							if(!(as[i].noa=='D' || as[i].noa=='E'))
+							if(!(as[i].noa=='D' || as[i].noa=='F'))
 								continue;
 							t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
 							item.push({

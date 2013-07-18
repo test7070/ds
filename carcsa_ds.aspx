@@ -212,7 +212,7 @@
 							isoutside : false
 						});
 						for ( i = 0; i < as.length; i++) {
-							if(as[i].noa+as[i].noq=="D01" || as[i].noa+as[i].noq=="D02" || as[i].noa+as[i].noq=="E01"){
+							if (as[i].noa == 'D' || as[i].noa == 'F'){
 								//for 大昌
 								t_item += (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
 								carcsa.calctype.push({
