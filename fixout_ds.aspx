@@ -33,7 +33,8 @@
             brwList = [];
             brwNowPage = 0;
             brwKey = 'Datea';
-            aPop = new Array(['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+            aPop = new Array(['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx']
+            , ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
             , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx']
             , ['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx']
             , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,brand,unit,inprice', 'txtProductno_,txtProduct_,txtTypea_,txtBrand_,txtUnit_,txtPrice_', 'fixucc_b.aspx']
@@ -774,6 +775,14 @@
 						<td><input id="txtOutdate" type="text" class="txt c1"/></td>	
 						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
 						<td><input id="txtMon" type="text" class="txt c1"/></td>			
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
+						<td colspan="4">
+						<input id="txtTggno" type="text" class="txt"  style="width:25%;"/>
+						<input id="txtTgg" type="text" class="txt" style="width:75%;"/>
+						<input id="txtNick" type="text" class="txt" style="display: none;"/>
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblCarno" class="lbl btn"> </a></td>

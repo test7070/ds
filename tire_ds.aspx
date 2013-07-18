@@ -38,7 +38,7 @@
             aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,cardno', 'txtCarno,txtCardno', 'car2_b.aspx'],
             		['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate', 'txtCarplateno', 'carplate_b.aspx'],
             		['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'],
-            		['txtEtireno_', '', 'view_tirestk', 'noa,price,product','txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
+            		['txtEtireno_', '', 'view_tirestk', 'noa,price,product','0txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
 			function tire_dsData(){}
 			tire_dsData.prototype = {
 				carkind : new Array(),
