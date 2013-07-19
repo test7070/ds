@@ -35,7 +35,8 @@
             brwKey = 'noa';
             brwCount2 = 6;
             //ajaxPath = "";
-            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,cardno', 'txtCarno,txtCardno', 'car2_b.aspx'],
+            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx'],
+		    		['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], 
             		['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate', 'txtCarplateno', 'carplate_b.aspx'],
             		['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'],
             		['txtEtireno_', '', 'view_tirestk', 'noa,price,product','0txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
@@ -540,26 +541,31 @@
 						<td><input id="txtDatea"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblCarno" class="lbl"> </a></td>
-						<td><input id="txtCarno"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblCardno" class="lbl btn"> </a></td>
-						<td><input id="txtCardno" type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
+						<td colspan="3">
+						<input id="txtTggno" type="text" class="txt"  style="width:25%;"/>
+						<input id="txtTgg" type="text" class="txt" style="width:75%;"/>
+						<input id="txtNick" type="text" class="txt" style="display: none;"/>
+						</td>
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblCarno" class="lbl btn"> </a></td>
+						<td><input id="txtCarno" type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblDriver" class="lbl btn"> </a></td>
+						<td>
+							<input id="txtDriverno" type="text" style="float:left; width:50%;"/>
+							<input id="txtDriver" type="text" style="float:left; width:50%;"/>
+						</td>
 					</tr>
 					<tr style="display:none;">
 						<td><span> </span><a id="lblCarplateno" class="lbl btn"> </a></td>
 						<td><input id="txtCarplateno" type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblTgg" class="lbl btn" > </a></td>
-						<td colspan="3">
-							<input id="txtTggno" type="text" style="float:left;width:40%;"/>
-							<input id="txtTgg" type="text" style="float:left;width:60%;"/>
-							<input id="txtNick" type="text" style="display:none;"/>
-						</td>
-					</tr>
-					<tr>
+						<td><span> </span><a id="lblCardno" class="lbl btn"> </a></td>
+						<td><input id="txtCardno" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblMiles" class="lbl"> </a></td>
-						<td><input id="txtMiles"type="text" class="txt num c1"/></td>
+						<td><input id="txtMiles" type="text" class="txt c1 num"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblWmoney" class="lbl"> </a></td>
