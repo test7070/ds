@@ -181,8 +181,6 @@
                         var t_item = "";
                         var item = new Array();
                         for ( i = 0; i < as.length; i++) {
-                            if (!(as[i].noa == 'D' || as[i].noa == 'E' || as[i].noa == 'F'))
-                                continue;
                             t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
                             tmp_discount.push(as[i].discount);
                         }

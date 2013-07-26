@@ -212,17 +212,14 @@
 							isoutside : false
 						});
 						for ( i = 0; i < as.length; i++) {
-							if (as[i].noa == 'D' || as[i].noa == 'E' || as[i].noa == 'F'){
-								//for 大昌
-								t_item += (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
-								carcsa.calctype.push({
-									noa : as[i].noa + as[i].noq,
-									typea : as[i].typea,
-									discount : as[i].discount,
-									discount2 : as[i].discount2,
-									isoutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
-								});
-							}
+							t_item += (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
+							carcsa.calctype.push({
+								noa : as[i].noa + as[i].noq,
+								typea : as[i].typea,
+								discount : as[i].discount,
+								discount2 : as[i].discount2,
+								isoutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
+							});
 						}
 						q_cmbParse("cmbCalctype", t_item, "s");
 						q_gt('carcsatype', '', 0, 0, 0, 'carcsaInit_2');

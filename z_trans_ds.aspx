@@ -18,14 +18,42 @@
             if (location.href.indexOf('?') < 0) {
                 location.href = location.href + "?;;;;" + ((new Date()).getUTCFullYear() - 1911);
             }
+            var t_carteam = null;
+            var t_calctypes = null;
+            
             $(document).ready(function() {
                 _q_boxClose();
                 q_getId();
                 q_gf('', 'z_trans_ds');
             });
-
+			
             function q_gfPost() {
-                $('#q_report').q_report({
+                q_gt('carteam', '', 0, 0, 0, "load_1");
+            }
+            function q_gtPost(t_name) {
+                switch (t_name) {
+                    case 'load_1':
+                        t_carteam = '';
+                        var as = _q_appendData("carteam", "", true);
+                        for ( i = 0; i < as.length; i++) {
+                            t_carteam += (t_carteam.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
+                        }
+                        q_gt('calctype2', '', 0, 0, 0, "load_2");
+                        break;
+                    case 'load_2':
+                        t_calctypes = '';
+                        var as = _q_appendData("calctypes", "", true);
+                        for ( i = 0; i < as.length; i++) {
+                            t_calctypes += (t_calctypes.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
+                        }
+                        LoadFinish();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            function LoadFinish() {
+            	$('#q_report').q_report({
                     fileName : 'z_trans_ds',
                     options : [{/*[1]-年度*/
                         type : '0',
@@ -46,11 +74,16 @@
                     }, {/*5 [8]*/
                         type : '6',
                         name : 'xcardealno'
+                    }, {/*6-[9]-車隊*/
+                        type : '8',
+                        name : 'xcarteam',
+                        value : t_carteam.split(',')
+                    }, {/*7-[10]-計算類別*/
+                        type : '8',
+                        name : 'xcalctype',
+                        value : t_calctypes.split(',')
                     }]
                 });
-                q_popAssign();
-                q_langShow();
-
                 $('#txtXdate1').mask('999/99/99');
                 $('#txtXdate1').datepicker();
                 $('#txtXdate2').mask('999/99/99');
@@ -59,6 +92,11 @@
                 $('#txtXtrandate1').datepicker();
                 $('#txtXtrandate2').mask('999/99/99');
                 $('#txtXtrandate2').datepicker();
+                
+                $('#chkXcarteam').children('input').attr('checked', 'checked');
+                $('#chkXcalctype').children('input').attr('checked', 'checked');
+                q_popAssign();
+                q_langShow();
             }
 		</script>
 	</head>
