@@ -50,8 +50,6 @@
 						var as = _q_appendData("calctypes", "", true);
 						var t_item = "@全部";
 						for ( i = 0; i < as.length; i++) {
-							if(!(as[i].noa=='D' || as[i].noa=='E'))
-								continue;
 							t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + as[i].noq + '@' + as[i].typea;
 						}
 						q_cmbParse("cmbCalctype", t_item);
