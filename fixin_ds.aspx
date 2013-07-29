@@ -174,7 +174,7 @@
                     	}else if(t_name.substring(0,12)=="tirenoBtnOk2"){
                     		var t_tireno = t_name.split('_');
                     		if(t_tireno.length>1)
-                    			t_tireno = t_tireno.slice(1,t_tireno.length);
+                    			t_tireno = t_tireno.slice(1,t_tireno.length-1);
                     		else
                     			t_tireno = new Array();
                     		var as = _q_appendData("tirestk", "", true);
@@ -200,9 +200,11 @@
                     			t_tireno = new Array();
                     		var as = _q_appendData("fixouts", "", true);
                        		if (as[0] != undefined) {
-                       			alert('胎號【'+as[0].tireno+'】已領料禁止異動，領料單號【'+as[0].noa+'】');
-                       			Unlock(1);
-                       			return;
+                       			if($.trim(as[0].tireno).length>0){
+                       				alert('胎號【'+as[0].tireno+'】已領料禁止異動，領料單號【'+as[0].noa+'】');
+	                       			Unlock(1);
+	                       			return;
+                       			}
                        		}
                        		checkFixoutTireno(t_tireno);
                     	}else if(t_name.substring(0,11)=="DeleteCheck"){
@@ -367,9 +369,13 @@
             		var t_where=" where=^^ tireno='"+tireno[0]+"'^^";
             		var t_string = "";
             		for(var i=1; i<tireno.length; i++){
-            			t_string = (t_string>0?'_':'') + tireno[i];
+            			if($.trim(tireno[i]).length>0)
+            				t_string = (t_string>0?'_':'') + tireno[i];
             		}
-            		q_gt('fixouts', t_where, 0, 0, 0, "tirenoBtnOk3_"+t_string, r_accy);
+            		if(t_string.length==0)
+            			checkStkBtnOk(q_bbsCount-1);
+            		else 
+            			q_gt('fixouts', t_where, 0, 0, 0, "tirenoBtnOk3_"+t_string, r_accy);
             	}
             }
             function DeleteCheck(tireno){
