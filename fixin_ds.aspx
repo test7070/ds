@@ -388,7 +388,11 @@
             		for(var i=1; i<tireno.length; i++){
             			t_string = (t_string>0?'_':'') + tireno[i];
             		}
-            		q_gt('fixouts', t_where, 0, 0, 0, "DeleteCheck_"+t_string, r_accy);
+            		if(t_string.length==0){
+            			_btnDele();
+                		Unlock(1);
+            		}else
+            			q_gt('fixouts', t_where, 0, 0, 0, "DeleteCheck_"+t_string, r_accy);
             	}
             }
             function checkStkBtnOk(n){
