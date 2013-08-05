@@ -33,36 +33,40 @@
             function q_gfPost() {
                 $('#q_report').q_report({
                     fileName : 'z_fixa_ds',
-                    options : [{
+                    options : [{/* [1]*/
                         type : '0',
                         name : 'accy',
                         value : q_getId()[4]
-                    }, {
+                    }, {/* [2]*/
                         type : '0',
                         name : 'xname',
                         value : r_name 
-                    }, {
+                    }, {/*1 [3][4]*/
                         type : '1',
                         name : 'date'
-                    }, {
+                    }, {/*2 [5][6]*/
                         type : '2',
                         name : 'tgg',
                         dbf : 'tgg',
                         index : 'noa,comp',
                         src : 'tgg_b.aspx'
-                    }, {
+                    }, {/*3 [7]*/
                         type : '6',
                         name : 'xcarno'
-                    }, {
+                    }, {/*4 [8]*/
                         type : '6',
                         name : 'xmoney'
-                    }, {
+                    }, {/*5 [9]*/
                         type : '8',
                         name : 'xoption01',
                         value : q_getMsg('toption01').split('&')
-                    }, {
+                    }, {/*6 [10]*/
                         type : '6',
                         name : 'xtireno'
+                    }, {/*7 [11]*/
+                        type : '5',
+                        name : 'yoption01',
+                        value : [' @全部','in@進貨成本','out@領料成本']
                     }]
                 });
                 q_popAssign();
