@@ -18,8 +18,8 @@
             if (location.href.indexOf('?') < 0) {
                 location.href = location.href + "?;;;;" + ((new Date()).getUTCFullYear() - 1911);
             }
-            aPop = new Array(['txtXtggno', 'lblXtggno', 'tgg', 'noa,comp', 'txtTggno', 'tgg_b.aspx']
-        	,['txtXcardealno', 'lblXcardealno', 'acomp', 'noa,acomp', 'txtCardealno', 'acomp_b.aspx']);
+            aPop = new Array(['txtXtggno', 'lblXtggno', 'tgg', 'noa,comp', 'txtXtggno', 'tgg_b.aspx']
+        	,['txtXcardealno', 'lblXcardealno', 'acomp', 'noa,acomp', 'txtXcardealno', 'acomp_b.aspx']);
         	
             $(document).ready(function() {
                 _q_boxClose();
