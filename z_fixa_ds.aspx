@@ -63,10 +63,6 @@
                     }, {/*6 [10]*/
                         type : '6',
                         name : 'xtireno'
-                    }, {/*7 [11]*/
-                        type : '5',
-                        name : 'yoption01',
-                        value : [' @全部','in@進貨成本','out@領料成本']
                     }]
                 });
                 q_popAssign();
@@ -76,6 +72,8 @@
                 $('#txtDate1').datepicker();
                 $('#txtDate2').mask('999/99/99');
                 $('#txtDate2').datepicker();
+                $('#chkXoption01').children('input').attr('checked', 'checked');
+                
                 $('#txtXmoney').css('text-align','right').keydown(function(e) {
                 	//alert(e.which);
                 	if(e.which==8 || e.which==9 || e.which==13 || e.which==37 || e.which==38 || e.which==39 || e.which==40 || e.which==46){
