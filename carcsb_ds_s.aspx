@@ -17,7 +17,9 @@
 			aPop=new Array(
 				['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno', 'car2_b.aspx']
 				,['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno', 'driver_b.aspx']
-				,['txtCustno', 'lblCustno', 'cust', 'noa,comp', 'txtCustno', 'cust_b.aspx']);
+				,['txtCustno', 'lblCustno', 'cust', 'noa,comp', 'txtCustno', 'cust_b.aspx']
+				,['txtCardealno', 'lblCardealno', 'acomp', 'noa,acomp', 'txtCardealno', 'acomp_b.aspx']
+				,['txtTggno', 'lblTggno', 'tgg', 'noa,comp', 'txtTggno', 'tgg_b.aspx']);
 
 			
 			$(document).ready(function() {
@@ -68,7 +70,8 @@
 				t_custno = $.trim($('#txtCustno').val());
 				t_comp = $.trim($('#txtComp').val());
 				t_tranno = $.trim($('#txtTranno').val());
-
+				t_tggno = $.trim($('#txtTggno').val());
+				t_cardealno = $.trim($('#txtCardealno').val());
 				
 				var t_where = " 1=1 " 
 				+ q_sqlPara2("calctype", t_calctype) 
@@ -76,7 +79,9 @@
 				+ q_sqlPara2("datea", t_bdate, t_edate) 
 				+ q_sqlPara2("mon", t_mon)
 				+ q_sqlPara2("tranno", t_tranno)
-				+ q_sqlPara2("custno", t_custno);
+				+ q_sqlPara2("custno", t_custno)
+				+ q_sqlPara2("tggno", t_tggno)
+				+ q_sqlPara2("cardealno", t_cardealno);
 				if (t_carno.length>0)
                     t_where += " and patindex('%" + t_carno + "%',carno)>0";
                 if (t_comp.length>0)
@@ -153,6 +158,14 @@
 				<tr class='seek_tr'>
 					<td class='seek'  style="width:20%;"><a id='lblTranno'> </a></td>
 					<td><input class="txt" id="txtTranno" type="text" style="width:215px; font-size:medium;" /></td>
+				</tr>
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblTggno'> </a></td>
+					<td><input class="txt" id="txtTggno" type="text" style="width:215px; font-size:medium;" /></td>
+				</tr>
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblCardealno'> </a></td>
+					<td><input class="txt" id="txtCardealno" type="text" style="width:215px; font-size:medium;" /></td>
 				</tr>
 			</table>
 			<!--#include file="../inc/seek_ctrl.inc"-->

@@ -17,7 +17,9 @@
 			aPop=new Array(
 				['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno', 'car2_b.aspx']
 				,['txtDriverno', 'lblDriverno', 'driver', 'noa,namea', 'txtDriverno', 'driver_b.aspx']
-				,['txtCustno', 'lblCustno', 'cust', 'noa,comp', 'txtCustno', 'cust_b.aspx']);
+				,['txtCustno', 'lblCustno', 'cust', 'noa,comp', 'txtCustno', 'cust_b.aspx']
+				,['txtCardealno', 'lblCardealno', 'acomp', 'noa,acomp', 'txtCardealno', 'acomp_b.aspx']
+				,['txtTggno', 'lblTggno', 'tgg', 'noa,comp', 'txtTggno', 'tgg_b.aspx']);
 
 			
 			$(document).ready(function() {
@@ -35,7 +37,6 @@
 
 				bbmMask = [['txtBdate', r_picd], ['txtEdate', r_picd],['txtBtrandate', r_picd], ['txtEtrandate', r_picd],['txtMon', r_picm]];
 				q_mask(bbmMask);
-				q_gt('acomp', '', 0, 0, 0, "");
 				q_cmbParse("cmbInterval", '@全部,'+q_getPara('carcsa.interval'));
 				$('#txtNoa').focus();
 				
@@ -45,18 +46,7 @@
 				$('#txtEtrandate').datepicker(); 
 			}
 			function q_gtPost(t_name) {
-                switch (t_name) {
-                	case 'acomp':
-                        var as = _q_appendData("acomp", "", true);
-                        if (as[0] != undefined) {
-	                        var t_item = "@全部";
-	                        for ( i = 0; i < as.length; i++) {
-	                            t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].acomp;
-	                        }
-	                        q_cmbParse("cmbCno", t_item);
-                        }
-                        break;
-                } 
+ 
             }
 
 			function q_seekStr() {
@@ -71,9 +61,10 @@
 				t_interval = $('#cmbInterval').val();
 				t_custno = $.trim($('#txtCustno').val());
 				t_comp = $.trim($('#txtComp').val());
-				t_cno = $('#cmbCno').val();
 				t_driverno = $.trim($('#txtDriverno').val());
 				t_tranno = $.trim($('#txtTranno').val());
+				t_tggno = $.trim($('#txtTggno').val());
+				t_cardealno = $.trim($('#txtCardealno').val());
 				
 				var t_where = " 1=1 " 
 				+ q_sqlPara2("noa", t_noa) 
@@ -83,7 +74,8 @@
 				+ q_sqlPara2("mon", t_mon)
 				+ q_sqlPara2("custno", t_custno)
 				+ q_sqlPara2("interval", t_interval)
-				+ q_sqlPara2("cno", t_cno);
+				+ q_sqlPara2("tggno", t_tggno)
+				+ q_sqlPara2("cardealno", t_cardealno);
 				if (t_comp.length>0)
                     t_where += " and patindex('%" + t_comp + "%',comp)>0";
 				if (t_carno.length>0)
@@ -112,10 +104,6 @@
 	>
 		<div style='width:400px; text-align:center;padding:15px;' >
 			<table id="seek"  border="1"   cellpadding='3' cellspacing='2' style='width:100%;' >
-				<tr class='seek_tr'>
-					<td class='seek'  style="width:20%;"><a id='lblAcomp'> </a></td>
-					<td><select id="cmbCno" style="width:215px; font-size:medium;" > </select></td>
-				</tr>
 				<tr class='seek_tr'>
 					<td class='seek'  style="width:20%;"><a id='lblInterval'> </a></td>
 					<td><select id="cmbInterval" style="width:215px; font-size:medium;" > </select></td>
@@ -167,6 +155,14 @@
 				<tr class='seek_tr'>
 					<td class='seek'  style="width:20%;"><a id='lblTranno'> </a></td>
 					<td><input class="txt" id="txtTranno" type="text" style="width:215px; font-size:medium;" /></td>
+				</tr>
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblTggno'> </a></td>
+					<td><input class="txt" id="txtTggno" type="text" style="width:215px; font-size:medium;" /></td>
+				</tr>
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblCardealno'> </a></td>
+					<td><input class="txt" id="txtCardealno" type="text" style="width:215px; font-size:medium;" /></td>
 				</tr>
 			</table>
 			<!--#include file="../inc/seek_ctrl.inc"-->
