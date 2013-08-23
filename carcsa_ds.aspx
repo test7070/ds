@@ -479,7 +479,7 @@
 			function q_funcPost(t_func, result) {
                 switch(t_func) {
                     case 'carcsa.export':
-						alert(result);
+						alert('匯入完成');
 						$('#btnExport_trans').removeAttr('disabled','disabled').val('匯至出車單');
 						location.reload();
                         break;
