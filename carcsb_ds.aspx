@@ -69,10 +69,14 @@
                     $(this).attr('size', '1');
                 }).change(function() {
                     $('#txtDiscount').val(tmp_discount[$(this).get(0).selectedIndex]);
-                    sum();
+                    getOutPrice();
                 }).click(function() {
                     $('#txtDiscount').val(tmp_discount[$(this).get(0).selectedIndex]);
-                    sum();
+                    getOutPrice();
+                });
+                
+                $('#txtAddrno').change(function(e){
+                	getOutPrice();
                 });
 
                 $('#txtDatea').focusout(function() {
@@ -146,8 +150,12 @@
                     var noa = $.trim($('#txtTranno').val());
                     if (noa.length > 0)
                         q_box("trans.aspx?;;;noa='" + noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTarans"));
-
                 });
+            }
+            function getOutPrice(){
+            	$('#txtOutprice').val(0);
+            	var t_calctype = $.trim($('#cmbCalctype').val());
+            	q_gt('calctype2', "where=^^ noa+noq='"+t_calctype+"'^^", 0, 0, 0, "getOutPrice1");
             }
 
             function sum() {
@@ -176,6 +184,34 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'getOutPrice1':
+                		var as = _q_appendData("calctypes", "", true);
+                		if(as[0]!=undefined){
+                			var t_addrno = $.trim($('#txtAddrno').val());
+							var t_date = $.trim($('#txtTrandate').val());
+							if(as[0].isoutside == '1' || as[0].isoutside=='true')
+								q_gt('addrs', "where=^^ noa='"+t_addrno+"' and datea<='"+t_date+"' ^^", 0, 0, 0, 'getOutPrice2');
+                			else
+                				q_gt('addrs', "where=^^ noa='"+t_addrno+"' and datea<='"+t_date+"' ^^", 0, 0, 0, 'getOutPrice3');
+                		}
+						else{
+							sum();
+						}
+                		break;
+                	case 'getOutPrice2'://外車
+						var as = _q_appendData("addrs", "", true);
+						if(as[0]!=undefined){
+							$('#txtOutprice').val(as[0].driverprice2);
+						}
+						sum();
+						break;
+					case 'getOutPrice3'://公司車
+						var as = _q_appendData("addrs", "", true);
+						if(as[0]!=undefined){
+							$('#txtOutprice').val(as[0].driverprice);
+						}
+						sum();
+						break;
                     case 'calctypes':
                         var as = _q_appendData("calctypes", "", true);
                         var t_item = "";
