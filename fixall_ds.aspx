@@ -21,10 +21,10 @@
 
 		    q_tables = 's';
 		    var q_name = "fixall";
-		    var q_readonly = ['txtNoa', 'txtWmoney', 'txtCmoney', 'txtDmoney','txtMoney', 'txtTotal','txtWorker','txtWorker2'];
+		    var q_readonly = ['txtNoa', 'txtWmoney', 'txtCmoney', 'txtDmoney','txtTax', 'txtDiscount', 'txtTotal','txtWorker','txtWorker2'];
 		    var q_readonlys = ['txtTypea','txtMoney'];
-		    var bbmNum = new Array(['txtDiscount', 10, 0, 1], ['txtWmoney', 10, 0, 1], ['txtCmoney', 10, 0, 1], ['txtDmoney', 10, 0, 1], ['txtMoney', 10, 0, 1], ['txtTax', 10, 0, 1], ['txtTotal', 10, 0, 1]);
-		    var bbsNum = new Array(['txtPrice', 10, 2, 1], ['txtMount', 10, 2, 1], ['txtMoney', 10, 0, 1]);
+		    var bbmNum = new Array(['txtWmoney', 10, 0, 1], ['txtCmoney', 10, 0, 1], ['txtDmoney', 10, 0, 1], ['txtTax', 10, 0, 1], ['txtDiscount', 10, 0, 1], ['txtTotal', 10, 0, 1]);
+		    var bbsNum = new Array(['txtPrice', 10, 2, 1], ['txtMount', 10, 2, 1], ['txtMoney', 10, 0, 1], ['txtTax', 10, 0, 1], ['txtDiscount', 10, 0, 1]);
 		    var bbmMask = [];
 		    var bbsMask = [];
 		    q_sqlCount = 6;
@@ -64,12 +64,6 @@
 		        q_getFormat();
 		        bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm], ['txtFixadate', r_picd]];
 		        q_mask(bbmMask);
-		        $('#txtTax').change(function () {
-		            sum();
-		        });
-		        $('#txtDiscount').change(function () {
-		            sum();
-		        });
 		    }
 
 		    function q_boxClose(s2) {
@@ -167,7 +161,7 @@
 		    function _btnSeek() {
 		        if (q_cur > 0 && q_cur < 4)// 1-3
 		            return;
-		        q_box('fixa_ds_s.aspx', q_name + '_s', "550px", "560px", q_getMsg("popSeek"));
+		        q_box('fixall_ds_s.aspx', q_name + '_s', "550px", "560px", q_getMsg("popSeek"));
 		    }
 		    function bbsAssign() {
 		        for (var i = 0; i < q_bbsCount; i++) {
@@ -177,6 +171,12 @@
 		                    sum();
 		                });
 		                $('#txtPrice_' + i).change(function (e) {
+		                    sum();
+		                });
+		                $('#txtTax_' + i).change(function (e) {
+		                    sum();
+		                });
+		                $('#txtDiscount_' + i).change(function (e) {
 		                    sum();
 		                });
 		            }
@@ -200,7 +200,7 @@
             	q_gt('paybs', t_where, 0, 0, 0, "btnModi", r_accy);
 		    }
 		    function btnPrint() {
-		    	q_box("z_fixa_ds.aspx?;;;;"+r_accy, 'z_fixa_ds', "95%", "95%", q_getMsg("popFixa"));
+		    	q_box("z_fixall_ds.aspx?;;;;"+r_accy, 'z_fixall_ds', "95%", "95%", q_getMsg("popFixa"));
 		    }
 		    function wrServer(key_value) {
 		        var i;
@@ -208,7 +208,7 @@
 		        _btnOk(key_value, bbmKey[0], bbsKey[1], '', 2);
 		    }
 		    function bbsSave(as) {
-		        if (!as['productno'] && !as['product']) {
+		        if (!as['carno'] && !as['productno'] && !as['product']) {
 		            as[bbsKey[1]] = '';
 		            return;
 		        }
@@ -223,37 +223,57 @@
 		    function sum() {
 		    	if(!(q_cur==1 || q_cur==2))
 		    		return;
-		        var t_money=0,t_wmoney = 0, t_cmoney = 0, t_dmoney = 0, t_tax,t_discount;
+		        var t_money,t_wmoney,t_cmoney,t_dmoney,t_tax,t_discount,t_total;
+		        var tot_wmoney = 0,tot_cmoney = 0,tot_dmoney = 0, tot_tax=0, tot_discount=0, tot_total=0;
 		        for(var i=0;i<q_bbsCount;i++){
 		        	t_money = q_float('txtMount_' + i).mul(q_float('txtPrice_' + i)).round(0);
 		        	$('#txtMoney_'+i).val(FormatNumber(t_money));
+		        	t_wmoney = 0;
+		        	t_cmoney = 0;
+		        	t_dmoney = 0;
 		        	switch($('#txtTypea_' + i).val()){
 		        		case '工資':
-		        			t_wmoney = t_wmoney.add(t_money);
+		        			t_wmoney = t_money;
 		        			break;
 		        		case '輪胎':
-		        			t_cmoney = t_cmoney.add(t_money);
+		        			t_cmoney = t_money;
 		        			break;
 		        		case '材料':
-		        			t_dmoney = t_dmoney.add(t_money);
+		        			t_dmoney = t_money;
 		        			break;
 		        		default:
-		        			$('#txtMoney_'+i).val(0);
 		        			break;
 		        	}
+		        	t_tax = q_float('txtTax_'+i);
+		        	t_discount = q_float('txtDiscount_'+i);
+		        	t_total = t_wmoney.add(t_cmoney).add(t_dmoney).add(t_tax).sub(t_discount);
+		        	
+		        	tot_wmoney = tot_wmoney.add(t_wmoney);
+		        	tot_cmoney = tot_cmoney.add(t_cmoney);
+		        	tot_dmoney = tot_dmoney.add(t_dmoney);
+					tot_tax = tot_tax.add(t_tax);
+					tot_discount = tot_discount.add(t_discount);
+					tot_total = tot_total.add(t_total);
+							        	
+		        	$('#txtWmoney_'+i).val(t_wmoney);
+		        	$('#txtCmoney_'+i).val(t_cmoney);
+		        	$('#txtDmoney_'+i).val(t_dmoney);
+		        	$('#txtTax_'+i).val(t_tax);
+		        	$('#txtDiscount_'+i).val(t_discount);
+		        	$('#txtTotal_'+i).val(t_total);
 		        }	        
 		        t_tax = q_float('txtTax');
 		        t_discount = q_float('txtDiscount');
-		        $('#txtWmoney').val(FormatNumber(t_wmoney));
-		        $('#txtCmoney').val(FormatNumber(t_cmoney));
-		        $('#txtDmoney').val(FormatNumber(t_dmoney));
-		        $('#txtMoney').val(FormatNumber(t_wmoney.add(t_cmoney).add(t_dmoney)));
-		        $('#txtTotal').val(FormatNumber(t_wmoney.add(t_cmoney).add(t_dmoney).add(t_tax).sub(t_discount)));
+		        $('#txtWmoney').val(FormatNumber(tot_wmoney));
+		        $('#txtCmoney').val(FormatNumber(tot_cmoney));
+		        $('#txtDmoney').val(FormatNumber(tot_dmoney));
+		        $('#txtTax').val(FormatNumber(tot_tax));
+		        $('#txtDiscount').val(FormatNumber(tot_discount));
+		        $('#txtTotal').val(FormatNumber(tot_total));
 		    }
 
 		    function refresh(recno) {
 		        _refresh(recno);
-
 		    }
 
 		    function readonly(t_para, empty) {
