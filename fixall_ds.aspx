@@ -20,7 +20,7 @@
 		    }
 
 		    q_tables = 's';
-		    var q_name = "fixa";
+		    var q_name = "fixall";
 		    var q_readonly = ['txtNoa', 'txtWmoney', 'txtCmoney', 'txtDmoney','txtMoney', 'txtTotal','txtWorker','txtWorker2'];
 		    var q_readonlys = ['txtTypea','txtMoney'];
 		    var bbmNum = new Array(['txtDiscount', 10, 0, 1], ['txtWmoney', 10, 0, 1], ['txtCmoney', 10, 0, 1], ['txtDmoney', 10, 0, 1], ['txtMoney', 10, 0, 1], ['txtTax', 10, 0, 1], ['txtTotal', 10, 0, 1]);
@@ -34,46 +34,13 @@
 		    brwKey = 'Datea';
 		    //ajaxPath = "";
 		    aPop = new Array(
-		    	['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx'],
-		    	['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], 
+		    	['txtCarno_', '', 'car2', 'a.noa,cardno,driverno,driver', 'txtCarno_,txtCardno_,txtDriverno_,txtDriver_', 'car2_b.aspx'],
+		    	['txtDriverno_', '', 'driver', 'noa,namea', 'txtDriverno_,txtDriver_', 'driver_b.aspx'], 
 		    	['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'], 
-		    	['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx'], 
-		    	['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,unit,inprice', 'txtProductno_,txtProduct_,txtTypea_,txtUnit_,txtPrice_', 'fixucc_b.aspx']);
+		    	['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,inprice', 'txtProductno_,txtProduct_,txtUnit_,txtPrice_', 'fixucc_b.aspx']);
 		    q_desc = 1;
 		    
-		    function currentData() {}
-			currentData.prototype = {
-				data : [],
-				/*新增時複製的欄位*/
-				include : ['txtDatea','txtFixadate','txtMon','txtTggno','txtTgg','txtNick'],
-				/*記錄當前的資料*/
-				copy : function() {
-					this.data = new Array();
-					for (var i in fbbm) {
-						var isInclude = false;
-						for (var j in this.include) {
-							if (fbbm[i] == this.include[j]) {
-								isInclude = true;
-								break;
-							}
-						}
-						if (isInclude) {
-							this.data.push({
-								field : fbbm[i],
-								value : $('#' + fbbm[i]).val()
-							});
-						}
-					}
-				},
-				/*貼上資料*/
-				paste : function() {
-					for (var i in this.data) {
-						$('#' + this.data[i].field).val(this.data[i].value);
-					}
-				}
-			};
-			var curData = new currentData();
-			
+	
 		    $(document).ready(function () {
 		        bbmKey = ['noa'];
 		        bbsKey = ['noa', 'noq'];
@@ -218,9 +185,7 @@
 		    }
 
 		    function btnIns() {
-		        curData.copy();
                 _btnIns();
-                curData.paste();
                 $('#txtNoa').val('AUTO');
                 if($('#txtDatea').val().length==0)
                		$('#txtDatea').val(q_date());
@@ -533,18 +498,12 @@
 						<td align="center" style="width:20px; color:black;"><a id="vewChk"> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id="vewDatea"> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id="vewFixadate"> </a></td>
-						<td align="center" style="width:70px; color:black;"><a id="vewCarno"> </a></td>
-						<td align="center" style="width:70px; color:black;"><a id="vewDriver"> </a></td>
-						<td align="center" style="width:70px; color:black;"><a id="vewCarplateno"> </a></td>
 						<td align="center" style="width:70px; color:black;"><a id="vewNick"> </a></td>
 					</tr>
 					<tr>
 						<td ><input id="chkBrow.*" type="checkbox"/></td>
 						<td id="datea" style="text-align: center;">~datea</td>
 						<td id="fixadate" style="text-align: center;">~fixadate</td>
-						<td id="carno" style="text-align: center;">~carno</td>
-						<td id="driver" style="text-align: center;">~driver</td>
-						<td id="carplateno" style="text-align: center;">~carplateno</td>
 						<td id="nick" style="text-align: center;">~nick</td>
 					</tr>
 				</table>
@@ -571,24 +530,7 @@
 						<td><input id="txtFixadate" type="text" class="txt c1"/></td>	
 						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
 						<td><input id="txtMon" type="text" class="txt c1"/></td>				
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblCarno" class="lbl btn"> </a></td>
-						<td><input id="txtCarno" type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblDriver" class="lbl btn"> </a></td>
-						<td colspan="2">
-							<input id="txtDriverno" type="text" style="float:left;width:50%;"/>
-							<input id="txtDriver" type="text" style="float:left;width:50%;"/>
-						</td> 
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblCardno" class="lbl btn"> </a></td>
-						<td><input id="txtCardno" type="text" class="txt c1"/></td>
-					</tr>
-					<tr style="display:none;">
-						<td><span> </span><a id="lblCarplateno" class="lbl btn"> </a></td>
-						<td><input id="txtCarplateno" type="text" class="txt c1"/></td>
-					</tr>
+					</tr>			
 					<tr>
 						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
 						<td colspan="5">
@@ -614,8 +556,10 @@
 						<td><input id="txtMoney" type="text" class="txt num c1" /></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblInvono" class="lbl"> </a></td>
-						<td colspan="3"><input id="txtInvono" type="text" class="txt c1"/></td>
+						<td> </td>
+						<td> </td>
+						<td> </td>
+						<td> </td>
 						<td><span> </span><a id="lblTax" class="lbl"> </a></td>
 						<td><input id="txtTax" type="text" class="txt num c1" /></td>
 					</tr>
@@ -636,10 +580,6 @@
 						<td><input id="txtTotal" type="text" class="txt num c1"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
-						<td colspan="5"><input id="txtMemo" type="text" class="txt c1" /></td>
-					</tr>
-					<tr>
 						<td><span> </span><a id="lblWorker" class="lbl"> </a></td>
 						<td><input id="txtWorker" type="text" class="txt c1" /></td>
 						<td><span> </span><a id="lblWorker2" class="lbl"> </a></td>
@@ -655,12 +595,18 @@
 					<input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  />
 					</td>
 					<td align="center" style="width:20px;"> </td>
+					<td align="center" style="width:100px;"><a id='lblCarno_s'> </a></td>
+					<td align="center" style="width:100px;"><a id='lblCardno_s'> </a></td>
+					<td align="center" style="width:100px;"><a id='lblDriverno_s'> </a></td>
+					<td align="center" style="width:100px;"><a id='lblDriver_s'> </a></td>
 					<td align="center" style="width:200px;"><a id='lblProduct_s'> </a></td>
-					<td align="center" style="width:40px;"><a id='lblUnit_s'> </a></td>
+					<td align="center" style="width:40px;"><a id='lblTypea_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblPrice_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblMount_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblMoney_s'> </a></td>
-					<td align="center" style="width:40px;"><a id='lblTypea_s'> </a></td>
+					<td align="center" style="width:80px;"><a id='lblTax_s'> </a></td>
+					<td align="center" style="width:80px;"><a id='lblInvono_s'> </a></td>
+					<td align="center" style="width:80px;"><a id='lblDiscount_s'> </a></td>
 					<td align="center" style="width:200px;"><a id='lblMemo_s'> </a></td>
 				</tr>
 				<tr  style='background:#cad3ff;'>
@@ -674,11 +620,13 @@
 						<input id="txtProductno.*" type="text" style="width:30%;"/>
 						<input id="txtProduct.*"type="text" style="width:55%;"/>
 					</td>
-					<td><input class="txt" id="txtUnit.*" type="text" style="text-align: center;width:95%;"/></td>
+					<td><input id="txtTypea.*" type="text" style="width:95%;"/></td>
 					<td><input class="txt num" id="txtPrice.*" type="text"  style="width:95%;text-align:right;"/></td>
 					<td><input class="txt num" id="txtMount.*" type="text"  style="width:95%;text-align:right;"/></td>
 					<td><input id="txtMoney.*" type="text"  style="width:95%;text-align:right;"/></td>
-					<td><input id="txtTypea.*" type="text" style="width:95%;"/></td>
+					<td><input id="txtTax.*" type="text"  style="width:95%;text-align:right;"/></td>
+					<td><input id="txtInvono.*" type="text" style="width:95%;"/></td>
+					<td><input id="txtDiscount.*" type="text"  style="width:95%;text-align:right;"/></td>
 					<td><input id="txtMemo.*" type="text" style="width:95%;"/></td>
 				</tr>
 				

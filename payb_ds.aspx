@@ -57,7 +57,7 @@
             }
             function mainPost() {
                 q_getFormat();
-                bbmMask = [['txtIndate', r_picd],['txtDatea', r_picd], ['txtPaydate', r_picd]];
+                bbmMask = [['txtIndate', r_picd],['txtDatea', r_picd], ['txtPaydate', r_picd], ['txtBdate', r_picd], ['txtEdate', r_picd]];
                 q_mask(bbmMask);
                 $('#txtDatea').datepicker();
                 $('#txtPaydate').datepicker();
@@ -83,14 +83,28 @@
                 	Lock(1,{opacity:0});
                     var t_noa = $.trim($('#txtNoa').val());
 					var t_tggno = $.trim($('#txtTggno').val());
+					var t_bdate = $.trim($('#txtBdate').val());
+					var t_edate = $.trim($('#txtEdate').val());
+					t_bdate = "'"+t_bdate+"'";
+					t_edate = t_edate.length==0?"char(255)":"'"+t_edate+"'";
 					if(t_tggno.length>0){
-						var t_where = " where=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[total]!=0 ^^" ;
-						t_where += " where[1]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[total]!=0 ^^" ;
-						t_where += " where[2]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[money]!=0 ^^" ;
-						t_where += " where[3]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[plusmoney]!=0 ^^" ;
-                   		t_where += " where[4]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 ^^" ;
-                   		t_where += " where[5]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[wmoney]!=0 ^^" ;
-                   		
+						var t_where = "" ;
+						//fixa & fixin
+						t_where += " where[1]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.wmoney,0)+ISNULL(a.dmoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						t_where += " where[2]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.cmoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						t_where += " where[3]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and (ISNULL(a.tax,0)!=0 or ISNULL(a.discount,0)!=0) and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//fixout & tire
+						t_where += " where[4]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[wmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//chgcash
+						t_where += " where[5]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//custchg
+						t_where += " where[6]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[plusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//carchg
+						t_where += " where[7]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//oil
+						t_where += " where[8]=^^ (b.noa is null or b.noa='"+t_noa+"') and c.noa='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//etc
+						t_where += " where[9]=^^ (b.noa is null or b.noa='"+t_noa+"') and c.noa='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
                     	q_gt('payb_fix_ds',t_where, 0, 0, 0, "", r_accy);
 					}else{
 						alert('請輸入'+q_getMsg('lblTgg'));	
@@ -159,28 +173,12 @@
                         	for(var i=0;i<as.length;i++){
                         		as[i].mount=1;
                         		as[i].price=as[i].money;
-                        		switch(as[i].tablea){
-                        			case 'fixa':
-                        				as[i].memo = '維修,' + as[i].memo ; 
-                        				break;
-                        			case 'fixin':
-                        				as[i].memo = '維修入庫,' + as[i].memo ; 
-                        				break;
-                        			case 'chgcash':
-                        				as[i].memo = '零用金,' + as[i].memo ; 
-                        				break;
-                        			case 'custchg':
-                        				as[i].memo = '客戶加項,' + as[i].memo ; 
-                        				break;
-                        			case 'carchg':
-                        				as[i].memo = '司機減項,' + as[i].memo ; 
-                        				break;
-                        		}
                         	}
                         	for (var i = 0; i < q_bbsCount; i++) {
 			                    $('#btnMinus_' + i).click();
 			                }	
-                        	q_gridAddRow(bbsHtm, 'tbbs', 'txtRc2no,txtMount,txtPrice,txtMoney,txtInvono,txtTax,txtDiscount,txtTotal,txtMemo', as.length, as, 'noa,mount,price,money,invono,tax,discount,total,memo', 'txtRc2no', '');
+                        	q_gridAddRow(bbsHtm, 'tbbs', 'txtTablea,txtRc2no,txtTypea,txtMount,txtPrice,txtMoney,txtInvono,txtTax,txtDiscount,txtTotal,txtMemo,txtAcc1,txtAcc2', as.length, as
+                        		, 'tablea,noa,typea,mount,price,money,invono,tax,discount,total,memo,acc1,acc2', 'txtRc2no', '');
                         }else{
                         	alert('無資料。');
                         }
@@ -663,6 +661,9 @@
 					<tr>
 						<td><span> </span><a id='lblDatea' class="lbl"> </a></td>
 						<td><input id="txtDatea"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id='lblBedate' class="lbl"> </a></td>
+						<td><input id="txtBdate"  type="text" class="txt c1"/></td>
+						<td><input id="txtEdate"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTgg"  class="lbl btn"> </a></td>
@@ -742,7 +743,11 @@
 						<input id="txtNoq.*"  style="display:none;"/>
 					</td>
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
-					<td><input id="txtRc2no.*" type="text"  style="width: 95%;"/></td>
+					<td>
+						<input id="txtRc2no.*" type="text"  style="float:left;width: 95%;"/>
+						<input id="txtTypea.*" type="text"  style="float:left;visibility: hidden;width:0px;"/>
+						<input id="txtTablea.*" type="text"  style="float:left;visibility: hidden;width:0px;"/>
+					</td>
 					<td><select id="cmbKind.*" style="width: 95%;"> </select></td>	
 					<td>
 						<input id="txtMount.*" type="text" style="text-align: right; width: 95%;" />
