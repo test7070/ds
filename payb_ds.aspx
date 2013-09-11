@@ -21,7 +21,7 @@
             q_tables = 's';
             var q_name = "payb";
             var q_readonly = ['txtAccno','txtNoa', 'txtMoney', 'txtTax', 'txtDiscount', 'txtTotal', 'txtWorker','txtWorker2'];
-            var q_readonlys = ['txtRc2no','txtTotal','txtMoney'];
+            var q_readonlys = ['txtRc2no','txtTypea','txtTotal','txtMoney'];
             var bbmNum = [['txtMoney', 10, 0, 1], ['txtTax', 10, 0, 1], ['txtTotal', 10, 0, 1], ['txtDiscount', 10, 0, 1]];
             var bbsNum = [['txtPrice', 10, 3, 1], ['txtDiscount', 10, 0, 1], ['txtMount', 10, 3, 1], ['txtMoney', 10, 0, 1], ['txtTax', 10, 0, 1], ['txtTotal', 10, 0, 1]];
             var bbmMask = [];
@@ -89,22 +89,22 @@
 					t_edate = t_edate.length==0?"char(255)":"'"+t_edate+"'";
 					if(t_tggno.length>0){
 						var t_where = "" ;
-						//fixa & fixin
-						t_where += " where[1]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.wmoney,0)+ISNULL(a.dmoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//wmoney
+						t_where += " where[1]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.wmoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//cmoney
 						t_where += " where[2]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.cmoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
-						t_where += " where[3]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and (ISNULL(a.tax,0)!=0 or ISNULL(a.discount,0)!=0) and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
-						//fixout & tire
-						t_where += " where[4]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[wmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
-						//chgcash
+						//dmoney
+						t_where += " where[3]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.dmoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//tax discount				
+						t_where += " where[4]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and (ISNULL(a.tax,0)!=0 or ISNULL(a.discount,0)!=0) and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//money
 						t_where += " where[5]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
-						//custchg
+						//plusmoney
 						t_where += " where[6]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[plusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
-						//carchg
-						t_where += " where[7]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
-						//oil
+						//minusmoney
+						t_where += " where[7]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^";				
+                    	//money  oil&etc
 						t_where += " where[8]=^^ (b.noa is null or b.noa='"+t_noa+"') and c.noa='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
-						//etc
-						t_where += " where[9]=^^ (b.noa is null or b.noa='"+t_noa+"') and c.noa='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
                     	q_gt('payb_fix_ds',t_where, 0, 0, 0, "", r_accy);
 					}else{
 						alert('請輸入'+q_getMsg('lblTgg'));	
@@ -347,7 +347,7 @@
             }
 
             function bbsSave(as) {
-                if (as['money'] ==0 && as['tax'] ==0 && as['acc1'] =='') {
+                if (as['money'] ==0 && as['tax'] ==0 && as['acc1'] =='' && as['rc2no'].length==0) {
                     as[bbsKey[1]] = '';
                     return;
                 }
@@ -745,7 +745,7 @@
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
 					<td>
 						<input id="txtRc2no.*" type="text"  style="float:left;width: 95%;"/>
-						<input id="txtTypea.*" type="text"  style="float:left;visibility: hidden;width:0px;"/>
+						<input id="txtTypea.*" type="text"  style="float:left;width: 40%;"/>
 						<input id="txtTablea.*" type="text"  style="float:left;visibility: hidden;width:0px;"/>
 					</td>
 					<td><select id="cmbKind.*" style="width: 95%;"> </select></td>	
