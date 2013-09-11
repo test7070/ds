@@ -1,3 +1,7 @@
 *.class
 *.pyc
 *.pyo
+<<<<<<< HEAD
+=======
+*.project
+>>>>>>> 5b28e500bbf27be917ab8220b6b16758b97ab20b
