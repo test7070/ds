@@ -251,9 +251,10 @@
                        		}
                     		if($('#txtTypea_'+t_sel).val()!='工資' && t_stkmount-t_mount<0){
                     			alert(t_productno+'庫存不足，當前庫存 '+t_stkmount+'。');
-                    			Unlock(1);
+                    			/*Unlock(1);
                     			$('#txtMount_'+t_sel).focus();
-                    			return;
+                    			return;*/
+                    			checkStkBtnOk(t_sel-1);
                     		}else{
                     			checkStkBtnOk(t_sel-1);
                     		}
