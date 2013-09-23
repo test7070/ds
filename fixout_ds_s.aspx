@@ -67,7 +67,7 @@
 				if (t_productno.length>0)
                     t_where += " and exists(select noa from fixouts where fixouts.noa=fixout.noa and patindex('%" + t_productno + "%',fixouts.productno)>0)";
 				if (t_tireno.length>0)
-                    t_where += " and exists(select noa from fixouts where fixouts.noa=fixin.noa and patindex('%" + t_tireno + "%',fixouts.tireno)>0)";
+                    t_where += " and exists(select noa from fixouts where fixouts.noa=fixout.noa and patindex('%" + t_tireno + "%',fixouts.tireno)>0)";
 				t_where = ' where=^^' + t_where + '^^ ';
 				return t_where;
 			}
