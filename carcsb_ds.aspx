@@ -189,10 +189,11 @@
                 		if(as[0]!=undefined){
                 			var t_addrno = $.trim($('#txtAddrno').val());
 							var t_date = $.trim($('#txtTrandate').val());
+							var t_inprice = q_float('txtInprice');
 							if(as[0].isoutside == '1' || as[0].isoutside=='true')
-								q_gt('addrs', "where=^^ noa='"+t_addrno+"' and datea<='"+t_date+"' ^^", 0, 0, 0, 'getOutPrice2');
+								q_gt('addrs', "where=^^ noa='"+t_addrno+"' and datea<='"+t_date+"' and custprice between "+(t_inprice-5)+" and "+(t_inprice+5)+" ^^", 0, 0, 0, 'getOutPrice2');
                 			else
-                				q_gt('addrs', "where=^^ noa='"+t_addrno+"' and datea<='"+t_date+"' ^^", 0, 0, 0, 'getOutPrice3');
+                				q_gt('addrs', "where=^^ noa='"+t_addrno+"' and datea<='"+t_date+"' and custprice between "+(t_inprice-5)+" and "+(t_inprice+5)+" ^^", 0, 0, 0, 'getOutPrice3');
                 		}
 						else{
 							sum();
