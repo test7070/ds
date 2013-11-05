@@ -186,13 +186,13 @@
             	}else{
             		$('#txtNoa').css('color','green').css('background','RGB(237,237,237)').attr('readonly','readonly');
             	}
-            	if(q_cur==1 || q_cur==2)
-                	$('input[name="typea"]').removeAttr('disabled');
-                else
-                	$('input[name="typea"]').attr('disabled','disabled');
             }
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
+                if(q_cur==1 || q_cur==2)
+                	$('input[name="typea"]').removeAttr('disabled');
+                else
+                	$('input[name="typea"]').attr('disabled','disabled');
             }
 
             function btnMinus(id) {
@@ -394,20 +394,24 @@
 					<tr>
 						<td><span> </span><a id='lblNoa' class="lbl"> </a></td>
 						<td><input id="txtNoa"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id='lblTypea' class="lbl"> </a></td>
-						<td colspan="3">
-							<input type="radio" name="typea" style="float:left;width:5%;" value="工資">
-							<a style="float:left;width:25%;color:black;">工資</a>
-							<input type="radio" name="typea" style="float:left;width:5%;" value="輪胎">
-							<a style="float:left;width:25%;color:black;">輪胎</a>
-							<input type="radio" name="typea" style="float:left;width:5%;" value="材料">
-							<a style="float:left;width:25%;color:black;">材料</a>
-							<input type="text" id="txtTypea" style="display:none;"/>
-						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id='lblNamea' class="lbl"> </a></td>
 						<td colspan="5"><input id="txtNamea"  type="text" class="txt c1"/></td>
+					</tr>
+					<tr>
+						<td><span> </span><a id='lblTypea' class="lbl"> </a></td>
+						<td colspan="5">
+							<input type="radio" name="typea" style="float:left;width:5%;" value="工資">
+							<a style="float:left;width:15%;color:black;">工資</a>
+							<input type="radio" name="typea" style="float:left;width:5%;" value="輪胎">
+							<a style="float:left;width:15%;color:black;">輪胎</a>
+							<input type="radio" name="typea" style="float:left;width:5%;" value="材料">
+							<a style="float:left;width:15%;color:black;">材料</a>
+							<input type="radio" name="typea" style="float:left;width:5%;" value="費用">
+							<a style="float:left;width:15%;color:black;">費用</a>
+							<input type="text" id="txtTypea" style="display:none;"/>
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id='lblUnit' class="lbl"> </a></td>
