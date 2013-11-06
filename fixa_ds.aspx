@@ -700,11 +700,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblWmoney" class="lbl btn"> </a></td>
+						<td><span> </span><a id="lblWmoney" class="lbl"> </a></td>
 						<td>
 						<input id="txtWmoney" type="text" class="txt num c1" />
 						</td>
-						<td><span> </span><a id="lblWacc" class="lbl"> </a></td>
+						<td><span> </span><a id="lblWacc" class="lbl btn"> </a></td>
 						<td>
 						<input id="txtWacc1" type="text" class="txt c1" />
 						</td>
@@ -713,11 +713,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblCmoney" class="lbl btn"> </a></td>
+						<td><span> </span><a id="lblCmoney" class="lbl"> </a></td>
 						<td>
 						<input id="txtCmoney" type="text" class="txt num c1" />
 						</td>
-						<td><span> </span><a id="lblCacc" class="lbl"> </a></td>
+						<td><span> </span><a id="lblCacc" class="lbl btn"> </a></td>
 						<td>
 						<input id="txtCacc1" type="text" class="txt c1" />
 						</td>
@@ -726,11 +726,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblDmoney" class="lbl btn"> </a></td>
+						<td><span> </span><a id="lblDmoney" class="lbl"> </a></td>
 						<td>
 						<input id="txtDmoney" type="text" class="txt num c1" />
 						</td>
-						<td><span> </span><a id="lblDacc" class="lbl"> </a></td>
+						<td><span> </span><a id="lblDacc" class="lbl btn"> </a></td>
 						<td>
 						<input id="txtDacc1" type="text" class="txt c1" />
 						</td>
@@ -739,11 +739,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblEmoney" class="lbl btn"> </a></td>
+						<td><span> </span><a id="lblEmoney" class="lbl"> </a></td>
 						<td>
 						<input id="txtEmoney" type="text" class="txt num c1" />
 						</td>
-						<td><span> </span><a id="lblEacc" class="lbl"> </a></td>
+						<td><span> </span><a id="lblEacc" class="lbl btn"> </a></td>
 						<td>
 						<input id="txtEacc1" type="text" class="txt c1" />
 						</td>
