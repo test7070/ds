@@ -32,7 +32,7 @@
             brwList = [];
             brwNowPage = 0;
             brwKey = 'Datea';
-            //ajaxPath = "";
+            brwCount2 = 15;
             aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx']
             , ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
             , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx']

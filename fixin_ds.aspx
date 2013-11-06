@@ -32,6 +32,7 @@
             brwList = [];
             brwNowPage = 0;
             brwKey = 'Datea';
+            brwCount2 = 12;
             aPop = new Array(['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx']
             , ['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
             , ['txtWacc1', 'lblWacc', 'acc', 'acc1,acc2', 'txtWacc1,txtWacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]

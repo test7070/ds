@@ -24,7 +24,7 @@
             var q_name = "tire";
             var q_readonly = ['txtNoa','txtWorker','txtWorker2','txtCmoney','txtPosition'];
             var q_readonlys = [];
-            var bbmNum = [['txtMiles',10,0,1],['txtWmoney',10,0,1],['txtCmoney',10,0,1],['txtDmoney',10,0,1]];
+            var bbmNum = [['txtMiles',10,0,1],['txtWmoney',10,0,1],['txtCmoney',10,0,1],['txtDmoney',10,0,1],['txtEmoney',10,0,1]];
             var bbsNum = [['txtPrice',10,0,1]];
             var bbmMask = [];
             var bbsMask = [];
@@ -33,20 +33,24 @@
             brwList = [];
             brwNowPage = 0;
             brwKey = 'noa';
-            brwCount2 = 6;
+            brwCount2 = 10;
             //ajaxPath = "";
-            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx'],
-		    		['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], 
-            		['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate', 'txtCarplateno', 'carplate_b.aspx'],
-            		['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx'],
-            		['txtEtireno_', '', 'view_tirestk', 'noa,price,product','0txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
+            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx']
+		    		,['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+            		,['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate', 'txtCarplateno', 'carplate_b.aspx']
+            		,['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx']
+            		, ['txtWacc1', 'lblWacc', 'acc', 'acc1,acc2', 'txtWacc1,txtWacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            , ['txtCacc1', 'lblCacc', 'acc', 'acc1,acc2', 'txtCacc1,txtCacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            , ['txtDacc1', 'lblDacc', 'acc', 'acc1,acc2', 'txtDacc1,txtDacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            , ['txtEacc1', 'lblEacc', 'acc', 'acc1,acc2', 'txtEacc1,txtEacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            		,['txtEtireno_', '', 'view_tirestk', 'noa,price,product','0txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
 			function tire_dsData(){}
 			tire_dsData.prototype = {
 				carkind : new Array(),
 				combRefresh : function(){
 					q_gt('car2', "where=^^ carno='"+$.trim($('#txtCarno').val())+"'^^", 0, 0, 0, "combRefresh", r_accy);
 				}
-			}
+			};
 			var tire_ds = new tire_dsData();
 			        
             $(document).ready(function() {
@@ -64,6 +68,11 @@
                 bbmMask = [['txtDatea', r_picd]];
                 q_mask(bbmMask);
                 q_cmbParse("cmbAction", q_getMsg('action').replace(/\&/g,','),'s');
+                
+                $('#img').parent().offset({
+                	top:$('#txtNoa').offset().top,
+                	left:round($('#txtWacc2').offset().left+$('#txtWacc2').width()+5,0)
+                }).show();
             }
 			function q_popPost(id) {
 				switch(id) {
@@ -97,6 +106,23 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'getAcc':
+                        var as = _q_appendData("acc", "", true);
+                        if (as[0] != undefined) {
+                        	for(var i=0;i<as.length;i++){
+                        		if(as[i].acc1==$('#txtWacc1').val())
+                        			$('#txtWacc2').val(as[i].acc2);
+                    			if(as[i].acc1==$('#txtCacc1').val())
+                        			$('#txtCacc2').val(as[i].acc2);
+                    			if(as[i].acc1==$('#txtDacc1').val())
+                        			$('#txtDacc2').val(as[i].acc2);
+                    			if(as[i].acc1==$('#txtEacc1').val())
+                        			$('#txtEacc2').val(as[i].acc2);
+                        	}
+                        }
+                		$('#txtDatea').focus();
+                        Unlock(1);
+                        break;
                 	case 'carkind':
                 		var as = _q_appendData("carkind", "", true);
                 		var ass = _q_appendData("carkinds", "", true);
@@ -105,7 +131,7 @@
                 				t_item = new Array();
                 				for(var j = 0;j<ass.length;j++){
                 					if(ass[j].noa==as[i].noa && ass[j].position.length>0){
-                						t_item.push({position:ass[j].position,namea:ass[j].namea})
+                						t_item.push({position:ass[j].position,namea:ass[j].namea});
                 					}
                 				}
                 				tire_ds.carkind.push({noa:as[i].noa,kind:as[i].kind,img:as[i].img,item:t_item});
@@ -192,7 +218,7 @@
                 }else if(q_cur ==2){
                 	$('#txtWorker2').val(r_name);
                 }else{
-                	alert("error: btnok!")
+                	alert("error: btnok!");
                 }   
                 sum();
                 var t_noa = trim($('#txtNoa').val());
@@ -228,7 +254,15 @@
                 _btnIns();
                 $('#txtNoa').val('AUTO');
                 $('#txtDatea').val(q_date());
-                $('#txtDatea').focus();
+                $('#txtWacc1').val(q_getPara('fixa.wacc1'));
+                $('#txtCacc1').val(q_getPara('fixa.cacc1'));
+                $('#txtDacc1').val(q_getPara('fixa.dacc1'));
+                $('#txtEacc1').val(q_getPara('fixa.eacc1'));
+                t_where = "where=^^ acc1='" + $('#txtWacc1').val() + "' or acc1='" + $('#txtCacc1').val() + "' or acc1='" + $('#txtDacc1').val() + "' or acc1='" + $('#txtEacc1').val() + "'^^";
+                Lock(1, {
+                    opacity : 0
+                });
+                q_gt('acc', t_where, 0, 0, 0, "getAcc", r_accy+'_'+r_cno);
             }
 
             function btnModi() {
@@ -349,10 +383,10 @@
             }
 			Number.prototype.round = function(arg) {
 			    return Math.round(this * Math.pow(10,arg))/ Math.pow(10,arg);
-			}
+			};
 			Number.prototype.div = function(arg) {
 			    return accDiv(this, arg);
-			}
+			};
             function accDiv(arg1, arg2) {
 			    var t1 = 0, t2 = 0, r1, r2;
 			    try { t1 = arg1.toString().split(".")[1].length } catch (e) { }
@@ -365,26 +399,26 @@
 			}
 			Number.prototype.mul = function(arg) {
 			    return accMul(arg, this);
-			}
+			};
 			function accMul(arg1, arg2) {
 			    var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
 			    try { m += s1.split(".")[1].length } catch (e) { }
 			    try { m += s2.split(".")[1].length } catch (e) { }
 			    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m)
-			}
+			};
 			Number.prototype.add = function(arg) {
 		   		return accAdd(arg, this);
-			}
+			};
 			function accAdd(arg1, arg2) {
 			    var r1, r2, m;
 			    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
 			    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
 			    m = Math.pow(10, Math.max(r1, r2))
 			    return (arg1 * m + arg2 * m) / m
-			}
+			};
 			Number.prototype.sub = function(arg) {
 			    return accSub(this,arg);
-			}
+			};
 			function accSub(arg1, arg2) {
 			    var r1, r2, m, n;
 			    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
@@ -392,7 +426,7 @@
 			    m = Math.pow(10, Math.max(r1, r2));
 			    n = (r1 >= r2) ? r1 : r2;
 			    return parseFloat(((arg1 * m - arg2 * m) / m).toFixed(n));
-			}
+			};
 		</script>
 		<style type="text/css">
             #dmain {
@@ -420,7 +454,7 @@
             }
             .dbbm {
                 float: left;
-                width: 450px;
+                width: 800px;
                 /*margin: -1px;
                  border: 1px black solid;*/
                 border-radius: 5px;
@@ -507,8 +541,13 @@
 	ondragover="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
-		<!--#include file="../inc/toolbar.inc"-->
-		<div id="dmain">
+		<div style="width:200px;height:200px;background:gray;display:none;position: absolute;z-index: 998;">
+			<img id="img" style="width:100%;height:100%;">
+		</div>
+		<div style="overflow: auto;display:block;">
+			<!--#include file="../inc/toolbar.inc"-->
+		</div>
+		<div style="overflow: auto;display:block;width:1200px;">
 			<div class="dview" id="dview">
 				<table class="tview" id="tview">
 					<tr>
@@ -532,19 +571,23 @@
 						<td> </td>
 						<td> </td>
 						<td> </td>
+						<td> </td>
+						<td> </td>
+						<td> </td>
+						<td> </td>
 						<td class="tdZ"> </td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblNoa" class="lbl" > </a></td>
-						<td><input id="txtNoa"type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblDatea" class="lbl"> </a></td>
 						<td><input id="txtDatea"  type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblNoa" class="lbl" > </a></td>
+						<td colspan="2"><input id="txtNoa"type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
-						<td colspan="3">
-						<input id="txtTggno" type="text" class="txt"  style="width:25%;"/>
-						<input id="txtTgg" type="text" class="txt" style="width:75%;"/>
+						<td colspan="4">
+						<input id="txtTggno" type="text" class="txt"  style="width:20%;"/>
+						<input id="txtTgg" type="text" class="txt" style="width:80%;"/>
 						<input id="txtNick" type="text" class="txt" style="display: none;"/>
 						</td>
 					</tr>
@@ -552,7 +595,7 @@
 						<td><span> </span><a id="lblCarno" class="lbl btn"> </a></td>
 						<td><input id="txtCarno" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblDriver" class="lbl btn"> </a></td>
-						<td>
+						<td colspan="2">
 							<input id="txtDriverno" type="text" style="float:left; width:50%;"/>
 							<input id="txtDriver" type="text" style="float:left; width:50%;"/>
 						</td>
@@ -569,15 +612,55 @@
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblWmoney" class="lbl"> </a></td>
-						<td><input id="txtWmoney"type="text" class="txt num c1"/></td>
+						<td>
+						<input id="txtWmoney" type="text" class="txt num c1" />
+						</td>
+						<td><span> </span><a id="lblWacc" class="lbl btn"> </a></td>
+						<td>
+						<input id="txtWacc1" type="text" class="txt c1" />
+						</td>
+						<td colspan="2">
+						<input id="txtWacc2" type="text" class="txt c1" />
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblCmoney" class="lbl"> </a></td>
-						<td><input id="txtCmoney"type="text" class="txt num c1"/></td>
+						<td>
+						<input id="txtCmoney" type="text" class="txt num c1" />
+						</td>
+						<td><span> </span><a id="lblCacc" class="lbl btn"> </a></td>
+						<td>
+						<input id="txtCacc1" type="text" class="txt c1" />
+						</td>
+						<td colspan="2">
+						<input id="txtCacc2" type="text" class="txt c1" />
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblDmoney" class="lbl"> </a></td>
-						<td><input id="txtDmoney"type="text" class="txt num c1"/></td>
+						<td>
+						<input id="txtDmoney" type="text" class="txt num c1" />
+						</td>
+						<td><span> </span><a id="lblDacc" class="lbl btn"> </a></td>
+						<td>
+						<input id="txtDacc1" type="text" class="txt c1" />
+						</td>
+						<td colspan="2">
+						<input id="txtDacc2" type="text" class="txt c1" />
+						</td>
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblEmoney" class="lbl"> </a></td>
+						<td>
+						<input id="txtEmoney" type="text" class="txt num c1" />
+						</td>
+						<td><span> </span><a id="lblEacc" class="lbl btn"> </a></td>
+						<td>
+						<input id="txtEacc1" type="text" class="txt c1" />
+						</td>
+						<td colspan="2">
+						<input id="txtEacc2" type="text" class="txt c1" />
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
@@ -590,9 +673,6 @@
 						<td><input id="txtWorker2"type="text" class="txt c1"/></td>
 					</tr>
 				</table>
-			</div>
-			<div style="width:200px;height:200px;float:left;background:gray;">
-				<img id="img" style="width:100%;height:100%;">
 			</div>
 		</div>
 		<div class='dbbs'>

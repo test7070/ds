@@ -33,8 +33,13 @@
             brwList = [];
             brwNowPage = 0;
             brwKey = 'Datea';
+            brwCount2 = 12;
             aPop = new Array(['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx']
             , ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+            , ['txtWacc1', 'lblWacc', 'acc', 'acc1,acc2', 'txtWacc1,txtWacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            , ['txtCacc1', 'lblCacc', 'acc', 'acc1,acc2', 'txtCacc1,txtCacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            , ['txtDacc1', 'lblDacc', 'acc', 'acc1,acc2', 'txtDacc1,txtDacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            , ['txtEacc1', 'lblEacc', 'acc', 'acc1,acc2', 'txtEacc1,txtEacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
             , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver,cardno', 'txtCarno,txtDriverno,txtDriver,txtCardno', 'car2_b.aspx']
             , ['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx']
             , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,brand,unit,inprice', 'txtProductno_,txtProduct_,txtTypea_,txtBrand_,txtUnit_,txtPrice_', 'fixucc_b.aspx']
