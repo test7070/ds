@@ -102,6 +102,23 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {  
+                	case 'getAcc':
+                        var as = _q_appendData("acc", "", true);
+                        if (as[0] != undefined) {
+                        	for(var i=0;i<as.length;i++){
+                        		if(as[i].acc1==$('#txtWacc1').val())
+                        			$('#txtWacc2').val(as[i].acc2);
+                    			if(as[i].acc1==$('#txtCacc1').val())
+                        			$('#txtCacc2').val(as[i].acc2);
+                    			if(as[i].acc1==$('#txtDacc1').val())
+                        			$('#txtDacc2').val(as[i].acc2);
+                    			if(as[i].acc1==$('#txtEacc1').val())
+                        			$('#txtEacc2').val(as[i].acc2);
+                        	}
+                        }
+                        $('#txtIndate').focus();
+                        Unlock(1);
+                        break;
                 	case 'btnDele':
                 		var as = _q_appendData("paybs", "", true);
                         if (as[0] != undefined) {
@@ -475,7 +492,15 @@
                 $('#txtNoa').val('AUTO');
                 $('#txtDatea').val(q_date());
                 $('#txtMon').val(q_date().substring(0, 6));
-                $('#txtIndate').focus();
+                $('#txtWacc1').val(q_getPara('fixa.wacc1'));
+                $('#txtCacc1').val(q_getPara('fixa.cacc1'));
+                $('#txtDacc1').val(q_getPara('fixa.dacc1'));
+                $('#txtEacc1').val(q_getPara('fixa.eacc1'));
+                t_where = "where=^^ acc1='" + $('#txtWacc1').val() + "' or acc1='" + $('#txtCacc1').val() + "' or acc1='" + $('#txtDacc1').val() + "' or acc1='" + $('#txtEacc1').val() + "'^^";
+                Lock(1, {
+                    opacity : 0
+                });
+                q_gt('acc', t_where, 0, 0, 0, "getAcc", r_accy+'_'+r_cno);
             }
 
             function btnModi() {
