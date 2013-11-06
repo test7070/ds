@@ -40,9 +40,9 @@
             		,['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate', 'txtCarplateno', 'carplate_b.aspx']
             		,['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtTgg,txtNick', 'tgg_b.aspx']
             		, ['txtWacc1', 'lblWacc', 'acc', 'acc1,acc2', 'txtWacc1,txtWacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
-            , ['txtCacc1', 'lblCacc', 'acc', 'acc1,acc2', 'txtCacc1,txtCacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
-            , ['txtDacc1', 'lblDacc', 'acc', 'acc1,acc2', 'txtDacc1,txtDacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
-            , ['txtEacc1', 'lblEacc', 'acc', 'acc1,acc2', 'txtEacc1,txtEacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            		, ['txtCacc1', 'lblCacc', 'acc', 'acc1,acc2', 'txtCacc1,txtCacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+        			, ['txtDacc1', 'lblDacc', 'acc', 'acc1,acc2', 'txtDacc1,txtDacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
+            		, ['txtEacc1', 'lblEacc', 'acc', 'acc1,acc2', 'txtEacc1,txtEacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
             		,['txtEtireno_', '', 'view_tirestk', 'noa,price,product','0txtEtireno_,txtPrice_', 'tirestk_b.aspx']);
 			function tire_dsData(){}
 			tire_dsData.prototype = {
