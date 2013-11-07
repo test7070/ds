@@ -95,16 +95,18 @@
 						t_where += " where[2]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.cmoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
 						//dmoney
 						t_where += " where[3]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.dmoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						//emoney
+						t_where += " where[4]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and ISNULL(a.emoney,0)!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
 						//tax discount				
-						t_where += " where[4]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and (ISNULL(a.tax,0)!=0 or ISNULL(a.discount,0)!=0) and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						t_where += " where[5]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and (ISNULL(a.tax,0)!=0 or ISNULL(a.discount,0)!=0) and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
 						//money
-						t_where += " where[5]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						t_where += " where[6]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
 						//plusmoney
-						t_where += " where[6]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[plusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						t_where += " where[7]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[plusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
 						//minusmoney
-						t_where += " where[7]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^";				
+						t_where += " where[8]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^";				
                     	//money  oil&etc
-						t_where += " where[8]=^^ (b.noa is null or b.noa='"+t_noa+"') and c.noa='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
+						t_where += " where[9]=^^ (b.noa is null or b.noa='"+t_noa+"') and c.noa='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
                     	q_gt('payb_fix_ds',t_where, 0, 0, 0, "", r_accy);
 					}else{
 						alert('請輸入'+q_getMsg('lblTgg'));	
