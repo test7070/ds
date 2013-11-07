@@ -715,13 +715,13 @@
 			}
 
 			function btnDele() {
-				if($.trim($('#txtOrdeno').val()).length>0){
-					alert('轉來的單據禁止刪除。');
-				}else{
+				//if($.trim($('#txtOrdeno').val()).length>0){
+				//	alert('轉來的單據禁止刪除。');
+				//}else{
 					Lock(1,{opacity:0});
 	                var t_where =" where=^^ noa='"+ $('#txtNoa').val()+"'^^";
 	                q_gt('trans', t_where, 0, 0, 0, 'btnDele',r_accy);
-                }
+               // }
 			}
 
 			function btnCancel() {
