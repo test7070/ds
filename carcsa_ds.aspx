@@ -89,7 +89,7 @@
             		Lock(1,{opacity:0});
             		q_gt('calctype', '', 0, 0, 0, 'carcsaInit_1');
             	}
-			}
+			};
 			var carcsa = new carcsaData();
 			
 			
@@ -635,8 +635,9 @@
                 var t_mount=0,t_weight=0,t_inmoney=0,t_outmoney=0,t_outprice;
                 var t_price = q_float('txtPrice');
                 for (var j = 0; j < q_bbsCount; j++) {
-                	if(q_float('txtOutprice_'+j)==0 && $('#txtCarno_'+j).val().length>0)							
-						$('#txtOutprice_'+j).val(FormatNumber(t_price));
+                	//發金額可能為0
+                	//if(q_float('txtOutprice_'+j)==0 && $('#txtCarno_'+j).val().length>0)							
+						//$('#txtOutprice_'+j).val(FormatNumber(t_price));
 					t_outprice = q_float('txtOutprice_'+j);
                 	
                     $('#txtInmoney_'+j).val(FormatNumber((t_price.mul(q_float('txtMount_'+j))).round(0)));
@@ -834,10 +835,10 @@
             }
 			Number.prototype.round = function(arg) {
 			    return Math.round(this * Math.pow(10,arg))/ Math.pow(10,arg);
-			}
+			};
 			Number.prototype.div = function(arg) {
 			    return accDiv(this, arg);
-			}
+			};
             function accDiv(arg1, arg2) {
 			    var t1 = 0, t2 = 0, r1, r2;
 			    try { t1 = arg1.toString().split(".")[1].length } catch (e) { }
@@ -847,29 +848,29 @@
 			        r2 = Number(arg2.toString().replace(".", ""))
 			        return (r1 / r2) * pow(10, t2 - t1);
 			    }
-			}
+			};
 			Number.prototype.mul = function(arg) {
 			    return accMul(arg, this);
-			}
+			};
 			function accMul(arg1, arg2) {
 			    var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
 			    try { m += s1.split(".")[1].length } catch (e) { }
 			    try { m += s2.split(".")[1].length } catch (e) { }
 			    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m)
-			}
+			};
 			Number.prototype.add = function(arg) {
 		   		return accAdd(arg, this);
-			}
+			};
 			function accAdd(arg1, arg2) {
 			    var r1, r2, m;
 			    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
 			    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
 			    m = Math.pow(10, Math.max(r1, r2))
 			    return (arg1 * m + arg2 * m) / m
-			}
+			};
 			Number.prototype.sub = function(arg) {
 			    return accSub(this,arg);
-			}
+			};
 			function accSub(arg1, arg2) {
 			    var r1, r2, m, n;
 			    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
