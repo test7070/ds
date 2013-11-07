@@ -356,11 +356,11 @@
 					case 'btnDele':
                 		var as = _q_appendData("trans", "", true);
                         if (as[0] != undefined) {
-                        	if(as[0].ordeno.length>0){
+                        	/*if(as[0].ordeno.length>0){
                         		alert('轉來的單據禁止刪除。');
                         		Unlock(1);
                         		return;
-                        	}
+                        	}*/
                         	q_gt('view_trds', "where=^^ tranno='"+$('#txtNoa').val()+"' and trannoq='"+$('#txtNoq').val()+"' ^^", 0, 0, 0, 'isTrd',r_accy);	
                         }else{
                         	alert('資料異常。');
