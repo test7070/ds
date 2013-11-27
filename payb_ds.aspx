@@ -104,7 +104,7 @@
 						//plusmoney
 						t_where += " where[7]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[plusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
 						//minusmoney
-						t_where += " where[8]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^";				
+						t_where += " where[8]=^^ (b.noa is null or b.noa='"+t_noa+"') and a.tggno='"+t_tggno+"' and a.[minusmoney]!=0 and (a.paydate between "+t_bdate+" and "+t_edate+")^^";				
                     	//money  oil&etc
 						t_where += " where[9]=^^ (b.noa is null or b.noa='"+t_noa+"') and c.noa='"+t_tggno+"' and a.[money]!=0 and (a.datea between "+t_bdate+" and "+t_edate+")^^" ;
                     	q_gt('payb_fix_ds',t_where, 0, 0, 0, "", r_accy);

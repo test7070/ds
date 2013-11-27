@@ -73,7 +73,7 @@
 			$(document).ready(function() {
 				bbmKey = ['noa'];
 				q_brwCount();
-				q_gt(q_name, q_content, q_sqlCount, 1)
+				q_gt(q_name, q_content, q_sqlCount, 1);
 			});
 
 			//////////////////   end Ready
@@ -87,7 +87,7 @@
 			}///  end Main()
 
 			function mainPost() {
-				bbmMask = [['txtDatea', r_picd]];
+				bbmMask = [['txtDatea', r_picd],['txtPaydate', r_picd]];
 				q_mask(bbmMask);
 				q_gt('carteam', '', 0, 0, 0, "");
 
@@ -512,7 +512,8 @@
 							<input id="txtTggno"  type="text" style="float:left;width:30%;"/>
 							<input id="txtTgg"  type="text" style="float:left;width:70%;"/>
 						</td>
-						<td><a class="lbl" style="text-align: left;">(應付立帳匯入)</a></td>
+						<td><span> </span><a id='lblPaydate' class="lbl"> </a></td>
+						<td><input id="txtPaydate"  type="text" class="txt c1" /></td>
 					</tr>
 					<tr style="display:none;">
 						<td><span> </span><a id="lblCust" class="lbl btn"> </a></td>
