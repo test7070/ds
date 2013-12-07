@@ -30,21 +30,33 @@
             function q_gfPost() {
                 $('#q_report').q_report({
                     fileName : 'z_carchg_ds',
-                    options : [{
+                    options : [{//[1]
                         type : '0',
                         name : 'accy',
                         value : q_getId()[4]
-                    }, {
+                    }, {//[2]
                         type : '0',
                         name : 'xname',
                         value : r_name 
-                    }, {
+                    }, {//[3][4]
                         type : '1',
                         name : 'date'
-                    }, {
+                    }, {//[5]
                         type : '6',
                         name : 'xcarno'
-                    }, {
+                    }, {//[6][7]
+                        type : '2', 
+                        name : 'xchgitem',
+                        dbf : 'chgitem',
+                        index : 'noa,item',
+                        src : 'chgitem_b.aspx'
+                    }, {//[8][9]
+                        type : '2',
+                        name : 'xacc',
+                        dbf : 'acc',
+                        index : 'acc1,acc2',
+                        src : "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy + '_' + r_cno
+                    }, {//[10]
                         type : '8',
                         name : 'xoption01',
                         value : q_getMsg('toption01').split('&')
