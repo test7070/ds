@@ -26,10 +26,11 @@
             $(document).ready(function() {
                 _q_boxClose();
                 q_getId();
-                q_gf('', 'z_tran_ds');
+                q_gt('carteam', '', 0, 0, 0, "load_1");
+                
             });
             function q_gfPost() {
-                q_gt('carteam', '', 0, 0, 0, "load_1");
+                LoadFinish();
             }
 
             var sssno = '';
@@ -59,7 +60,7 @@
                                 t_carkind += (t_carkind.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].kind;
                             }
                         }
-                        LoadFinish();
+                        q_gf('', 'z_tran_ds');
                         break;
                     default:
                         break;
