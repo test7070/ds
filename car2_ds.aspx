@@ -640,8 +640,6 @@
                 var t_noa = $('#txtNoa').val();
                 $('#txtCarno').val(t_noa);
                 wrServer(t_noa);
-                if(q_cur=='1'&& q_getPara('sys.project').toUpperCase()=="DC")
-                	$("#btnCarinsurance").click();
             }
 
             function wrServer(key_value) {
