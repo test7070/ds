@@ -38,7 +38,7 @@
                 bbmKey = ['noa'];
                 bbsKey = ['noa', 'noq'];
                 q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy)
+                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
             });
             function main() {
                 if (dataErr) {
@@ -180,12 +180,12 @@
             }
             function refresh(recno) {
                 _refresh(recno);
+                $('#img').removeAttr('src');
                 for(var i=0; i<$('input[name="img"]').length;i++){
-                	$('#img').removeAttr('src');
                 	$('input[name="img"]').eq(i).prop('checked',false);
                 	if($('input[name="img"]').eq(i).val()==$('#txtImg').val()){
                 		$('input[name="img"]').eq(i).prop('checked',true);
-                		$('#img').attr('src','../image/'+$('input[name="img"]').eq(i).attr('value'));
+                		$('#img').attr('src','../image/'+$('#txtImg').val());
                 	}
                 }
                 refreshBbm();
