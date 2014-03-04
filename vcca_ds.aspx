@@ -271,7 +271,7 @@
                 if (emp($('#txtNoa').val()))
                     return;
                 _btnModi();
-                $('#txtDatea').val(q_date());
+               // $('#txtDatea').val(q_date());
                 $('#txtDatea').focus();
                 sum();
             }
