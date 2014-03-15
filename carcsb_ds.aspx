@@ -20,7 +20,7 @@
             }
 
             var q_name = "carcsb";
-            var q_readonly = ['txtNoa', 'txtTranno', 'txtWorker', 'txtWorker2'];
+            var q_readonly = ['txtNoa', 'txtTranno', 'txtWorker', 'txtWorker2','txtInmount','txtInprice'];
             var bbmNum = [['txtDiscount', 10, 3], ['txtWeight', 10, 3], ['txtInprice', 10, 3], ['txtInmount', 10, 3], ['txtInmoney', 10, 0], ['txtOutprice', 10, 3], ['txtOutmount', 10, 3], ['txtOutmoney', 10, 0]];
             // master 允許 key 小數  [物件,整數位數,小數位數, comma Display]
             var bbmMask = [];
