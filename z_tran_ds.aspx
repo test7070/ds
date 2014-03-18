@@ -192,6 +192,34 @@
                 $('#chkXcarkind').children('input').attr('checked', 'checked');
                 $('#chkXcarteam').children('input').attr('checked', 'checked');
                 $('#chkXcalctype').children('input').attr('checked', 'checked');
+                
+                $('#textMon').mask('999/99');
+                $('#btnTrans_sum').click(function(e) {
+                    $('#divExport').toggle();
+                });
+                $('#btnDivexport').click(function(e) {
+                    $('#divExport').hide();
+                });
+                $('#btnExport').click(function(e) {
+                    var t_mon = $('#textMon').val();
+                    if (t_mon.length > 0) {
+                        Lock(1, {
+                            opacity : 0
+                        });
+                        q_func('qtxt.query.trans', 'trans.txt,tran_sum,' + encodeURI(t_mon));
+                    } else
+                        alert('請輸入交運月份。');
+                });
+            }
+            function q_funcPost(t_func, result) {
+                switch(t_func) {
+                    case 'qtxt.query.trans':
+                        alert('結轉完成。');
+                        Unlock(1);
+                        break;
+                    default:
+                        break;
+                }
             }
 		</script>
 	</head>
@@ -202,6 +230,7 @@
 	>
 		<div id="q_menu"></div>
 		<div style="position: absolute;top: 10px;left:50px;z-index: 1;width:2000px;">
+		     <input type="button" id="btnTrans_sum" value="分析表資料結轉"/>
 			<div id="container">
 				<div id="q_report"></div>
 			</div>
@@ -209,5 +238,29 @@
 				<!--#include file="../inc/print_ctrl.inc"-->
 			</div>
 		</div>
+		<div id="divExport" style="display:none;position:absolute;top:100px;left:600px;width:400px;height:120px;background:RGB(237,237,237);">
+            <table style="border:4px solid gray; width:100%; height: 100%;">
+                <tr style="height:1px;background-color: pink;">
+                    <td style="width:25%;"></td>
+                    <td style="width:25%;"></td>
+                    <td style="width:25%;"></td>
+                    <td style="width:25%;"></td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px;text-align: center;border-width: 0px;background-color: pink;color: blue;"><a>交運月份</a></td>
+                    <td colspan="3" style="padding: 2px;text-align: center;border-width: 0px;background-color: pink;">
+                    <input type="text" id="textMon" style="float:left;width:40%;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center" style="background-color: pink;">
+                    <input type="button" id="btnExport" value="結轉"/>
+                    </td>
+                    <td colspan="2" align="center" style=" background-color: pink;">
+                    <input type="button" id="btnDivexport" value="關閉"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
 	</body>
 </html>
