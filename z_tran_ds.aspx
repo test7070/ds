@@ -168,7 +168,10 @@
 						type : '8',
 						name : 'xoption08',
 						value : q_getMsg('toption08').split('&')
-					}]
+					}, {/*23-[30],[31]-交運月份*/
+                        type : '1',
+                        name : 'xmon'
+                    }]
                 });
                 q_popAssign();
                 q_langShow();
@@ -181,7 +184,10 @@
                 $('#txtTrandate1').datepicker();
                 $('#txtTrandate2').mask('999/99/99');
                 $('#txtTrandate2').datepicker();
-
+                
+                $('#txtXmon1').mask('999/99');
+                $('#txtXmon2').mask('999/99');
+                
                 $('#txtXcheckrate').val(q_getMsg('trate1'));
                 $('#chkXcarkind').children('input').attr('checked', 'checked');
                 $('#chkXcarteam').children('input').attr('checked', 'checked');
