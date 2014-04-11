@@ -34,7 +34,8 @@
             brwNowPage = 0;
             brwKey = 'Datea';
             q_desc = 1;
-            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx'], ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx'], ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], ['txtBdriverno', '', 'driver', 'noa,namea', 'txtBdriverno', 'driver_b.aspx'], ['txtEdriverno', '', 'driver', 'noa,namea', 'txtEdriverno', 'driver_b.aspx']);
+            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
+            , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx'], ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], ['txtBdriverno', '', 'driver', 'noa,namea', 'txtBdriverno', 'driver_b.aspx'], ['txtEdriverno', '', 'driver', 'noa,namea', 'txtEdriverno', 'driver_b.aspx']);
 
             q_xchg = 1;
             brwCount2 = 20;
@@ -319,7 +320,7 @@
                 if (q_cur > 0 && q_cur < 4)
                     return;
 
-                q_box('tre_s.aspx', q_name + '_s', "530px", "530px", q_getMsg("popSeek"));
+                q_box('tre_ds_s.aspx', q_name + '_s', "530px", "530px", q_getMsg("popSeek"));
             }
 
             function bbsAssign() {
@@ -698,6 +699,7 @@
 						<td align="center" style="width:80px; color:black;"><a id='vewMinusmoney'> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id='vewTotal'> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id='vewUnopay'> </a></td>
+						<td align="center" style="width:80px; color:black;">廠商</td>
 					</tr>
 					<tr>
 						<td >
@@ -713,6 +715,7 @@
 						<td id="minusmoney,0,1" style="text-align: right;">~minusmoney,0,1</td>
 						<td id="total,0,1" style="text-align: right;">~total,0,1</td>
 						<td id="unopay,0,1" style="text-align: right;">~unopay,0,1</td>
+						<td id="tggno" style="text-align: center;">~tggno</td>
 					</tr>
 				</table>
 			</div>

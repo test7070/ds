@@ -13,7 +13,8 @@
             var q_name = "tre_s";
 			aPop = new Array(
 		    ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno', 'driver_b.aspx'], 
-             ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno', 'car2_b.aspx']);
+             ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno', 'car2_b.aspx']
+             , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno', 'tgg_b.aspx']);
 			function z_tre() {
 			}
             z_tre.prototype = {
@@ -66,8 +67,14 @@
                 t_accno = $.trim($('#txtAccno').val());
                 t_carteam = $('#cmbCarteam').val();
 				t_tranno = $.trim($('#txtTranno').val());
+				t_tggno = $.trim($('#txtTggno').val());
 				
-                var t_where = " 1=1 " + q_sqlPara2("noa", t_noa) + q_sqlPara2("driverno", t_driverno) + q_sqlPara2("carno", t_carno) + q_sqlPara2("datea", t_bdate, t_edate)+ q_sqlPara_or(["accno", "accno2"], t_accno);
+                var t_where = " 1=1 " + q_sqlPara2("noa", t_noa) 
+                + q_sqlPara2("driverno", t_driverno) 
+                + q_sqlPara2("carno", t_carno) 
+                + q_sqlPara2("datea", t_bdate, t_edate)
+                + q_sqlPara_or(["accno", "accno2"], t_accno)
+                + q_sqlPara2("tggno", t_tggno) ;
                 if (t_carteam.length > 0)
                     t_where += q_sqlPara2("carteamno", t_carteam);
                 if (t_driver.length > 0)
@@ -142,6 +149,12 @@
 					<input class="txt" id="txtAccno" type="text" style="width:215px; font-size:medium;" />
 					</td>
 				</tr>
+				<tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;">廠商</td>
+                    <td>
+                    <input class="txt" id="txtTggno" type="text" style="width:215px; font-size:medium;" />
+                    </td>
+                </tr>
 			</table>
 			<!--#include file="../inc/seek_ctrl.inc"-->
 		</div>
