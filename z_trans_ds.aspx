@@ -85,6 +85,12 @@
                         type : '8',
                         name : 'xcalctype',
                         value : t_calctypes.split(',')
+                    }, {/*8 [11],[12]*/
+                        type : '2',
+                        name : 'xcustno',
+                        dbf : 'cust',
+                        index : 'noa,comp',
+                        src : 'cust_b.aspx'
                     }]
                 });
                 $('#txtXdate1').mask('999/99/99');
