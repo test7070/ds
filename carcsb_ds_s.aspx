@@ -72,6 +72,8 @@
 				t_tranno = $.trim($('#txtTranno').val());
 				t_tggno = $.trim($('#txtTggno').val());
 				t_cardealno = $.trim($('#txtCardealno').val());
+				t_straddrno = $.trim($('#txtStraddrno').val());
+				t_straddr = $.trim($('#txtStraddr').val());
 				
 				var t_where = " 1=1 " 
 				+ q_sqlPara2("calctype", t_calctype) 
@@ -81,16 +83,18 @@
 				+ q_sqlPara2("tranno", t_tranno)
 				+ q_sqlPara2("custno", t_custno)
 				+ q_sqlPara2("tggno", t_tggno)
-				+ q_sqlPara2("cardealno", t_cardealno);
+				+ q_sqlPara2("cardealno", t_cardealno)
+				+ q_sqlPara2("straddrno", t_straddrno);
 				if (t_carno.length>0)
-                    t_where += " and patindex('%" + t_carno + "%',carno)>0";
+                    t_where += " and charindex('" + t_carno + "',carno)>0";
                 if (t_comp.length>0)
-                    t_where += " and patindex('%" + t_comp + "%',comp)>0";
+                    t_where += " and charindex('" + t_comp + "',comp)>0";
                 if(t_tran=='Y')
                 	t_where += " and len(isnull(tranno,''))>0";
                 if(t_tran=='N')
                 	t_where += " and len(isnull(tranno,''))=0";
-         
+                if (t_straddr.length>0)
+                    t_where += " and charindex('" + t_straddr + "',straddr)>0";
 				t_where = ' where=^^' + t_where + '^^ ';
 				return t_where;
 			}
@@ -167,6 +171,14 @@
 					<td class='seek'  style="width:20%;"><a id='lblCardealno'> </a></td>
 					<td><input class="txt" id="txtCardealno" type="text" style="width:215px; font-size:medium;" /></td>
 				</tr>
+				<tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblStraddrno'> </a></td>
+                    <td><input class="txt" id="txtStraddrno" type="text" style="width:215px; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblStraddr'> </a></td>
+                    <td><input class="txt" id="txtStraddr" type="text" style="width:215px; font-size:medium;" /></td>
+                </tr>
 			</table>
 			<!--#include file="../inc/seek_ctrl.inc"-->
 		</div>

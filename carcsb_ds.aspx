@@ -245,7 +245,7 @@
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)// 1-3
                     return;
-                q_box('carcsb_ds_s.aspx', q_name + '_s', "520px", "600px", q_getMsg("popSeek"));
+                q_box('carcsb_ds_s.aspx', q_name + '_s', "520px", "650px", q_getMsg("popSeek"));
             }
 
             function btnIns() {
