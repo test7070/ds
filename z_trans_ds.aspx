@@ -91,6 +91,12 @@
                         dbf : 'cust',
                         index : 'noa,comp',
                         src : 'cust_b.aspx'
+                    }, {/*9-[13],[14]-起迄地點*/
+                        type : '2',
+                        name : 'xaddr',
+                        dbf : 'addr',
+                        index : 'noa,addr',
+                        src : 'addr_b.aspx'
                     }]
                 });
                 $('#txtXdate1').mask('999/99/99');
