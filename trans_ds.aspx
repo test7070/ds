@@ -424,7 +424,8 @@
 						for ( i = 0; i < as.length; i++) {
 							t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
 						}
-						q_cmbParse("cmbCarteamno", t_item);
+						if(t_item.length>0)
+						  q_cmbParse("cmbCarteamno", t_item);
 						if(abbm[q_recno]!=undefined)
 							$("#cmbCarteamno").val(abbm[q_recno].carteamno);
 						q_gt('calctype2', '', 0, 0, 0, 'transInit_2');
@@ -442,7 +443,8 @@
 								isoutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
 							});
 						}
-						q_cmbParse("cmbCalctype", t_item);
+						if(t_item.length>0)
+						  q_cmbParse("cmbCalctype", t_item);
 						if(abbm[q_recno]!=undefined)
 							$("#cmbCalctype").val(abbm[q_recno].calctype);
 						trans.isInit = true;
