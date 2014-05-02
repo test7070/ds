@@ -178,7 +178,7 @@
     					q_gt('view_trds', "where=^^ tranno='"+t_tranno+"' and trannoq='"+t_trannoq+"' ^^", 0, 0, 0, 'checkTrd_'+t_tranno+'_'+t_trannoq+'_'+t_datea,r_accy);
     				}
             	}
-            }
+            };
             trans = new transData();
             	
 			$(document).ready(function() {
@@ -647,7 +647,7 @@
                 }else if(q_cur ==2){
                 	$('#txtWorker2').val(r_name);
                 }else{
-                	alert("error: btnok!")
+                	alert("error: btnok!");
                 }
 				var t_noa = trim($('#txtNoa').val());
 				var t_date = trim($('#txtDatea').val());
