@@ -50,14 +50,14 @@
                 $('#txtNoa').change(function(e){
                 	$(this).val($.trim($(this).val()).toUpperCase());    	
 					if($(this).val().length>0){
-						if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
+						//if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
 							t_where="where=^^ noa='"+$(this).val()+"'^^";
                     		q_gt('fixucc', t_where, 0, 0, 0, "checkNoa_change", r_accy);
-						}else{
-							Lock(1,{opacity:0});
-							alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
-							Unlock(1);
-						}
+						//}else{
+						//	Lock(1,{opacity:0});
+						//	alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
+						//	Unlock(1);
+						//}
 					}
                 });
             }
@@ -130,12 +130,12 @@
             function btnOk() {    
             	Lock(1,{opacity:0}); 
             	$('#txtNoa').val($.trim($('#txtNoa').val()));   	
-            	if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
+            	/*if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
 				}else{
 					alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
 					Unlock(1);
 					return;
-				}
+				}*/
 				for(var i=0; i<$('input[name="typea"]').length;i++)
             		if($('input[name="typea"]').eq(i).prop('checked'))
             			$('#txtTypea').val($('input[name="typea"]').eq(i).attr('value'));
