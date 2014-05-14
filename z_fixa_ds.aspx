@@ -69,6 +69,9 @@
                         dbf : 'fixucc',
                         index : 'noa,namea',
                         src : 'fixucc_b.aspx'
+                    }, {/*8 [13]*/
+                        type : '6',
+                        name : 'xproduct'
                     }]
                 });
                 q_popAssign();
