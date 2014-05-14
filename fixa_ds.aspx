@@ -319,7 +319,7 @@
                             t_emoney = t_emoney.add(t_money);
                             break;
                         default:
-                            $('#txtMoney_' + i).val(0);
+                            //$('#txtMoney_' + i).val(0);
                             break;
                     }
                 }
