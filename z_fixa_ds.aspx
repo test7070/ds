@@ -63,6 +63,12 @@
                     }, {/*6 [10]*/
                         type : '6',
                         name : 'xtireno'
+                    }, {/*7 [11][12]*/
+                        type : '2',
+                        name : 'fixucc',
+                        dbf : 'fixucc',
+                        index : 'noa,namea',
+                        src : 'fixucc_b.aspx'
                     }]
                 });
                 q_popAssign();
