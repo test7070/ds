@@ -23,7 +23,7 @@
 			var q_readonly = ['txtWeight3','txtMiles','txtTotal','txtTotal2','txtNoa','txtOrdeno','txtWorker','txtWorker2'];
 			var bbmNum = [['txtWeight3',10,3,1],['txtWeight2',10,3,1],['txtInmount',10,3,1],['txtPton',10,3,1],['txtPrice',10,3,1],['txtTotal',10,0,1]
 			,['txtOutmount',10,3,1],['txtPton2',10,3,1],['txtPrice2',10,3,1],['txtPrice3',10,3,1],['txtDiscount',10,3,1],['txtTotal2',10,0,1]
-			,['txtTolls',10,0,1],['txtReserve',10,0,1],['txtBmiles',10,0,1],['txtEmiles',10,0,1],['txtMount3',10,0,1]];
+			,['txtBmiles',10,0,1],['txtEmiles',10,0,1],['txtMount3',10,0,1],['txtOverw',10,0,1],['txtOverh',10,0,1]];
 			var bbmMask = [['txtDatea','999/99/99'],['txtTrandate','999/99/99'],['txtMon','999/99'],['txtMon2','999/99'],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
 			q_sqlCount = 6;
 			brwCount = 6;
@@ -51,7 +51,7 @@
                 include : ['txtDatea', 'txtTrandate','txtMon','txtMon2','txtCarno','txtDriverno','txtDriver'
                 	,'txtCustno','txtComp','txtNick','cmbCalctype','cmbCarteamno','txtStraddrno','txtStraddr'
                 	,'txtUccno','txtProduct','txtInmount','txtPrice','txtTotal'
-                	,'txtOutmount','txtPrice2','txtPrice3','txtTotal2','txtDiscount','txtTolls'
+                	,'txtOutmount','txtPrice2','txtPrice3','txtTotal2','txtDiscount'
                 	,'txtPo','txtCustorde','txtSalesno','txtSales'],
                 /*記錄當前的資料*/
                 copy : function() {
@@ -118,6 +118,8 @@
             		if(!this.isTre){
             			for(var i in this.calctype){
 		            		if(this.calctype[i].noa == $('#cmbCalctype').val()){
+		            		    $('#txtOverw').val(FormatNumber(this.calctype[i].r1)); 
+		            		    $('#txtOverh').val(FormatNumber(this.calctype[i].r2)); 
 		            			$('#txtDiscount').val(FormatNumber(this.calctype[i].discount));		
 		            			this.isoutside = this.calctype[i].isoutside;	            			
 		            		}
@@ -164,7 +166,8 @@
         			$('#txtPrice2').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtPrice3').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtDiscount').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
-        			$('#txtTolls').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+        			$('#txtOverw').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+        			$('#txtOverh').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#cmbCalctype').attr('disabled','disabled');
         			$('#cmbCarteamno').attr('disabled','disabled');
         			
@@ -272,6 +275,8 @@
 		                input.selectionEnd = $(input).val().length;
 		            }
 				});
+				$('#txtOverw').change(function(e){sum();});
+				$('#txtOverh').change(function(e){sum();});
 				q_xchgForm();
 			}
 
@@ -290,6 +295,8 @@
 					var t_total2 = t_mount2.mul(trans.isoutside?q_float('txtPrice3'):q_float('txtPrice2')).mul(q_float('txtDiscount')).round(0);
 					$('#txtMount2').val(FormatNumber(t_mount2));
 					$('#txtTotal2').val(FormatNumber(t_total2));
+					if(q_float('txtOverw')!=0 && q_float('txtOverh')!=0)
+					   $('#txtDiscount').val(round((1-q_float('txtOverw')/100)*q_float('txtOverh')/100,3));
 				}
 				
 				var bmiles = q_float('txtBmiles');
@@ -438,6 +445,8 @@
 							trans.calctype.push({
 								noa : as[i].noa + as[i].noq,
 								typea : as[i].typea,
+								r1 : as[i].r1,
+								r2 : as[i].r2,
 								discount : as[i].discount,
 								discount2 : as[i].discount2,
 								isoutside : as[i].isoutside.length == 0 ? false : (as[i].isoutside == "false" || as[i].isoutside == "0" || as[i].isoutside == "undefined" ? false : true)
@@ -489,7 +498,8 @@
 				        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
 				        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
 				        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
-				        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtOverw').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtOverh').removeAttr('readonly').css('color','black').css('background','white');
 									$('#cmbCalctype').removeAttr('disabled');
 	        						$('#cmbCarteamno').removeAttr('disabled');
         						}
@@ -517,7 +527,8 @@
 			        			$('#txtPrice2').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtPrice3').removeAttr('readonly').css('color','black').css('background','white');
 			        			$('#txtDiscount').removeAttr('readonly').css('color','black').css('background','white');
-			        			$('#txtTolls').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtOverw').removeAttr('readonly').css('color','black').css('background','white');
+			        			$('#txtOverh').removeAttr('readonly').css('color','black').css('background','white');
 								$('#cmbCalctype').removeAttr('disabled');
         						$('#cmbCarteamno').removeAttr('disabled');
 							}
@@ -573,8 +584,8 @@
 				$('#txtNoq').val('001');
 				if($('#cmbCalctype').val().length==0){
 					$('#cmbCalctype').val(trans.calctype[0].noa);
-					trans.calctypeChange();
 				}
+				trans.calctypeChange();
 				trans.isOrde = false;
 				trans.refresh();
 				trans.checkData();
@@ -962,10 +973,10 @@
 						<td><input id="txtDatea"  type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblTrandate" class="lbl"> </a></td>
 						<td><input id="txtTrandate"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
-						<td><input id="txtMon"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblMon2" class="lbl"> </a></td>
-						<td><input id="txtMon2"  type="text" class="txt c1"/></td>
+						<td style="display:none;"><span> </span><a id="lblMon" class="lbl"> </a></td>
+						<td style="display:none;"><input id="txtMon"  type="text" class="txt c1"/></td>
+						<td style="display:none;"><span> </span><a id="lblMon2" class="lbl"> </a></td>
+						<td style="display:none;"><input id="txtMon2"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblCarno" class="lbl"> </a></td>
@@ -1036,13 +1047,13 @@
 						</td>
 					</tr>
 					<tr>
+					    <td><span> </span><a class="lbl">扣％(百分比)</a></td>
+                        <td><input id="txtOverw"  type="text" class="txt c1 num"/></td>
+                        <td><span> </span><a class="lbl">抽成(百分比)</a></td>
+                        <td><input id="txtOverh"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblDiscount" class="lbl"> </a></td>
 						<td><input id="txtDiscount"  type="text" class="txt c1 num"/></td>
 						
-						<td><span> </span><a id="lblTolls" class="lbl"> </a></td>
-						<td><input id="txtTolls"  type="text" class="txt c1 num"/></td>
-						<td><span> </span><a id="lblReserve" class="lbl"> </a></td>
-						<td><input id="txtReserve"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a class="lbl">顆數</a></td>
                         <td><input id="txtMount3"  type="text" class="txt c1 num"/></td>
 					</tr>
