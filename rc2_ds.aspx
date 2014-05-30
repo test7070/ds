@@ -208,6 +208,9 @@
                         $('#txtTotal_' + j).focusout(function() {
                             sum();
                         });
+                        $('#txtTax_' + j).focusout(function() {
+                            sum();
+                        });
                     }
                 }
                 _bbsAssign();
