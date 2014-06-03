@@ -975,7 +975,7 @@
 							<input id="txtDriver" type="text"  style='width:60%; float:left;'/>
 						</td>
 						<td style="text-align: center;"><input id="btnCarowneredit" type="button" /></td>
-						<td colspan="2">
+						<td colspan="2" style="display:none;">
 							<input id="chkOption01"  type="checkbox" style='float:left;'/>
 							<span> </span><a id='lblOption01' class="lbl" style='float:left;'> </a>
 						</td>
