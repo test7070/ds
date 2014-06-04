@@ -30,10 +30,10 @@
 						type : '1', name : 'date'
 					}, {
 						type : '2'
-						, name : 'cust'
-						, dbf : 'cust'
+						, name : 'tgg'
+						, dbf : 'tgg'
 						, index : 'noa,comp'
-						, src : 'cust_b.aspx'
+						, src : 'tgg_b.aspx'
 					}]
 				});
 				q_popAssign();
