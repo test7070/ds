@@ -86,6 +86,36 @@
 				$('#txtDate2').mask('999/99/99');
 				$('#txtDate2').datepicker();
 				$('#chkXcarteam').children('input').attr('checked', 'checked');
+				$('#btnOk').hide();
+                $('#btnOk2').click(function(e) {
+                    switch($('#q_report').data('info').radioIndex) {
+                        case 0:
+                            $('#cmbPaperSize').val('LETTER');
+                            $('#chkLandScape').prop('checked',false);
+                            break;
+                        case 1:
+                            $('#cmbPaperSize').val('LETTER');
+                            $('#chkLandScape').prop('checked',false);
+                            break;
+                        case 2:
+                            $('#cmbPaperSize').val('A5');
+                            $('#chkLandScape').prop('checked',true);
+                            break;
+                        case 3:
+                            $('#cmbPaperSize').val('A5');
+                            $('#chkLandScape').prop('checked',true);
+                            break;
+                        case 4:
+                            $('#cmbPaperSize').val('');
+                            $('#chkLandScape').prop('checked',false);
+                            break;
+                        case 5:
+                            $('#cmbPaperSize').val('A4');
+                            $('#chkLandScape').prop('checked',false);
+                            break;
+                    }
+                    $('#btnOk').click();
+                });
 			}
 			function q_boxClose(t_name) {
 			}
@@ -102,6 +132,7 @@
 				<div id="q_report"></div>
 			</div>
 			<div class="prt" style="margin-left: -40px;">
+			    <input type="button" id="btnOk2" style="float:left;font-size:16px;font-weight: bold;color: blue;cursor: pointer;width:50px;height:30px;" value="查詢"/>
 				<!--#include file="../inc/print_ctrl.inc"-->
 			</div>
 		</div>
