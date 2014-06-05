@@ -26,7 +26,7 @@
             var bbmNum = [
                 ['txtMoney', 15, 0, 1], ['txtTax', 10, 0, 1], ['txtTotal', 15, 0, 1]
             ];
-            var bbsNum = [['txtMount', 15, 0, 1], ['txtPrice', 15, 3, 1], ['txtTotal', 15, 0, 1], ['txtTax', 15, 0, 1]];
+            var bbsNum = [['txtMount', 15, 3, 1], ['txtPrice', 15, 3, 1], ['txtTotal', 15, 0, 1], ['txtTax', 15, 0, 1]];
             var bbmMask = [];
             var bbsMask = [];
             q_sqlCount = 6;
