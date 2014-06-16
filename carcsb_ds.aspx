@@ -229,6 +229,24 @@
                         if (q_cur == 4)
                             q_Seek_gtPost();
                         break;
+                    default:
+                        try{
+                            
+                            var t_item = JSON.parse(t_name);
+                            
+                            if(t_item.action=='checkTre'){
+                                var as = _q_appendData("view_tres", "", true);
+                                if(as[0]!=undefined){
+                                    alert('出車單【'+t_item.noa+'】已立帳。');
+                                }else{
+                                    _btnModi();
+                                    sum();
+                                    $('#txtDatea').focus();
+                                }
+                            }
+                        }catch(e){
+                            
+                        }
                 }  /// end switch
             }
 
@@ -258,9 +276,15 @@
             function btnModi() {
                 if (emp($('#txtNoa').val()))
                     return;
-                _btnModi();
-                sum();
-                $('#txtDatea').focus();
+                
+                var tranno = $.trim($('#txtTranno').val());
+                if(tranno.length>0){
+                    q_gt('view_tres', "where=^^ tranno='"+tranno+"' ^^", 0, 0, 0, JSON.stringify({action:'checkTre',noa:tranno}));
+                }else{
+                    _btnModi();
+                    sum();
+                    $('#txtDatea').focus();
+                }
             }
 
             function btnPrint() {
