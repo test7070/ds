@@ -317,12 +317,12 @@
                 }
                 for (var i = 0; i < q_bbsCount; i++) {
                 	if($('#txtProductno_'+i).val().length>0){
-                		if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtProductno_'+i).val())){
+                		/*if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtProductno_'+i).val())){
 						}else{
 							alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
 							Unlock(1);
 							return;
-						}
+						}*/
                 	}
                     for (var j = 0; j < q_bbsCount; j++) {
                         if (i != j && $('#txtTireno_' + i).val() == $('#txtTireno_' + j).val() && $('#txtTireno_' + i).val() != '' && $('#txtTireno_' + j).val()) {
@@ -391,12 +391,12 @@
                     	$('#txtProductno_'+i).change(function(e){
 		                	$(this).val($.trim($(this).val()).toUpperCase());    	
 							if($(this).val().length>0){
-								if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
+								/*if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
 								}else{
 									Lock(1,{opacity:0});
 									alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
 									Unlock(1);
-								}
+								}*/
 							}
 		                });
                         $('#txtMount_' + i).change(function(e) {
@@ -408,7 +408,7 @@
                         		Lock(1,{opacity:0});
                         		alert('請輸入'+q_getMsg('lblOutdate'));
                         		Unlock(1);
-                        	}else if(t_productno.length>0 && (/^(\w+|\w+\u002D\w+)$/g).test(t_productno)){
+                        	}else if(t_productno.length>0 /*&& (/^(\w+|\w+\u002D\w+)$/g).test(t_productno)*/){
 								var t_where = " where=^^ a.noa='"+t_productno+"' ^^"
 									+ " where[1]=^^a.productno='"+t_productno+"' and b.indate>=ISNULL(c.begindate,'')^^"
 									+ " where[2]=^^a.noa!='"+t_noa+"' and a.productno='"+t_productno+"' and b.outdate>=ISNULL(c.begindate,'')^^";
