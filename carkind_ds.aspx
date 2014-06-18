@@ -52,14 +52,14 @@
                 $('#txtNoa').change(function(e) {
                     $(this).val($.trim($(this).val()).toUpperCase());
                     if ($(this).val().length > 0) {
-                        if ((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())) {
+                        //if ((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())) {
                             t_where = "where=^^ noa='" + $(this).val() + "'^^";
                             q_gt('carkind', t_where, 0, 0, 0, "checkCarkindno_change", r_accy);
-                        } else {
+                        /*} else {
                             Lock();
                             alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。' + String.fromCharCode(13) + 'EX: A01、A01-001');
                             Unlock();
-                        }
+                        }*/
                     }
                 });
                 $('input[name="img"]').click(function(){
@@ -134,12 +134,12 @@
             function btnOk() {
                 Lock();
                 $('#txtNoa').val($.trim($('#txtNoa').val()));
-                if ((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())) {
+                /*if ((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())) {
                 } else {
                     alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。' + String.fromCharCode(13) + 'EX: A01、A01-001');
                     Unlock();
                     return;
-                }
+                }*/
                 for(var i=0; i<$('input[name="img"]').length;i++)
             		if($('input[name="img"]').eq(i).prop('checked'))
             			$('#txtImg').val($('input[name="img"]').eq(i).attr('value'));
