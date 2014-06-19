@@ -47,14 +47,14 @@
                         src : 'tgg_b.aspx'
                     },{//3  [6],[7]
                         type : '2',
-                        name : 'sssno',
+                        name : 'xsss',
                         dbf : 'sss',
                         index : 'noa,namea',
                         src : 'sss_b.aspx'
                     },{/*[8]*/
                         type : '5',
                         name : 'xisout',
-                        value : [' @全部','Y@在職','N@離職']
+                        value : [' @全部','N@在職','Y@離職']
                     }]
                 });
                 q_popAssign();
