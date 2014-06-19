@@ -36,9 +36,9 @@
                         index : 'noa,namea',
                         src : 'driver_b.aspx'
                     }, {/*[3]*/
-                        type : '8',
+                        type : '5',
                         name : 'xisout',
-                        value : ['@全部','Y@在職','N@離職']
+                        value : [' @全部','Y@在職','N@離職']
                     }]
                 });
                 q_popAssign();
