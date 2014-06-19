@@ -216,7 +216,7 @@
             }
 
             function btnPrint() {
-            	q_box('z_sss_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+            	q_box('z_cust_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
             }
 			function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
