@@ -697,7 +697,6 @@
 						<td align="center" style="width:80px; color:black;"><a id='vewPlusmoney'> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id='vewMinusmoney'> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id='vewTotal'> </a></td>
-						<td align="center" style="width:80px; color:black;"><a id='vewUnopay'> </a></td>
 						<td align="center" style="width:80px; color:black;">廠商</td>
 					</tr>
 					<tr>
@@ -713,7 +712,6 @@
 						<td id="plusmoney,0,1" style="text-align: right;">~plusmoney,0,1</td>
 						<td id="minusmoney,0,1" style="text-align: right;">~minusmoney,0,1</td>
 						<td id="total,0,1" style="text-align: right;">~total,0,1</td>
-						<td id="unopay,0,1" style="text-align: right;">~unopay,0,1</td>
 						<td id="tggno" style="text-align: center;">~tggno</td>
 					</tr>
 				</table>
