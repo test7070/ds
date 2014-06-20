@@ -51,10 +51,16 @@
                         dbf : 'sss',
                         index : 'noa,namea',
                         src : 'sss_b.aspx'
-                    },{/*[8]*/
+                    },{//4  [8]
                         type : '5',
                         name : 'xisout',
                         value : [' @全部','N@在職','Y@離職']
+                    },{//5  [9],[10]
+                        type : '2',
+                        name : 'xucc',
+                        dbf : 'ucc',
+                        index : 'noa,productno',
+                        src : 'ucc_b.aspx'
                     }]
                 });
                 q_popAssign();

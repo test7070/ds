@@ -115,7 +115,7 @@
                 $('#txtProduct').focus();
             }
             function btnPrint() {
-                q_box('z_cust.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+                q_box('z_cust_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
             }
             function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
@@ -136,7 +136,7 @@
                 }else if(q_cur ==2){
                 	$('#txtWorker2').val(r_name);
                 }else{
-                	alert("error: btnok!")
+                	alert("error: btnok!");
                 }
                 //------------------------------------
                 if(q_cur==1){
