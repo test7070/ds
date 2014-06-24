@@ -97,6 +97,12 @@
                         dbf : 'addr',
                         index : 'noa,addr',
                         src : 'addr_b.aspx'
+                    }, {/*10 [15],[16]*/
+                        type : '2',
+                        name : 'xdriver',
+                        dbf : 'driver',
+                        index : 'noa,namea',
+                        src : 'driver_b.aspx'
                     }]
                 });
                 $('#txtXdate1').mask('999/99/99');
