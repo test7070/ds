@@ -21,7 +21,7 @@
 
 			var q_name = "trans";
 			var q_readonly = ['txtWeight3','txtMiles','txtTotal','txtTotal2','txtNoa','txtOrdeno','txtWorker','txtWorker2'];
-			var bbmNum = [['txtWeight3',10,3,1],['txtWeight2',10,3,1],['txtInmount',10,3,1],['txtPton',10,3,1],['txtPrice',10,3,1],['txtTotal',10,0,1]
+			var bbmNum = [['txtCustdiscount',10,0,1],['txtWeight3',10,3,1],['txtWeight2',10,3,1],['txtInmount',10,3,1],['txtPton',10,3,1],['txtPrice',10,3,1],['txtTotal',10,0,1]
 			,['txtOutmount',10,3,1],['txtPton2',10,3,1],['txtPrice2',10,3,1],['txtPrice3',10,3,1],['txtDiscount',10,3,1],['txtTotal2',10,0,1]
 			,['txtBmiles',10,0,1],['txtEmiles',10,0,1],['txtMount3',10,0,1],['txtOverw',10,0,1],['txtOverh',10,0,1]];
 			var bbmMask = [['txtDatea','999/99/99'],['txtTrandate','999/99/99'],['txtMon','999/99'],['txtMon2','999/99'],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
@@ -268,6 +268,16 @@
 				$('#txtWeight2').change(function(){
 					sum();
 				});
+				$('#txtCustdiscount').change(function(){
+                    sum();
+                });
+                $('#txtOverw').change(function(){
+                    sum();
+                });
+                $('#txtOverh').change(function(){
+                    sum();
+                });
+                
 				$("#txtStraddrno").focus(function() {
 					var input = document.getElementById ("txtStraddrno");
 		            if (typeof(input.selectionStart) != 'undefined' ) {	  
@@ -285,8 +295,11 @@
 					return;
 				
 				if(!trans.isTrd){
+				    if(q_float('txtCustdiscount')==0)
+				        $('#txtCustdiscount').val(100);
+			        var t_custdiscount = q_float('txtCustdiscount');
 					var t_mount = q_float('txtInmount').add(q_float('txtPton'));
-					var t_total = t_mount.mul(q_float('txtPrice')).round(0);
+					var t_total = q_div(q_mul(t_mount.mul(q_float('txtPrice')),t_custdiscount),100).round(0);
 					$('#txtMount').val(FormatNumber(t_mount));
 					$('#txtTotal').val(FormatNumber(t_total));
 				}
@@ -582,6 +595,7 @@
 				curData.paste();
 				$('#txtNoa').val('AUTO');
 				$('#txtNoq').val('001');
+				$('#txtCustdiscount').val(100);
 				if($('#cmbCalctype').val().length==0){
 					$('#cmbCalctype').val(trans.calctype[0].noa);
 				}
@@ -1014,20 +1028,32 @@
 							<input id="txtProduct"  type="text" style="float:left;width:70%;"/>
 						</td>
 					</tr>
-					<tr>
+					<tr style="background-color: #B18904;">
 						<td><span> </span><a id="lblInmount" class="lbl"> </a></td>
 						<td><input id="txtInmount"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblPton" class="lbl"> </a></td>
 						<td><input id="txtPton"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblPrice" class="lbl"> </a></td>
-						<td><input id="txtPrice"  type="text" class="txt c1 num"/></td>
-						<td><span> </span><a id="lblTotal" class="lbl"> </a></td>
-						<td>
-							<input id="txtMount"  type="text" style="display:none;"/>
-							<input id="txtTotal"  type="text" class="txt c1 num"/>
-						</td>
+                        <td><input id="txtPrice"  type="text" class="txt c1 num"/></td>
+						<td><span> </span><a id="lblCustdiscount" class="lbl">折數％</a></td>
+                        <td><input id="txtCustdiscount"  type="text" class="txt c1 num"/></td>
+						<td class="tdZ"></td>
 					</tr>
-					<tr>
+					<tr style="background-color: #B18904;">
+					    <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+					    <td><span> </span><a id="lblTotal" class="lbl"> </a></td>
+                        <td>
+                            <input id="txtMount"  type="text" style="display:none;"/>
+                            <input id="txtTotal"  type="text" class="txt c1 num"/>
+                        </td>
+                        <td class="tdZ"></td>
+					</tr>
+					<tr style="background-color: pink;">
 						<td><span> </span><a id="lblOutmount" class="lbl"> </a></td>
 						<td><input id="txtOutmount"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblPton2" class="lbl"> </a></td>
@@ -1040,28 +1066,31 @@
 							<input id="txtPrice2"  type="text" class="txt c1 num"/>
 							<input id="txtPrice3"  type="text" class="txt c1 num"/>
 						</td>
-						<td><span> </span><a id="lblTotal2" class="lbl"> </a></td>
-						<td>
-							<input id="txtMount2"  type="text" style="display:none;"/>
-							<input id="txtTotal2"  type="text" class="txt c1 num"/>
-						</td>
+						<td></td>
+                        <td></td>
+						<td class="tdZ"></td>
 					</tr>
-					<tr>
+					<tr  style="background-color:pink;">
 					    <td><span> </span><a class="lbl">扣％(百分比)</a></td>
                         <td><input id="txtOverw"  type="text" class="txt c1 num"/></td>
                         <td><span> </span><a class="lbl">抽成(百分比)</a></td>
                         <td><input id="txtOverh"  type="text" class="txt c1 num"/></td>
 						<td><span> </span><a id="lblDiscount" class="lbl"> </a></td>
 						<td><input id="txtDiscount"  type="text" class="txt c1 num"/></td>
-						
-						<td><span> </span><a class="lbl">顆數</a></td>
-                        <td><input id="txtMount3"  type="text" class="txt c1 num"/></td>
+						<td><span> </span><a id="lblTotal2" class="lbl"> </a></td>
+                        <td>
+                            <input id="txtMount2"  type="text" style="display:none;"/>
+                            <input id="txtTotal2"  type="text" class="txt c1 num"/>
+                        </td>
+						<td class="tdZ"></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblPo" class="lbl"> </a></td>
 						<td colspan="2"><input id="txtPo"  type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblCustorde" class="lbl"> </a></td>
 						<td colspan="2"><input id="txtCustorde" type="text" class="txt c1"/></td>
+						<td><span> </span><a class="lbl">顆數</a></td>
+                        <td><input id="txtMount3"  type="text" class="txt c1 num"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblCaseno" class="lbl"> </a></td>
