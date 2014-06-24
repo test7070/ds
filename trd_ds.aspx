@@ -21,7 +21,7 @@
             q_tables = 's';
             var q_name = "trd";
             var q_readonly = ['txtTax', 'txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount', 'txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
-            var q_readonlys = ['txtTranno', 'txtTrannoq','txtTrandate','txtStraddr','txtProduct','txtCarno','txtCustorde','txtCaseno','txtMount','txtPrice','txtTotal','txtTranmoney'];
+            var q_readonlys = ['txtTranno', 'txtTrannoq','txtTrandate','txtStraddr','txtProduct','txtCarno','txtCustorde','txtCaseno','txtMount','txtPrice','txtCustdiscount','txtTotal','txtTranmoney'];
             var bbmNum = [['txtMoney', 10, 0,1], ['txtTax', 10, 0,1], ['txtTotal', 10, 0,1], ['txtMount', 10, 3,1], ['txtPlusmoney', 10, 0,1], ['txtMinusmoney', 10, 0,1]];
             var bbsNum = [['txtTranmoney', 10, 0,1], ['txtOverweightcost', 10, 0,1], ['txtOthercost', 10, 0,1], ['txtMount', 10, 3,1], ['txtPrice', 10, 3,1], ['txtTotal', 10, 0,1]];
             var bbmMask = [];
@@ -114,7 +114,7 @@
                         var tmp = $.trim($('#txtPo').val()).split(',');
                         t_po = ' and (';
                         for (var i in tmp)
-                        t_po += (i == 0 ? '' : ' or ') + "a.po='" + tmp[i] + "'"
+                        t_po += (i == 0 ? '' : ' or ') + "a.po='" + tmp[i] + "'";
                         t_po += ')';
                         t_where += t_po;
                     }
@@ -226,8 +226,8 @@
                         break;
                     case 'trd_tran':
                         var as = _q_appendData("view_trans", "", true);
-                        q_gridAddRow(bbsHtm, 'tbbs', 'txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtTotal,txtCustorde,txtProduct'
-                        , as.length, as, 'trandate,noa,noq,carno,straddr,total,caseno,mount,price,total,custorde,product', '','');
+                        q_gridAddRow(bbsHtm, 'tbbs', 'txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtCustdiscount,txtTotal,txtCustorde,txtProduct'
+                        , as.length, as, 'accy,trandate,noa,noq,carno,straddr,total,caseno,mount,price,custdiscount,total,custorde,product', '','');
                         for ( i = 0; i < q_bbsCount; i++) {
                             if (i < as.length) {
                             }else{
@@ -346,10 +346,22 @@
             }
 
             function bbsAssign() {
-                _bbsAssign();
-                for (var ix = 0; ix < q_bbsCount; ix++) {
-                    $('#lblNo_' + ix).text(ix + 1);
+                for (var i = 0; i < q_bbsCount; i++) {
+                    $('#lblNo_' + i).text(i + 1);
+                    if ($('#btnMinus_' + i).hasClass('isAssign'))/// 重要
+                        continue;
+                    $('#txtTranno_'+i).bind('contextmenu',function(e) {
+                        /*滑鼠右鍵*/
+                        e.preventDefault();
+                        var n = $(this).attr('id').replace('txtTranno_','');
+                        var t_accy = $('#txtTranaccy_'+n).val();
+                        var t_noa = $(this).val();
+                        if(t_noa.length>0 ){
+                            q_box("trans_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + t_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
+                        }
+                    });
                 }
+                _bbsAssign();
             }
 
             function btnIns() {
@@ -835,6 +847,7 @@
 					<td align="center" style="width:80px;"><a id='lblProduct_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblMount_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblPrice_s'> </a></td>
+					<td align="center" style="width:80px;"><a id='lblCustdiscount_s'>折數％</a></td>
 					<td align="center" style="width:80px;"><a id='lblTotal_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblCarno_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblCustorde_s'> </a></td>
@@ -860,9 +873,8 @@
 					<td >
 					<input type="text" id="txtMount.*" style="width:95%;text-align: right;" />
 					</td>
-					<td >
-					<input type="text" id="txtPrice.*" style="width:95%;text-align: right;" />
-					</td>
+					<td><input type="text" id="txtPrice.*" style="width:95%;text-align: right;" /></td>
+					<td><input type="text" id="txtCustdiscount.*" style="width:95%;text-align: right;" /></td>
 					<td >
 					<input type="text" id="txtTotal.*" style="width:95%;text-align: right;" />
 					</td>
@@ -876,8 +888,9 @@
 					<input type="text" id="txtCaseno.*" style="width:95%;" />
 					</td>
 					<td >
-					<input type="text" id="txtTranno.*" style="float:left; width: 90%;"/>
+					   <input type="text" id="txtTranno.*" style="float:left; width: 80%;"/>
 						<input type="text" id="txtTrannoq.*" style="float:left;visibility: hidden; width:1%"/>
+						<input type="text" id="txtTranaccy.*" style="float:left;visibility: hidden; width:1%"/>
 					</td>
 					<td >
 					<input type="text" id="txtTranmoney.*" style="width:95%;text-align: right;" />
