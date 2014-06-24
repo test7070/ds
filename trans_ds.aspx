@@ -34,13 +34,13 @@
             q_xchg = 1;
             brwCount2 = 15;
             //不能彈出瀏覽視窗
-            aPop = new Array(['txtCarno', '', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
-			,['txtCustno', '', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
-			,['txtTggno', '', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx']
-			,['txtDriverno', '', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
-			,['txtUccno', '', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
+            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
+			,['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
+			,['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx']
+			,['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+			,['txtUccno', 'lblUcc', 'ucc', 'noa,product', 'txtUccno,txtProduct', 'ucc_b.aspx']
 			,['txtSalesno', 'lblSales', 'sss', 'noa,namea', 'txtSalesno,txtSales', 'sss_b.aspx']
-			,['txtStraddrno', '', 'addr', 'noa,addr,productno,product,salesno,sales', 'txtStraddrno,txtStraddr,txtUccno,txtProduct,txtSalesno,txtSales,txtStraddr', 'addr_b.aspx'] 
+			,['txtStraddrno', 'lblStraddr', 'addr', 'noa,addr,productno,product,salesno,sales', 'txtStraddrno,txtStraddr,txtUccno,txtProduct,txtSalesno,txtSales,txtStraddr', 'addr_b.aspx'] 
 			,['txtCardealno', 'lblCardeal', 'acomp', 'noa,acomp', 'txtCardealno,txtCardeal', 'acomp_b.aspx']
 			);
 			function currentData() {
@@ -993,16 +993,16 @@
 						<td style="display:none;"><input id="txtMon2"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblCarno" class="lbl"> </a></td>
+						<td><span> </span><a id="lblCarno" class="lbl btn"> </a></td>
 						<td><input id="txtCarno"  type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblDriver" class="lbl"> </a></td>
+						<td><span> </span><a id="lblDriver" class="lbl btn"> </a></td>
 						<td colspan="2">
 							<input id="txtDriverno"  type="text" style="float:left;width:50%;"/>
 							<input id="txtDriver"  type="text" style="float:left;width:50%;"/>
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblCust" class="lbl"> </a></td>
+						<td><span> </span><a id="lblCust" class="lbl btn"> </a></td>
 						<td colspan="3">
 							<input id="txtCustno"  type="text" style="float:left;width:30%;"/>
 							<input id="txtComp"  type="text" style="float:left;width:70%;"/>
@@ -1017,12 +1017,12 @@
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblStraddr" class="lbl"> </a></td>
+						<td><span> </span><a id="lblStraddr" class="lbl btn"> </a></td>
 						<td colspan="3">
 							<input id="txtStraddrno"  type="text" style="float:left;width:30%;"/>
 							<input id="txtStraddr"  type="text" style="float:left;width:70%;"/>
 						</td>
-						<td><span> </span><a id="lblUcc" class="lbl"> </a></td>
+						<td><span> </span><a id="lblUcc" class="lbl btn"> </a></td>
 						<td colspan="3">
 							<input id="txtUccno"  type="text" style="float:left;width:30%;"/>
 							<input id="txtProduct"  type="text" style="float:left;width:70%;"/>
@@ -1136,7 +1136,7 @@
 						<td colspan="7"><input id="txtMemo"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblTgg" class="lbl"> </a></td>
+						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
 						<td><input id="txtTggno" type="text" class="txt c1"/></td>
 						<td colspan="2"><input id="txtTgg" class="txt c1"/></td>
 						<td><span> </span><a id="lblCardeal" class="lbl btn"> </a></td>
