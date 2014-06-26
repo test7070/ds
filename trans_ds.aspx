@@ -50,8 +50,8 @@
                 /*新增時複製的欄位*/
                 include : ['txtDatea', 'txtTrandate','txtMon','txtMon2','txtCarno','txtDriverno','txtDriver'
                 	,'txtCustno','txtComp','txtNick','cmbCalctype','cmbCarteamno','txtStraddrno','txtStraddr'
-                	,'txtUccno','txtProduct','txtInmount','txtPrice','txtTotal'
-                	,'txtOutmount','txtPrice2','txtPrice3','txtTotal2','txtDiscount'
+                	,'txtUccno','txtProduct','txtInmount','txtPrice','txtCustdiscount','txtTotal'
+                	,'txtOutmount','txtPrice2','txtPrice3','txtTotal2','txtDiscount','txtOverw','txtOverh'
                 	,'txtPo','txtCustorde','txtSalesno','txtSales'],
                 /*記錄當前的資料*/
                 copy : function() {
@@ -157,6 +157,7 @@
         			$('#txtInmount').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtPton').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtPrice').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
+        			$('#txtCustdiscount').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			
         			$('#txtCarno').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
         			$('#txtDriverno').attr('readonly','readonly').css('color','green').css('background','rgb(237,237,237)');
@@ -494,6 +495,7 @@
 									$('#txtInmount').removeAttr('readonly').css('color','black').css('background','white');
 				        			$('#txtPton').removeAttr('readonly').css('color','black').css('background','white');
 				        			$('#txtPrice').removeAttr('readonly').css('color','black').css('background','white');
+				        			$('#txtCustdiscount').removeAttr('readonly').css('color','black').css('background','white');
 								}
 							}
 							q_gt('view_tres', "where=^^ tranno='"+t_tranno+"' ^^", 0, 0, 0, 'checkTre',r_accy);
@@ -595,7 +597,6 @@
 				curData.paste();
 				$('#txtNoa').val('AUTO');
 				$('#txtNoq').val('001');
-				$('#txtCustdiscount').val(100);
 				if($('#cmbCalctype').val().length==0){
 					$('#cmbCalctype').val(trans.calctype[0].noa);
 				}
