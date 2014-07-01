@@ -179,6 +179,19 @@
                             q_Seek_gtPost();
                         break;
                     default:
+                        try{
+                            var item = JSON.parse(t_name);
+                            if(item.action == 'getfixas'){
+                                as = _q_appendData("fixas", "", true);
+                                if(as[0]!=undefined){
+                                    $('#txtPrice_'+item.n).val(as[0].price);
+                                    $('#txtMemo_'+item.n).val(as[0].fixadate);
+                                }
+                                sum();
+                            }
+                        }catch(e){
+                            
+                        }
                         break;
                 }  /// end switch
             }
@@ -294,7 +307,12 @@
 
             function q_popPost(t_id) {
                 if ((q_cur == 1 || q_cur == 2) && t_id.substring(0, 13).toUpperCase() == 'TXTPRODUCTNO_') {
-                    sum();
+                    var t_datea = $.trim($('#txtFixadate').val());
+                    var t_productno = $.trim($('#txtProductno_'+b_seq).val());
+                    var t_where = "where=^^ fixas.productno='"+t_productno+"'";
+                    t_where += t_datea.length>0?" and fixa.fixadate<='"+t_datea+"'":'';
+                    t_where += " order by fixa.fixadate desc^^";
+                    q_gt('getfixas', t_where, 1, 0, 0, JSON.stringify({action:'getfixas',n:b_seq}), r_accy);                  
                 }
             }
 
