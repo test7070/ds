@@ -72,6 +72,12 @@
                     }, {/*8 [13]*/
                         type : '6',
                         name : 'xproduct'
+                    }, {/*2 [14][15]*/
+                        type : '2',
+                        name : 'driver',
+                        dbf : 'driver',
+                        index : 'noa,namea',
+                        src : 'driver_b.aspx'
                     }]
                 });
                 q_popAssign();
