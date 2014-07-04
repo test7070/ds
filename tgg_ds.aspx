@@ -20,7 +20,7 @@
             }
 
             var q_name = "tgg";
-            var q_readonly = [['txtWorker'],['txtWorker2']];
+            var q_readonly = ['txtWorker','txtWorker2'];
             var bbmNum = [['txtCredit',10,0,1]];
             var bbmMask = [];
             q_sqlCount = 6;
