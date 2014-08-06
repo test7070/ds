@@ -64,6 +64,7 @@
                 $('#txtIndate').datepicker();
                 
                 q_gt('acomp', '', 0, 0, 0, "");
+                q_gt('part', '', 0, 0, 0, "");
                 $("#cmbCno").focus(function() {
                     var len = $(this).children().length > 0 ? $(this).children().length : 1;
                     $(this).attr('size', len + "");
@@ -131,6 +132,19 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'part':
+                        var as = _q_appendData("part", "", true);
+                        if (as[0] != undefined) {
+                            var t_item = "";
+                            for ( i = 0; i < as.length; i++) {
+                                t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].part;
+                            }
+                            q_cmbParse("cmbPartno",'@,'+ t_item,'s');
+                            if (abbm[q_recno] != undefined) {
+                                $("#cmbPartno").val(abbm[q_recno].partno);
+                            }
+                        }
+                        break;
                 	case 'btnDele':
                 		var as = _q_appendData("pays", "", true);
                         if (as[0] != undefined) {
@@ -736,6 +750,7 @@
 					<td align="center" style="width:80px;">*<a id='lblMoneys'> </a></td>
 					<td align="center" style="width:120px;">#<a id='lblInvonos'> </a>/<a id='lblTaxs'> </a></td>
 					<td align="center" style="width:80px;">*<a id='lblTotals'> </a></td>
+					<td align="center" style="width:80px;">*<a id='lblPartnos'> </a></td>
 					<td align="center" style="width:150px;">*<a id='lblMemos'> </a></td>
 					<td align="center" style="width:120px;"><a id='lblBal'> </a></td>
 				</tr>
@@ -764,6 +779,7 @@
 						<input id="txtTax.*" type="text" style="text-align: right; width: 95%;" />
 					</td>
 					<td><input id="txtTotal.*" type="text" style="text-align: right; width: 95%;" /></td>
+					<td><select id="cmbPartno.*" style="float:left;width:95%;" > </select></td>
 					<td>
 						<input id="txtMemo.*" type="text" style=" width: 95%;"/>	
 						<input class="btn"  id="btnAcc.*" type="button" value='.' style="float: left; font-weight: bold;width:1%;" />
