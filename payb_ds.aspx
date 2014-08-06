@@ -193,8 +193,14 @@
                         	for (var i = 0; i < q_bbsCount; i++) {
 			                    $('#btnMinus_' + i).click();
 			                }	
-                        	q_gridAddRow(bbsHtm, 'tbbs', 'txtTablea,txtRc2no,txtTypea,txtMount,txtPrice,txtMoney,txtInvono,txtTax,txtDiscount,txtTotal,txtMemo,txtAcc1,txtAcc2', as.length, as
+			                if(q_getPara('sys.comp').substring(0, 2) == '日光'){
+			                	q_gridAddRow(bbsHtm, 'tbbs', 'txtTablea,txtRc2no,txtTypea,txtMount,txtPrice,txtMoney,txtInvono,txtTax,txtDiscount,txtTotal,txtMemo,txtAcc1,txtAcc2', as.length, as
                         		, 'tablea,noa,typea,mount,price,money,invono,tax,discount,total,memo,acc1,acc2', 'txtRc2no', '');
+			                }else{
+			                	q_gridAddRow(bbsHtm, 'tbbs', 'txtTablea,txtRc2no,txtTypea,txtMount,txtPrice,txtMoney,txtInvono,txtTax,txtDiscount,txtTotal,txtMemo,txtAcc1,txtAcc2,cmbPartno', as.length, as
+                        		, 'tablea,noa,typea,mount,price,money,invono,tax,discount,total,memo,acc1,acc2,carno', 'txtRc2no', '');
+			                }
+                        	
                         }else{
                         	alert('無資料。');
                         }
