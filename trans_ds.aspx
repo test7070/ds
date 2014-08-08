@@ -1054,6 +1054,11 @@
                         </td>
                         <td class="tdZ"></td>
 					</tr>
+					<tr style="background-color: #B18904;">
+						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
+						<td colspan="7"><input id="txtMemo"  type="text" class="txt c1"/></td>
+						<td class="tdZ"></td>
+					</tr>
 					<tr style="background-color: pink;">
 						<td><span> </span><a id="lblOutmount" class="lbl"> </a></td>
 						<td><input id="txtOutmount"  type="text" class="txt c1 num"/></td>
@@ -1083,6 +1088,11 @@
                             <input id="txtMount2"  type="text" style="display:none;"/>
                             <input id="txtTotal2"  type="text" class="txt c1 num"/>
                         </td>
+						<td class="tdZ"></td>
+					</tr>
+					<tr style="background-color:pink;">
+						<td><span> </span><a id="lblSender" class="lbl">備註</a></td>
+						<td colspan="7"><input id="txtSender"  type="text" class="txt c1"/></td>
 						<td class="tdZ"></td>
 					</tr>
 					<tr>
@@ -1131,10 +1141,6 @@
 						<td><input id="txtWeight2" type="text"  class="txt num c1"/></td>
 						<td><span> </span><a id="lblWeight3" class="lbl"> </a></td>
 						<td><input id="txtWeight3" type="text"  class="txt num c1"/></td>
-					</tr>
-					<tr>
-						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
-						<td colspan="7"><input id="txtMemo"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTgg" class="lbl btn"> </a></td>
