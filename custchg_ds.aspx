@@ -427,8 +427,8 @@
 						<input id="txtCustno"  type="text"  class="txt" style="float:left;width:25%;"/>
 						<input id="txtComp"  type="text"  class="txt" style="float:left;width:75%;"/>
 						</td>
-						<td><span> </span><a id="lblCarno" class="lbl btn" > </a></td>
-						<td><input id="txtCarno"  type="text" class="txt c1"/></td>
+						<td style="display:none;"><span> </span><a id="lblCarno" class="lbl btn" > </a></td>
+						<td style="display:none;"><input id="txtCarno"  type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblMinusitem" class="lbl btn"> </a></td>

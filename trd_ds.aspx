@@ -78,7 +78,7 @@
 						if(t_custchgno[i].length>0)
 							t_where += " or noa='"+t_custchgno[i]+"'";
 					}
-					q_box("custchg.aspx?"+ r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno, 'custchg', "95%", "95%", q_getMsg("popCustchg"));
+					q_box("custchg_ds.aspx?"+ r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno, 'custchg', "95%", "95%", q_getMsg("popCustchg"));
 				});
                 $('#lblVccano').click(function() {
                 	var t_where = "where=^^ noa='"+$('#txtCustno').val()+"' ^^";
