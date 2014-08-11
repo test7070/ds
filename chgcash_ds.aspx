@@ -213,7 +213,7 @@
 		            $('#cmbCarteamno').val('');
 		        }
 		        if ($('#txtDatea').val().length == 0 || !q_cd($('#txtDatea').val())) {
-		            alert(q_getMsg('lblDatea') + '��~�C');
+		            alert(q_getMsg('lblDatea') + '錯誤');
 		            return;
 		        }
 		        /*if($('#cmbDc').val() == 3){
