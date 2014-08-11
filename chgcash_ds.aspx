@@ -216,12 +216,12 @@
 		            alert(q_getMsg('lblDatea') + '��~�C');
 		            return;
 		        }
-		        if($('#cmbDc').val() == 3){
+		        /*if($('#cmbDc').val() == 3){
 		        	if(($('#txtAcc1').val() == '') || ($('#txtAcc2').val() == '') || $('#txtAcc1').val().substring(0,4) !='1112'){
 		        		alert('�п�J' + q_getMsg('lblAcc1') + '�B��1112�}�Y' );
 		        		return;
 		        	}
-		        }
+		        }*/
 		        sum();
 		        if(q_cur ==1){
 	            	$('#txtWorker').val(r_name);
