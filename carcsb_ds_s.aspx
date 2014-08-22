@@ -76,6 +76,8 @@
 				t_cardealno = $.trim($('#txtCardealno').val());
 				t_addrno = $.trim($('#txtAddrno').val());
 				t_addr = $.trim($('#txtAddr').val());
+				t_driverno = $.trim($('#txtDriverno').val());
+				t_driver = $.trim($('#txtDriver').val());
 				
 				var t_where = " 1=1 " 
 				+ q_sqlPara2("calctype", t_calctype) 
@@ -86,7 +88,10 @@
 				+ q_sqlPara2("custno", t_custno)
 				+ q_sqlPara2("tggno", t_tggno)
 				+ q_sqlPara2("cardealno", t_cardealno)
-				+ q_sqlPara2("addrno", t_addrno);
+				+ q_sqlPara2("addrno", t_addrno)
+				+ q_sqlPara2("driverno", t_driverno);
+				if (t_driver.length>0)
+                    t_where += " and charindex('" + t_driver + "',driver)>0";
 				if (t_carno.length>0)
                     t_where += " and charindex('" + t_carno + "',carno)>0";
                 if (t_comp.length>0)
