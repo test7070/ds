@@ -440,6 +440,16 @@
 						<td colspan="2"><input id="txtMobile" type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
+						<td><span> </span><a id="lblTel2" class="lbl">電話(二)</a></td>
+						<td colspan="2"><input id="txtTel2" type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblMobile2" class="lbl">行動電話(二)</a></td>
+						<td colspan="2"><input id="txtMobile2" type="text" class="txt c1"/></td>
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblFax" class="lbl">傳真</a></td>
+						<td colspan="2"><input id="txtFax" type="text" class="txt c1"/></td>
+					</tr>
+					<tr>
 						<td><span> </span><a id="lblAddr_home" class="lbl"> </a></td>
 						<td colspan="5">
 							<input id="txtZip_home" type="text" style="float:left;width:15%;"/>
