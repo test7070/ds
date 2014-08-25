@@ -200,6 +200,12 @@
 
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
+                if(q_cur==1 || q_cur==2){
+                    $('#txtDatea').datepicker();
+                }
+                else{
+                    $('#txtDatea').datepicker('destroy');
+                }
             }
 
             function btnMinus(id) {
