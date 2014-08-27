@@ -50,14 +50,14 @@
                 $('#txtNoa').change(function(e){
                 	$(this).val($.trim($(this).val()).toUpperCase());    	
 					if($(this).val().length>0){
-						if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
+						//if((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())){
 							t_where="where=^^ noa='"+$(this).val()+"'^^";
                     		q_gt('cust', t_where, 0, 0, 0, "checkCustno_change", r_accy);
-						}else{
+						/*}else{
 							Lock(1,{opacity:0});
 							alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
 							Unlock(1);
-						}
+						}*/
 					}
                 });
                 $('#txtSerial').change(function() {
@@ -161,12 +161,12 @@
             function btnOk() {    
             	Lock(1,{opacity:0}); 
             	$('#txtNoa').val($.trim($('#txtNoa').val()));   	
-            	if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
+            	/*if((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())){
 				}else{
 					alert('編號只允許 英文(A-Z)、數字(0-9)及連字號(-)。'+String.fromCharCode(13)+'EX: A01、A01-001');
 					Unlock(1);
 					return;
-				}
+				}*/
             	if ($('#txtSerial').val().length > 0 && checkId($('#txtSerial').val())!=2){
             		alert(q_getMsg('lblSerial')+'錯誤。');
             		Unlock(1);
