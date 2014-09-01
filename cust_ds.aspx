@@ -153,9 +153,20 @@
             function btnPrint() {
                 q_box('z_cust_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
             }
+            function q_funcPost(t_func, result) {
+                switch(t_func) {
+                    case 'qtxt.query.cust':
+                        break;
+                    
+                    default:
+                    	break;
+                }
+            }
             function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return false;
+                if(q_getPara('sys.comp').substring(0,2)=='菱揚')
+                	q_func('qtxt.query.cust', 'cust.txt,cust_tgg,' + encodeURI($('#txtNoa').val()) ); 	
                 Unlock(1);
             }
             function btnOk() {    
