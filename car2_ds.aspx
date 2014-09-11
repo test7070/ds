@@ -58,7 +58,7 @@
                 q_cmbParse("cmbIsprint", q_getPara('car2.isprint'));
                 q_cmbParse("cmbAuto", q_getPara('car2.auto'));
                 
-                if(q_getPara('sys.project').toUpperCase()!="DC"){
+                if(q_getPara('sys.project').toUpperCase()!="DC" && q_getPara('sys.project').toUpperCase()!="DS"){
                 	$(".btns").hide();
                 }
                 
