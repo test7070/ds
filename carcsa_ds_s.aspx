@@ -38,7 +38,9 @@
 				bbmMask = [['txtBdate', r_picd], ['txtEdate', r_picd],['txtBtrandate', r_picd], ['txtEtrandate', r_picd],['txtMon', r_picm]];
 				q_mask(bbmMask);
 				q_cmbParse("cmbInterval", '@全部,'+q_getPara('carcsa.interval'));
+				q_cmbParse("cmbTrans", "@全部,N@未轉出車單");
 				$('#txtNoa').focus();
+				
 				
 				$('#txtBdate').datepicker();
 				$('#txtEdate').datepicker(); 
@@ -50,6 +52,7 @@
             }
 
 			function q_seekStr() {
+				t_tran = $('#cmbTrans').val();
 				t_noa = $.trim($('#txtNoa').val());
 				t_ordeno = $.trim($('#txtOrdeno').val());
 				t_bdate = $('#txtBdate').val();
@@ -76,6 +79,8 @@
 				+ q_sqlPara2("interval", t_interval)
 				+ q_sqlPara2("tggno", t_tggno)
 				+ q_sqlPara2("cardealno", t_cardealno);
+				if(t_tran=='N')
+                	t_where +=  " and exists(select noa from carcsas where carcsas.noa=carcsa.noa and len(isnull(carcsas.tranno,''))=0)";
 				if (t_comp.length>0)
                     t_where += " and charindex('" + t_comp + "',comp)>0";
 				if (t_carno.length>0)
@@ -104,6 +109,10 @@
 	>
 		<div style='width:400px; text-align:center;padding:15px;' >
 			<table id="seek"  border="1"   cellpadding='3' cellspacing='2' style='width:100%;' >
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblTrans'> </a></td>
+					<td><select id="cmbTrans" style="width:215px; font-size:medium;" > </select></td>
+				</tr>
 				<tr class='seek_tr'>
 					<td class='seek'  style="width:20%;"><a id='lblInterval'> </a></td>
 					<td><select id="cmbInterval" style="width:215px; font-size:medium;" > </select></td>
