@@ -226,8 +226,8 @@
                         break;
                     case 'trd_tran':
                         var as = _q_appendData("view_trans", "", true);
-                        q_gridAddRow(bbsHtm, 'tbbs', 'txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtCustdiscount,txtTotal,txtCustorde,txtProduct'
-                        , as.length, as, 'accy,trandate,noa,noq,carno,straddr,total,caseno,mount,price,custdiscount,total,custorde,product', '','');
+                        q_gridAddRow(bbsHtm, 'tbbs', 'txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
+                        , as.length, as, 'accy,trandate,noa,noq,carno,straddr,total,caseno,mount,price,custdiscount,total,custorde,product,memo', '','');
                         for ( i = 0; i < q_bbsCount; i++) {
                             if (i < as.length) {
                             }else{
@@ -643,7 +643,7 @@
                 margin: -1px;
             }
             .dbbs {
-                width: 100%;
+                width: 1200px;
             }
             .tbbs a {
                 font-size: medium;
@@ -850,6 +850,7 @@
 					<td align="center" style="width:80px;"><a id='lblCustdiscount_s'>折數％</a></td>
 					<td align="center" style="width:80px;"><a id='lblTotal_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblCarno_s'> </a></td>
+					<td align="center" style="width:150px;"><a id='lblMemo_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblCustorde_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblCaseno_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblTranno_s'> </a></td>
@@ -880,6 +881,9 @@
 					</td>
 					<td >
 					<input type="text" id="txtCarno.*" style="width:95%;" />
+					</td>
+					<td >
+					<input type="text" id="txtMemo.*" style="width:95%;" />
 					</td>
 					<td >
 					<input type="text" id="txtCustorde.*" style="width:95%;" />
