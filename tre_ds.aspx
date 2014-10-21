@@ -99,11 +99,11 @@
                 });
                 $("#btnCarchg").click(function(e) {
                 	Lock(1,{opacity:0});
-                	if ($('#txtCarno').val().length == 0) {
+                	/*if ($('#txtCarno').val().length == 0) {
                         alert('請輸入車牌!');
                         Unlock(1);
                         return;
-                    }
+                    }*/
                     if ($('#txtDriverno').val().length == 0) {
                         alert('請輸入司機!');
                         Unlock(1);
@@ -111,7 +111,7 @@
                     }
                     
                     t_carchgno = 'carchgno=' + $('#txtCarchgno').val();
-                    t_where = "  carno='" + $('#txtCarno').val() + "' and driverno='" + $('#txtDriverno').val() + "' and  (treno='" + $('#txtNoa').val() + "' or len(isnull(treno,''))=0) ";
+                    t_where = " driverno='" + $('#txtDriverno').val() + "' and  (treno='" + $('#txtNoa').val() + "' or len(isnull(treno,''))=0) ";
                     q_box("carchg_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_carchgno + ";", 'carchg', "95%", "650px", q_getMsg('popCarchg'));  
                 });
                 $('#lblCarchgno').click(function(e){
