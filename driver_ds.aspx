@@ -28,11 +28,12 @@
             brwNowPage = 0;
             brwKey = 'noa';
             brwCount2 = 15;
-
+			
+			t_cardeal = '';
             $(document).ready(function() {
                 bbmKey = ['noa'];
                 q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1)
+                q_gt('cardeal', "", 0, 0, 0, 'cardeal'); 
             });
            
             function main() {
@@ -47,6 +48,7 @@
             function mainPost() {
             	q_cmbParse("cmbSex",q_getPara('sys.sex'));
             	q_cmbParse("cmbCartype",q_getPara('driver.cartype'));
+            	q_cmbParse("cmbCardealno",t_cardeal);
                 q_mask(bbmMask);
                 $('#txtNoa').change(function(e){
                 	$(this).val($.trim($(this).val()).toUpperCase());    	
@@ -83,6 +85,17 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'cardeal':
+                		var as = _q_appendData("cardeal", "", true);
+                        t_cardeal = '@,';
+                        if (as[0] != undefined){
+                        	for(var i=0;i<as.length;i++){
+                        		
+                        		t_cardeal += ',' + as[i].noa + '@' + as[i].comp;
+                        	}
+                        }
+                        q_gt(q_name, q_content, q_sqlCount, 1)
+                		break;
                 	case 'checkDriverno_change':
                 		var as = _q_appendData("driver", "", true);
                         if (as[0] != undefined){
@@ -451,25 +464,27 @@
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblAddr_home" class="lbl"> </a></td>
-						<td colspan="5">
+						<td colspan="3">
 							<input id="txtZip_home" type="text" style="float:left;width:15%;"/>
 							<input id="txtAddr_home" type="text" style="float:left;width:85%;"/>
 						</td>
+						<td><span> </span><a id="lblCardeal" class="lbl"> </a></td>
+						<td><select id="cmbCardealno" class="txt c1"> </select></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblAddr_conn" class="lbl"> </a></td>
-						<td colspan="5">
+						<td colspan="3">
 							<input id="txtZip_conn" type="text" style="float:left;width:15%;"/>
 							<input id="txtAddr_conn" type="text" style="float:left;width:85%;"/>
 						</td>
+						<td><span> </span><a id="lblCartype" class="lbl"> </a></td>
+						<td><select id="cmbCartype" class="txt c1"> </select></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTakeofficedate" class="lbl"> </a></td>
 						<td><input id="txtTakeofficedate" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblLeaveofficedate" class="lbl"> </a></td>
 						<td><input id="txtLeaveofficedate" type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblCartype" class="lbl"> </a></td>
-						<td><select id="cmbCartype" class="txt c1"> </select></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
