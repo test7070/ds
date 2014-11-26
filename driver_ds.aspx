@@ -159,11 +159,11 @@
 					Unlock(1);
 					return;
 				}
-            	if ($('#txtIdno').val().length > 0 && checkId($('#txtIdno').val())!=1){
+            	/*if ($('#txtIdno').val().length > 0 && checkId($('#txtIdno').val())!=1){
             		alert(q_getMsg('lblIdno')+'錯誤。');
             		Unlock(1);
             		return;
-            	}
+            	}*/
                 if(q_cur ==1){
                 	$('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
