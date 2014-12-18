@@ -356,8 +356,9 @@
                         var n = $(this).attr('id').replace('txtTranno_','');
                         var t_accy = $('#txtTranaccy_'+n).val();
                         var t_noa = $(this).val();
+                        var t_aspx = r_comp.indexOf('金勇')>=0?'trans_at.aspx':'trans_ds.aspx';
                         if(t_noa.length>0 ){
-                            q_box("trans_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + t_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
+                            q_box(t_aspx+"?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + t_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
                         }
                     });
                 }
@@ -853,6 +854,7 @@
 					<td align="center" style="width:150px;"><a id='lblMemo_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblCustorde_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblCaseno_s'> </a></td>
+					<td align="center" style="width:150px;"><a id='lblCaseno2_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblTranno_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblTranmoney_s'> </a></td>
 				</tr>
@@ -888,11 +890,10 @@
 					<td >
 					<input type="text" id="txtCustorde.*" style="width:95%;" />
 					</td>
+					<td ><input type="text" id="txtCaseno.*" style="width:95%;" /></td>
+					<td ><input type="text" id="txtCaseno2.*" style="width:95%;" /></td>
 					<td >
-					<input type="text" id="txtCaseno.*" style="width:95%;" />
-					</td>
-					<td >
-					   <input type="text" id="txtTranno.*" style="float:left; width: 80%;"/>
+					   <input type="text" id="txtTranno.*" style="float:left; width: 95%;"/>
 						<input type="text" id="txtTrannoq.*" style="float:left;visibility: hidden; width:1%"/>
 						<input type="text" id="txtTranaccy.*" style="float:left;visibility: hidden; width:1%"/>
 					</td>
