@@ -49,6 +49,9 @@
                     }, {/*5 [8]*/
                         type : '6',
                         name : 'xcardealno'
+                    }, {/*6 [9]*/
+                        type : '6',
+                        name : 'xboatno'
                     }]
                 });
                 q_popAssign();
