@@ -22,7 +22,7 @@
             var q_name = "car2";
             var q_readonly = ['txtCardeal', 'txtCarowner', 'cmbSex', 'txtIdno', 'txtBirthday', 'txtTel1', 'txtTel2', 'txtMobile', 'txtFax', 'txtAddr_conn', 'txtAddr_home', 'txtDriver'];
             var bbmNum = [['txtInmoney', 10, 0],['txtInvoicemoney', 10, 0], ['txtOutmoney', 10, 0], ['txtIrange', 10, 0], ["txtManage", 10, 0], ["txtReserve", 10, 0], ["txtHelp", 10, 0], ["txtVrate", 6, 3], ["txtRrate", 6, 3], ["txtOrate", 6, 3], ["txtIrate", 6, 3], ["txtPrate", 6, 3], ["txtUlicense", 10, 0], ["txtDlicense", 10, 0], ["txtSpring", 10, 0], ["txtSummer", 10, 0], ["txtFalla", 10, 0], ["txtWinter", 10, 0], ["txtCylinder", 2, 0], ["txtSalemoney", 10, 0,1], ["txtImprovemoney1", 10, 0], ["txtImprovemoney2", 10, 0], ["txtImprovemoney3", 10, 0], ["txtDiscountmoney", 10, 0], ["txtDurableyear", 2, 0, 0, 0]];
-            var bbmMask = [["txtIndate", "999/99/99"], ["txtOutdate", "999/99/99"], ["txtPassdate", "999/99/99"], ["txtLimitdate", "999/99/99"], ["txtCheckdate", "999/99/99"], ["txtCaryear", "9999/99"],["txtCaryeartw", "999/99"], ["txtSaledate", "999/99/99"], ["txtImprovedate1", "999/99/99"], ["txtImprovedate2", "999/99/99"], ["txtImprovedate3", "999/99/99"], ["txtDiscountdate", "999/99/99"], ["txtSuspdate", "999/99/99"], ["txtOverdate", "999/99/99"], ["txtEnddate", "999/99/99"], ["txtWastedate", "999/99/99"], ["txtReissuedate", "999/99/99"], ["txtSigndate", "999/99/99"]];
+            var bbmMask = [["txtIndate", "999/99/99"], ["txtOutdate", "999/99/99"], ["txtPassdate", "999/99/99"], ["txtLimitdate", "999/99/99"], ["txtCheckdate", "999/99/99"], ["txtCaryear", "9999/99"],["txtCaryeartw", "999/99"], ["txtSaledate", "999/99/99"], ["txtImprovedate1", "999/99/99"], ["txtImprovedate2", "999/99/99"], ["txtImprovedate3", "999/99/99"], ["txtDiscountdate", "999/99/99"], ["txtSuspdate", "999/99/99"], ["txtOverdate", "999/99/99"], ["txtEnddate", "999/99/99"], ["txtWastedate", "999/99/99"], ["txtReissuedate", "999/99/99"], ["txtSigndate", "999/99/99"], ["txtNdate", "999/99/99"]];
             q_sqlCount = 6;
             brwCount = 6;
             brwList = [];
@@ -979,10 +979,11 @@
 							<input id="txtDriver" type="text"  style='width:60%; float:left;'/>
 						</td>
 						<td style="text-align: center;"><input id="btnCarowneredit" type="button" /></td>
-						<td colspan="2" style="display:none;">
-							<input id="chkOption01"  type="checkbox" style='float:left;'/>
-							<span> </span><a id='lblOption01' class="lbl" style='float:left;'> </a>
+						<td><span> </span><a id="lblChecktype" class="lbl"> </a>
+							<input id="chkOption01"  type="checkbox" style='float:left;display:none;"'/>
+							<span> </span><a id='lblOption01' class="lbl" style='float:left;display:none;"'> </a>
 						</td>
+						<td><select id="cmbChecktype" class="txt c1"> </select></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblCarowner" class="lbl btn"> </a></td>
@@ -1068,8 +1069,8 @@
 						<td><select id="cmbCarbrandno" class="txt c1"> </select></td>
 						<td><span> </span><a id="lblCarstyle" class="lbl"> </a></td>
 						<td><input id="txtCarstyleno" type="text" class="txt c1"/></td>
-						<td><span> </span><a id="lblChecktype" class="lbl"> </a></td>
-						<td><select id="cmbChecktype" class="txt c1"> </select></td>
+						<td><span> </span><a id="lblNdate" class="lbl"> </a></td>
+						<td><input id="txtNdate" type="text" class="txt c1"/></td>
 					</tr>
 					<tr class="other">
 						<td><span> </span><a id="lblLengthb" class="lbl"> </a></td>
