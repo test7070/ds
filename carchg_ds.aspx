@@ -138,6 +138,12 @@
 
 			function q_gtPost(t_name) {
 				switch (t_name) {
+					case 'view_tre':
+						var as = _q_appendData("view_tre", "", true);
+						if (as[0] != undefined) {
+							
+						}
+						break;
 					case 'car2':
 						var as = _q_appendData("car2", "", true);
 						if (as[0] != undefined) {
@@ -251,6 +257,12 @@
 				else
 					wrServer(t_noa);
 			}
+			function q_stPost() {
+                if (q_cur == 2){
+                	var t_noa = $('#txtNoa').val();
+                	q_gt('view_tre', "where=^^noa='"+t_noa+"'^^", 0, 0, 0, "view_tre");
+                }
+            }
 
 			function sum() {
 			}
