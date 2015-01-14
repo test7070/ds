@@ -141,7 +141,11 @@
 					case 'view_tre':
 						var as = _q_appendData("view_tre", "", true);
 						if (as[0] != undefined) {
-							
+							var link = location.href.toLowerCase().replace('carchg_ds','tre_ds').replace(/^(.*\?)(.*;)(.*;)(.*;)(.*;).*$/,"$1$2$3$4");
+							//link +=  r_userno + ";" + r_name + ";" + q_time + ";noa='" + as[0].noa+ "';" + as[0].accy;
+							link +=  "noa='" + as[0].noa+ "';" + as[0].accy;
+							console.log(link);
+							window.open(link);
 						}
 						break;
 					case 'car2':
@@ -260,7 +264,7 @@
 			function q_stPost() {
                 if (q_cur == 2){
                 	var t_noa = $('#txtNoa').val();
-                	q_gt('view_tre', "where=^^noa='"+t_noa+"'^^", 0, 0, 0, "view_tre");
+                	q_gt('view_tre', "where=^^charindex('"+t_noa+"',carchgno)>0^^", 0, 0, 0, "view_tre");
                 }
             }
 
