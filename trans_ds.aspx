@@ -668,6 +668,13 @@
         		}
         		sum();
 				//---------------------------------------------------------------
+				//收金額 要大於發金額
+				var inmoney = round(q_mul(q_float('txtMount'),q_float('txtPrice')),0);
+				var outmoney = round(q_mul(q_float('txtMount2'),q_add(q_float('txtPrice2'),q_float('txtPrice3'))),0);
+				//console.log(inmoney +'    '+outmoney);
+				if(outmoney>inmoney){
+					alert('收大於發，請檢查金額!');
+				}
 				if(q_cur ==1){
                 	$('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
