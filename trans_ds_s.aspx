@@ -105,18 +105,18 @@
 		        + q_sqlPara2("tggno", t_tggno)
 				+ q_sqlPara2("cardealno", t_cardealno);
 		        if (t_comp.length>0)
-                    t_where += " and patindex('%" + t_comp + "%',comp)>0";
+                    t_where += " and charindex('" + t_comp + "',comp)>0";
                 if (t_driver.length>0)
-                    t_where += " and patindex('%" + t_driver + "%',driver)>0";
+                    t_where += " and charindex('" + t_driver + "',driver)>0";
 		       	if(t_trd=='Y')
-		       		t_where += " and exists(select noa from view_trds"+r_accy+" where view_trds"+r_accy+".tranno=trans"+r_accy+".noa)";
+		       		t_where += " and exists(select noa from view_trds"+r_accy+" where view_trds"+r_accy+".tranno=view_trans"+r_accy+".noa)";
 		       	if(t_trd=='N')
-		       		t_where += " and total!=0 and not exists(select noa from view_trds"+r_accy+" where view_trds"+r_accy+".tranno=trans"+r_accy+".noa)";
+		       		t_where += " and total!=0 and not exists(select noa from view_trds"+r_accy+" where view_trds"+r_accy+".tranno=view_trans"+r_accy+".noa)";
 		       	if(t_tre=='Y'){
-		       		t_where +="and exists(select view_tres"+r_accy+".noa from view_tres"+r_accy+" where view_tres"+r_accy+".tranno=trans"+r_accy+".noa)";
+		       		t_where +="and exists(select noa from view_tres"+r_accy+" where view_tres"+r_accy+".tranno=view_trans"+r_accy+".noa)";
 		       	}
 		       	if(t_tre=='N'){
-		       		t_where +="and total2!=0 and not exists(select view_tres"+r_accy+".noa from view_tres"+r_accy+" where view_tres"+r_accy+".tranno=trans"+r_accy+".noa)";
+		       		t_where +="and total2!=0 and not exists(select noa from view_tres"+r_accy+" where view_tres"+r_accy+".tranno=view_trans"+r_accy+".noa)";
 		       	}
 		        t_where = ' where=^^' + t_where + '^^ ';
 		        return t_where;
