@@ -672,7 +672,7 @@
 				var inmoney = round(q_mul(q_float('txtMount'),q_float('txtPrice')),0);
 				var outmoney = round(q_mul(q_float('txtMount2'),q_add(q_float('txtPrice2'),q_float('txtPrice3'))),0);
 				//console.log(inmoney +'    '+outmoney);
-				if(outmoney>inmoney){
+				if(outmoney>inmoney && q_getPara('sys.comp').indexOf('日光')>=0){
 					alert('收大於發，請檢查金額!');
 				}
 				if(q_cur ==1){
