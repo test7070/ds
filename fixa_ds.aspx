@@ -642,7 +642,7 @@
 						<td align="center" style="width:80px; color:black;"><a id="vewFixadate"> </a></td>
 						<td align="center" style="width:70px; color:black;"><a id="vewCarno"> </a></td>
 						<td align="center" style="width:70px; color:black;"><a id="vewDriver"> </a></td>
-						<td align="center" style="width:70px; color:black;"><a id="vewCarplateno"> </a></td>
+						<td align="center" style="width:70px; color:black;"><a id="vewCardno"> </a></td>
 						<td align="center" style="width:70px; color:black;"><a id="vewNick"> </a></td>
 					</tr>
 					<tr>
@@ -653,7 +653,7 @@
 						<td id="fixadate" style="text-align: center;">~fixadate</td>
 						<td id="carno" style="text-align: center;">~carno</td>
 						<td id="driver" style="text-align: center;">~driver</td>
-						<td id="carplateno" style="text-align: center;">~carplateno</td>
+						<td id="cardno" style="text-align: center;">~cardno</td>
 						<td id="nick" style="text-align: center;">~nick</td>
 					</tr>
 				</table>
