@@ -307,6 +307,9 @@
 
             function q_popPost(t_id) {
                 if ((q_cur == 1 || q_cur == 2) && t_id.substring(0, 13).toUpperCase() == 'TXTPRODUCTNO_') {
+                    if(q_float('txtMount_'+b_seq)==0)
+                    	$('#txtMount_'+b_seq).val(1);
+                    
                     var t_datea = $.trim($('#txtFixadate').val());
                     var t_productno = $.trim($('#txtProductno_'+b_seq).val());
                     var t_where = "where=^^ fixas.productno='"+t_productno+"'";
