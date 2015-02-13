@@ -600,12 +600,10 @@
 							<input id="txtDriver" type="text" style="float:left; width:50%;"/>
 						</td>
 					</tr>
-					<tr style="display:none;">
-						<td><span> </span><a id="lblCarplateno" class="lbl btn"> </a></td>
-						<td><input id="txtCarplateno" type="text" class="txt c1"/></td>
-					</tr>
 					<tr>
-						<td><span> </span><a id="lblCardno" class="lbl btn"> </a></td>
+						<td><span> </span><a id="lblCarplateno" class="lbl">板台</a></td>
+						<td><input id="txtCarplateno" type="text" class="txt c1"/></td>
+						<td><span> </span><a id="lblCardno" class="lbl"> </a></td>
 						<td><input id="txtCardno" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblMiles" class="lbl"> </a></td>
 						<td><input id="txtMiles" type="text" class="txt c1 num"/></td>
