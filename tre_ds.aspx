@@ -35,7 +35,12 @@
             brwKey = 'Datea';
             q_desc = 1;
             aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
-            , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx'], ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx'], ['txtBdriverno', '', 'driver', 'noa,namea', 'txtBdriverno', 'driver_b.aspx'], ['txtEdriverno', '', 'driver', 'noa,namea', 'txtEdriverno', 'driver_b.aspx']);
+            , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx']
+            , ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+            , ['txtBdriverno', '', 'driver', 'noa,namea', 'txtBdriverno', 'driver_b.aspx']
+            , ['txtEdriverno', '', 'driver', 'noa,namea', 'txtEdriverno', 'driver_b.aspx']
+            , ['txtDriverno_import', 'lblDriverno_import', 'driver', 'noa,namea', 'txtDriverno_import', 'driver_b.aspx']);
+
 
             q_xchg = 1;
             brwCount2 = 20;
@@ -153,7 +158,7 @@
 		            		return;
 		            	}
 						Lock(1,{opacity:0});
-	                	q_func('tre.import',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name);
+	                	q_func('tre.import',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name+','+$('#txtDriverno_import').val());
                 	}
                 });
                 $('#txtDatea_import').keydown(function(e) {
@@ -669,7 +674,12 @@
 						<select id="cmbCarteamno_import" type="text" style="float:left; width:100px; font-size: medium;"> </select>
 					</td>
 				</tr>
-				<tr style="height:35px;"> </tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblDriverno_import" style="float:right; color: blue; font-size: medium;"> </a></td>
+					<td colspan="4">
+						<input id="txtDriverno_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
 				<tr style="height:35px;">
 					<td> </td>
 					<td>
