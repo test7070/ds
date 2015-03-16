@@ -33,8 +33,8 @@
             brwNowPage = 0;
             brwKey = 'Noa';
             aPop = new Array(['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
-            , ['txtCustno', 'lblCust', 'cust', 'noa,comp,nick,zip_invo,addr_invo,serial', '0txtCustno,txtComp,txtNick,txtZip,txtAddress,txtSerial', 'cust_b.aspx']
-            , ['txtBuyerno', 'lblBuyer', 'cust', 'noa,comp,zip_invo,addr_invo', '0txtBuyerno,txtBuyer,txtZip,txtAddress', 'cust_b.aspx']
+            , ['txtCustno', 'lblCust', 'cust', 'noa,comp,nick,zip_invo,addr_invo,noa,comp,serial', 'txtCustno,txtComp,txtNick,txtZip,txtAddress,txtBuyerno,txtBuyer,txtSerial', 'cust_b.aspx']
+            , ['txtBuyerno', 'lblBuyer', 'cust', 'noa,comp,zip_invo,addr_invo,serial', 'txtBuyerno,txtBuyer,txtZip,txtAddress,txtSerial', 'cust_b.aspx']
             , ['txtProductno_', 'btnProductno_', 'ucca', 'noa,product,unit', 'txtProductno_,txtProduct_,txtUnit_', 'ucca_b.aspx']);
             q_xchg = 1;
             brwCount2 = 20;
@@ -158,7 +158,7 @@
                     case 'vccar':
                         var as = _q_appendData("vccar", "", true);
                         if (as[0] == undefined) {
-                            alert("請檢查發票日期及公司有無設定，或發票已輸入。");
+                            alert("1.請檢查【發票主檔】設定。\n2.發票已輸入。");
                         } else {
                             //3聯須輸入統編
                             if (as[0].rev == '3' && $('#cmbTaxtype').val() != '6' && checkId($('#txtSerial').val()) != 2) {
@@ -712,24 +712,23 @@
 						</td>
 					</tr>
 					<tr>
-						<td><span> </span><a id='lblSerial' class="lbl"> </a></td>
-						<td>
-						<input id="txtSerial" type="text" class="txt c1"/>
+						<td><span> </span><a id="lblCust" class="lbl btn"> </a></td>
+						<td colspan="3">
+							<input id="txtCustno" type="text" style="float:left; width:30%;">
+							<input id="txtComp" type="text" style="float:left; width:70%;"/>
+							<input id="txtNick" type="text"  style="display:none;"/>
 						</td>
+					</tr>
+					<tr>
 						<td><span> </span><a id='lblBuyer' class="lbl btn"> </a></td>
 						<td colspan="3">
 						<input id="txtBuyerno"  type="text"  style="float:left; width:30%;"/>
 						<input id="txtBuyer" type="text"  style="float:left; width:70%;"/>
 						</td>
+						<td><span> </span><a id='lblSerial' class="lbl"> </a></td>
+						<td><input id="txtSerial" type="text" class="txt c1"/></td>
 					</tr>
-					<tr>
-						<td><span> </span><a id="lblCust" class="lbl btn"> </a></td>
-						<td colspan="3">
-						<input id="txtCustno" type="text" style="float:left; width:30%;">
-						<input id="txtComp" type="text" style="float:left; width:70%;"/>
-						<input id="txtNick" type="text"  style="display:none;"/>
-						</td>
-					</tr>
+					
 					<tr>
 						<td><span> </span><a id='lblAddress' class="lbl"> </a></td>
 						<td colspan="5">
