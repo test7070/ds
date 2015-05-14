@@ -165,7 +165,7 @@
                 		if (as[0] != undefined){
                 			for(var i=0;i<fixout_ds.carkind.length;i++){
                 				if(fixout_ds.carkind[i].noa==as[0].carkindno){
-                					$('#img').attr('src','../image/'+fixout_ds.carkind[i].img);
+                					$('#img').attr('src',fixout_ds.carkind[i].img);
                 					t_index = i;
                 					string = '<option></option>';
                 					for(var j=0;j<fixout_ds.carkind[i].item.length;j++){
@@ -775,7 +775,7 @@
 	ondragover="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
-		<div style="width:200px;height:200px;background:gray;display:none;position: absolute;z-index: 998;">
+		<div style="background:gray;display:none;position: absolute;z-index: 998;">
 			<img id="img" style="width:100%;height:100%;">
 		</div>
 		<div style="overflow: auto;display:block;">

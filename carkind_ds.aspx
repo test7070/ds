@@ -28,7 +28,7 @@
             brwNowPage = 0;
             brwKey = 'noa';
             aPop = [];
-			brwCount2 = 10;
+			brwCount2 = 12;
 			
             $(document).ready(function() {
                 bbmKey = ['noa'];
@@ -48,21 +48,39 @@
                 $('#txtNoa').change(function(e) {
                     $(this).val($.trim($(this).val()).toUpperCase());
                     if ($(this).val().length > 0) {
-                        //if ((/^(\w+|\w+\u002D\w+)$/g).test($(this).val())) {
-                            t_where = "where=^^ noa='" + $(this).val() + "'^^";
-                            q_gt('carkind', t_where, 0, 0, 0, "checkCarkindno_change", r_accy);
-                        /*} else {
-                            Lock();
-                            alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。' + String.fromCharCode(13) + 'EX: A01、A01-001');
-                            Unlock();
-                        }*/
+                        t_where = "where=^^ noa='" + $(this).val() + "'^^";
+                        q_gt('carkind', t_where, 0, 0, 0, "checkCarkindno_change", r_accy);
                     }
                 });
-                $('input[name="img"]').click(function(){
-                	$('#img').attr('src','../image/'+$(this).attr('value'));
-                });
+                $('#btnFile').change(function(e){
+					event.stopPropagation(); 
+				    event.preventDefault();
+					file = $('#btnFile')[0].files[0];
+					if(file){
+						fr = new FileReader();
+					    fr.readAsDataURL(file);
+					    fr.onloadend = function(e){
+					    	$('#imgPic').attr('src',fr.result);
+					    	$('#btnFile').val('');
+					    	refreshImg(true);
+					    };
+					}
+				});
             }
-
+			function refreshImg(){
+				var imgwidth = $('#imgPic').width();
+                var imgheight = $('#imgPic').height();
+                $('#canvas').width(imgwidth).height(imgheight);
+                var c = document.getElementById("canvas");
+				var ctx = c.getContext("2d");		
+				c.width = imgwidth;
+				c.height = imgheight;
+				ctx.drawImage($('#imgPic')[0],0,0,imgwidth,imgheight);
+				$('#imgPic').attr('src',c.toDataURL());
+				$('#imgPic').width(imgwidth).height(imgheight);
+				$('#txtImg').val(c.toDataURL());
+			}
+			
             function q_boxClose(s2) {
                 var ret;
                 switch (b_pop) {
@@ -130,15 +148,7 @@
             function btnOk() {
                 Lock();
                 $('#txtNoa').val($.trim($('#txtNoa').val()));
-                /*if ((/^(\w+|\w+\u002D\w+)$/g).test($('#txtNoa').val())) {
-                } else {
-                    alert('編號只允許 英文(A-Z)、數字(0-9)及dash(-)。' + String.fromCharCode(13) + 'EX: A01、A01-001');
-                    Unlock();
-                    return;
-                }*/
-                for(var i=0; i<$('input[name="img"]').length;i++)
-            		if($('input[name="img"]').eq(i).prop('checked'))
-            			$('#txtImg').val($('input[name="img"]').eq(i).attr('value'));
+
                 for(var i=0;i<q_bbsCount;i++){
                 	n = q_float($('txtPosition_'+i).val());
                 	if(n<10){
@@ -176,14 +186,6 @@
             }
             function refresh(recno) {
                 _refresh(recno);
-                $('#img').removeAttr('src');
-                for(var i=0; i<$('input[name="img"]').length;i++){
-                	$('input[name="img"]').eq(i).prop('checked',false);
-                	if($('input[name="img"]').eq(i).val()==$('#txtImg').val()){
-                		$('input[name="img"]').eq(i).prop('checked',true);
-                		$('#img').attr('src','../image/'+$('#txtImg').val());
-                	}
-                }
                 refreshBbm();
             }
 
@@ -193,15 +195,15 @@
                 } else {
                     $('#txtNoa').css('color', 'green').css('background', 'RGB(237,237,237)').attr('readonly', 'readonly');
                 }
+                $('#imgPic').attr('src',$('#txtImg').val());
             }
 
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
-                if(q_cur==1 || q_cur==2){
-                	$('input[name="img"]').removeAttr('disabled');
-                }else{
-                	$('input[name="img"]').attr('disabled','disabled');
-                }
+                if(q_cur==1 || q_cur==2)
+                	$('#btnFile').removeAttr('disabled');
+                else
+                	$('#btnFile').attr('disabled','disabled');
             }
 
             function btnMinus(id) {
@@ -287,7 +289,7 @@
             }
             .dbbm {
                 float: left;
-                width: 300px;
+                width: 500px;
                 /*margin: -1px;        
                 border: 1px black solid;*/
                 border-radius: 5px;
@@ -395,7 +397,8 @@
 			</div>
 			<div class='dbbm'>
 				<table class="tbbm"  id="tbbm">
-					<tr>
+					<tr style="height:1px;">
+						<td> </td>
 						<td> </td>
 						<td> </td>
 						<td> </td>
@@ -404,51 +407,35 @@
 					</tr>
 					<tr>
 						<td><span> </span><a id='lblNoa' class="lbl"> </a></td>
-						<td colspan="2"><input id="txtNoa" type="text" class="txt c1" /></td>
+						<td colspan="3"><input id="txtNoa" type="text" class="txt c1" /></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id='lblKind' class="lbl"> </a></td>
-						<td colspan="4"><input id="txtKind" type="text" class="txt c1" /></td>
+						<td colspan="3"><input id="txtKind" type="text" class="txt c1" /></td>
 					</tr>	
 					<tr>
-						<td><input type="text" id="txtImg" style="display:none;"/></td>
+						<td><span> </span><a id='lblImgpci' class="lbl"> </a></td>
+						<td colspan="3" rowspan="9">
+							<img id="imgPic" src=""/>
+							<canvas id="canvas" style="display:none"> </canvas>
+							<input id="txtImg"  type="text" style="display:none;" />
+						</td>
+					</tr>
+					<tr> </tr>
+					<tr> </tr>
+					<tr> </tr>
+					<tr> </tr>
+					<tr> </tr>
+					<tr> </tr>
+					<tr> </tr>
+					<tr> </tr>
+					<tr>
+						<td></td>
 						<td colspan="3">
-							<input type="radio" name="img" style="float:left;width:5%;" value="car6.png">
-							<a style="float:left;width:25%;color:black;">車-六輪</a>
+							<input type="file" id="btnFile" value="上傳"/>
 						</td>
-					</tr>
-					<tr>
-						<td> </td>
-						<td colspan="3">	
-							<input type="radio" name="img" style="float:left;width:5%;" value="car8.png">
-							<a style="float:left;width:25%;color:black;">車-八輪</a>
-						</td>
-					</tr>
-					<tr>
-						<td> </td>
-						<td colspan="3">	
-							<input type="radio" name="img" style="float:left;width:5%;" value="car10.png">
-							<a style="float:left;width:25%;color:black;">車-十輪</a>
-						</td>
-					</tr>
-					<tr>
-						<td> </td>
-						<td colspan="3">
-							<input type="radio" name="img" style="float:left;width:5%;" value="ben8.png">
-							<a style="float:left;width:25%;color:black;">板-八輪</a>
-						</td>
-					</tr>
-					<tr>
-						<td> </td>
-						<td colspan="3">
-							<input type="radio" name="img" style="float:left;width:5%;" value="ben10.png">
-							<a style="float:left;width:25%;color:black;">板-十輪</a>	
-						</td>	
 					</tr>
 				</table>
-			</div>
-			<div style="width:200px;height:200px;float:left;background:gray;">
-				<img id="img" style="width:100%;height:100%;">
 			</div>
 		</div>
 		<div class='dbbs'>
