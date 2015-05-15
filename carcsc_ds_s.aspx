@@ -19,7 +19,8 @@
 				,['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno', 'driver_b.aspx']
 				,['txtCustno', 'lblCustno', 'cust', 'noa,comp', 'txtCustno', 'cust_b.aspx']
 				,['txtCardealno', 'lblCardealno', 'acomp', 'noa,acomp', 'txtCardealno', 'acomp_b.aspx']
-				,['txtTggno', 'lblTggno', 'tgg', 'noa,comp', 'txtTggno', 'tgg_b.aspx']);
+				,['txtTggno', 'lblTggno', 'tgg', 'noa,comp', 'txtTggno', 'tgg_b.aspx']
+				,['txtAddrno', 'lblAddrno', 'addr', 'noa,addr', 'txtAddrno', 'addr_b.aspx']);
 
 			
 			$(document).ready(function() {
@@ -79,6 +80,8 @@
 				t_cardealno = $.trim($('#txtCardealno').val());
 				t_driverno = $.trim($('#txtDriverno').val());
 				t_driver = $.trim($('#txtDriver').val());
+				t_addrno = $.trim($('#txtAddrno').val());
+				t_addr = $.trim($('#txtAddr').val());
 				
 				var t_where = " 1=1 " 
 				+ q_sqlPara2("calctype", t_calctype) 
@@ -91,7 +94,9 @@
 				+ q_sqlPara2("custno", t_custno)
 				+ q_sqlPara2("tggno", t_tggno)
 				+ q_sqlPara2("cardealno", t_cardealno)
-				+ q_sqlPara2("driverno", t_driverno);
+				+ q_sqlPara2("driverno", t_driverno)
+				+ q_sqlPara2("addrno", t_addrno);
+				
 				if (t_driver.length>0)
                     t_where += " and charindex('" + t_driver + "',driver)>0";
 				if (t_carno.length>0)
@@ -102,7 +107,8 @@
                 	t_where += " and len(isnull(tranno,''))>0";
                 if(t_tran=='N')
                 	t_where += " and len(isnull(tranno,''))=0";
-         
+         		if (t_addr.length>0)
+                    t_where += " and charindex('" + t_addr + "',addr)>0";
 				t_where = ' where=^^' + t_where + '^^ ';
 				return t_where;
 			}
@@ -191,6 +197,14 @@
 					<td class='seek'  style="width:20%;"><a id='lblCardealno'> </a></td>
 					<td><input class="txt" id="txtCardealno" type="text" style="width:215px; font-size:medium;" /></td>
 				</tr>
+				<tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblAddrno'> </a></td>
+                    <td><input class="txt" id="txtAddrno" type="text" style="width:215px; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblAddr'> </a></td>
+                    <td><input class="txt" id="txtAddr" type="text" style="width:215px; font-size:medium;" /></td>
+                </tr>
 			</table>
 			<!--#include file="../inc/seek_ctrl.inc"-->
 		</div>
