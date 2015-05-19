@@ -99,7 +99,7 @@
                         Lock(1, {
                             opacity : 0
                         });
-                        q_func('tre.import', r_accy + ',' + $('#cmbCarteamno').val() + ',' + $('#txtBdate').val() + ',' + $('#txtEdate').val() + ',' + $('#txtDate2').val() + ',' + r_name);
+                        q_func('tre.import_ds', r_accy + ',' + $('#cmbCarteamno').val() + ',' + $('#txtBdate').val() + ',' + $('#txtEdate').val() + ',' + $('#txtDate2').val() + ',' + r_name);
                     }
                 });
                 $("#btnCarchg").click(function(e) {
@@ -158,7 +158,7 @@
 		            		return;
 		            	}
 						Lock(1,{opacity:0});
-	                	q_func('tre.import',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name+','+$('#txtDriverno_import').val());
+	                	q_func('tre.import_ds',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name+','+$('#txtDriverno_import').val());
                 	}
                 });
                 $('#txtDatea_import').keydown(function(e) {
@@ -180,7 +180,7 @@
 
             function q_funcPost(t_func, result) {
                 switch(t_func) {
-                    case 'tre.import':
+                    case 'tre.import_ds':
                         if (result.length == 0) {
                             alert('No data!');
                             Unlock(1);
