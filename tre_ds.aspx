@@ -90,7 +90,7 @@
                 $('#txtMinusmoney').change(function(e) {
                     sum();
                 });
-                $('#btnTrans').click(function(e) {
+                /*$('#btnTrans').click(function(e) {
                     if (q_cur != 1 && q_cur != 2) {
                         if (r_accy.substring(0, 3) != $('#txtDate2').val().substring(0, 3)) {
                             alert('年度異常!');
@@ -101,7 +101,7 @@
                         });
                         q_func('tre.import_ds', r_accy + ',' + $('#cmbCarteamno').val() + ',' + $('#txtBdate').val() + ',' + $('#txtEdate').val() + ',' + $('#txtDate2').val() + ',' + r_name);
                     }
-                });
+                });*/
                 $("#btnCarchg").click(function(e) {
                 	Lock(1,{opacity:0});
                 	/*if ($('#txtCarno').val().length == 0) {

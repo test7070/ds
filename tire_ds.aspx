@@ -149,7 +149,7 @@
                 		if (as[0] != undefined){
                 			for(var i=0;i<tire_ds.carkind.length;i++){
                 				if(tire_ds.carkind[i].noa==as[0].carkindno){
-                					$('#img').attr('src','../image/'+tire_ds.carkind[i].img);
+                					$('#img').attr('src',tire_ds.carkind[i].img);
                 					t_index = i;
                 					string = '<option></option>';
                 					for(var j=0;j<tire_ds.carkind[i].item.length;j++){
