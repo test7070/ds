@@ -70,8 +70,13 @@
                 });
                 $('#btnConn').click(function() {
                     t_where = "noa='" + $('#txtNoa').val() + "'";
-                    q_box("conn_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "95%", "650px", q_getMsg('btnConn'));
+                    q_box("conn_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "95%", "85%", q_getMsg('btnConn'));
                 });
+                $('#btnHistory').click(function() {
+                    t_where = "noa='" + $('#txtNoa').val() + "'";
+                    q_box("history_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'history', "95%", "85%", q_getMsg('btnHistory'));
+                });
+                
                 $('#btnDetail').click(function() {
                     t_where = "noa='" + $('#txtNoa').val() + "'";
                     q_box("custdetail_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'custdetail', "95%", "650px", q_getMsg('btnDetail'));
@@ -452,7 +457,10 @@
 						<td><span> </span><a id="lblSerial" class="lbl"> </a></td>
 						<td><input id="txtSerial"  type="text"  class="txt c1"/></td>
 						<td><span> </span><a id="lblTypea" class="lbl" style="display:none;"> </a></td>
-						<td><select id="cmbTypea"  class="txt c1" style="display:none;"> </select></td>
+						<td>
+							<input type="button" id="btnHistory" value="歷史報價"/>
+							<select id="cmbTypea"  class="txt c1" style="display:none;"> </select>
+						</td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblComp" class="lbl"> </a></td>
