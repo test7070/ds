@@ -103,6 +103,14 @@
                         dbf : 'driver',
                         index : 'noa,namea',
                         src : 'driver_b.aspx'
+                    }, {/*11-[17]-pay*/
+                        type : '8',
+                        name : 'xpay',
+                        value : ('pay@已立帳,unpay@未立帳').split(',')
+                    }, {/*12-[18]-pay*/
+                        type : '8',
+                        name : 'xpay',
+                        value : ('pay@已付款,unpay@未付款').split(',')
                     }]
                 });
                 $('#txtXdate1').mask('999/99/99');
