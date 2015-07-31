@@ -381,11 +381,15 @@
             }
 
             function btnPrint() {
-            	var t_aspx = r_comp.indexOf('金勇')>=0?'z_trd_at.aspx':'z_trd_ds.aspx';
-            	var t_noa = $('#txtNoa').val()
-                if(t_noa.length>0 ){
-                    q_box(t_aspx+"?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
-                }
+            	if (q_getPara('sys.project') == 'va') {
+					q_box('z_trd_va.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+			  	}else{
+	            	var t_aspx = r_comp.indexOf('金勇')>=0?'z_trd_at.aspx':'z_trd_ds.aspx';
+	            	var t_noa = $('#txtNoa').val()
+	                if(t_noa.length>0 ){
+	                    q_box(t_aspx+"?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
+	                }
+               }
               //  q_box('z_trd_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
             }
 

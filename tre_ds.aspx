@@ -350,7 +350,12 @@
             }
 
             function btnPrint() {
-                q_box('z_tre_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+            	if (q_getPara('sys.project') == 'va') {
+					q_box('z_tre_va.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+			  	}	
+			  	else{
+                	q_box('z_tre_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+               }
             }
 
             function wrServer(key_value) {
