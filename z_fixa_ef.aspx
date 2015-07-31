@@ -34,19 +34,22 @@
                         name : 'noa'
                     }]
                 });
-                q_popAssign();
+                
+				q_popAssign();
 				q_getFormat();
 				q_langShow();
-
 				
 				$('#txtMon1').mask('999/99');
 				$('#txtMon2').mask('999/99');
-			
+				
+				
 				$('#txtDate1').mask('999/99/99');
                 $('#txtDate1').datepicker();
                 $('#txtDate2').mask('999/99/99');
                 $('#txtDate2').datepicker();
                                
+                $('#txtDate1').val(q_date());
+				$('#txtDate2').val(q_date());             
 				
 	
 						
