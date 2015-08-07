@@ -41,7 +41,7 @@
             , ['txtDacc1', 'lblDacc', 'acc', 'acc1,acc2', 'txtDacc1,txtDacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
             , ['txtEacc1', 'lblEacc', 'acc', 'acc1,acc2', 'txtEacc1,txtEacc2',  "acc_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; ;" + r_accy+ '_' + r_cno]
             , ['txtCarplateno', 'lblCarplateno', 'carplate', 'noa,carplate,driver', 'txtCarplateno', 'carplate_b.aspx']
-            , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,unit,inprice', 'txtProductno_,txtProduct_,txtTypea_,txtUnit_,txtPrice_', 'fixucc_b.aspx']);
+            , ['txtProductno_', 'btnProductno_', 'fixucc', 'noa,namea,typea,unit,inprice', 'txtProductno_,txtProduct_,cmbTypea_,txtUnit_,txtPrice_', 'fixucc_b.aspx']);
             q_desc = 1;
 
             function currentData() {
@@ -103,6 +103,8 @@
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm], ['txtFixadate', r_picd]];
                 q_mask(bbmMask);
+                q_cmbParse("cmbTypea", '工資,輪胎,材料,費用','s');
+                
                 $('#txtTax').change(function() {
                     sum();
                 });
@@ -253,6 +255,9 @@
                         $('#txtPrice_' + i).change(function(e) {
                             sum();
                         });
+                        $('#cmbTypea_' + i).change(function(e) {
+                            sum();
+                        });
                     }
                 }
                 _bbsAssign();
@@ -326,7 +331,7 @@
                 for (var i = 0; i < q_bbsCount; i++) {
                     t_money = q_float('txtMount_' + i).mul(q_float('txtPrice_' + i)).round(0);
                     $('#txtMoney_' + i).val(FormatNumber(t_money));
-                    switch($('#txtTypea_' + i).val()) {
+                    switch($('#cmbTypea_' + i).val()) {
                         case '工資':
                             t_wmoney = t_wmoney.add(t_money);
                             break;
@@ -870,7 +875,8 @@
 					<input id="txtMoney.*" type="text"  style="width:95%;text-align:right;"/>
 					</td>
 					<td>
-					<input id="txtTypea.*" type="text" style="width:95%;"/>
+						<!--<input id="txtTypea.*" type="text" style="width:95%;"/>-->
+						<select id="cmbTypea.*" style="width:95%;"> </select>
 					</td>
 					<td>
 					<input id="txtMemo.*" type="text" style="width:95%;"/>
