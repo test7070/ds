@@ -52,6 +52,12 @@
                     }, {/*6 [9]*/
                         type : '6',
                         name : 'xboatno'
+                    }, {/*7 [10],[11]*/
+                        type : '2',
+                        name : 'xdriver',
+                        dbf : 'driver',
+                        index : 'noa,namea',
+                        src : 'driver_b.aspx'
                     }]
                 });
                 q_popAssign();
