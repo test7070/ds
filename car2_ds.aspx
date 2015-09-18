@@ -118,7 +118,7 @@
 					q_box("carsalary.aspx?;;;noa='" + $('#txtNoa').val() + "'", 'carsalary', "95%", "95%", q_getMsg("popCarsalary"));
 				});
 				$('#btnCarinsurance').click(function(e) {
-					q_box("carinsure.aspx?;;;noa='" + $('#txtNoa').val() + "'", 'carinsure', "95%", "95%", q_getMsg("popCarinsure"));
+					q_box("carinsure_ds.aspx?;;;noa='" + $('#txtNoa').val() + "'", 'carinsure', "95%", "95%", q_getMsg("popCarinsure"));
 				});
 				$('#btnCarlender').click(function(e) {
 					q_box("carlender.aspx?;;;noa='" + $('#txtCarownerno').val() + "'", 'carlender', "95%", "95%", q_getMsg("popCarlender"));
