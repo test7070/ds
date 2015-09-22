@@ -63,10 +63,10 @@
                 q_gt('calctype2', '', 0, 0, 0, "calctypes");
 
                 $("#cmbCalctype").focus(function() {
-                    var len = $(this).children().length > 0 ? $(this).children().length : 1;
-                    $(this).attr('size', len + "");
+                    //var len = $(this).children().length > 0 ? $(this).children().length : 1;
+                    //$(this).attr('size', len + "");
                 }).blur(function() {
-                    $(this).attr('size', '1');
+                    //$(this).attr('size', '1');
                 }).change(function() {
                     $('#txtDiscount').val(tmp_discount[$(this).get(0).selectedIndex]);
                     getOutPrice();
