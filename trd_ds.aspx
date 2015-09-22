@@ -20,7 +20,7 @@
             }
             q_tables = 's';
             var q_name = "trd";
-            var q_readonly = ['txtTax', 'txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount', 'txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
+            var q_readonly = ['txtTax', 'txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount','txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
             var q_readonlys = ['txtTranno', 'txtTrannoq','txtTrandate','txtStraddr','txtProduct','txtCarno','txtCustorde','txtCaseno','txtMount','txtPrice','txtCustdiscount','txtTotal','txtTranmoney'];
             var bbmNum = [['txtMoney', 10, 0,1], ['txtTax', 10, 0,1], ['txtTotal', 10, 0,1], ['txtMount', 10, 3,1], ['txtPlusmoney', 10, 0,1], ['txtMinusmoney', 10, 0,1]];
             var bbsNum = [['txtTranmoney', 10, 0,1], ['txtOverweightcost', 10, 0,1], ['txtOthercost', 10, 0,1], ['txtMount', 10, 3,1], ['txtPrice', 10, 3,1], ['txtTotal', 10, 0,1]];
@@ -59,6 +59,9 @@
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtBtrandate', r_picd], ['txtEtrandate', r_picd], ['txtVccadate', r_picd]];
                 q_mask(bbmMask);
+                
+                $('#lblTrtype').text('保留%');
+                
 				$('#txtBdate').datepicker();
 				$('#txtEdate').datepicker();
 				$('#txtBtrandate').datepicker();
@@ -145,6 +148,12 @@
                     t_where = "  buyerno='" + $('#txtCustno').val() + "' and (trdno='" + $('#txtNoa').val() + "' or len(isnull(trdno,''))=0) ";
                     q_box("vcca_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_vccano + ";", 'vcca1', "95%", "650px", q_getMsg('popVcca'));
                 });
+                
+                if(q_getPara('sys.project').toUpperCase()!="VA"){
+                	$('#lblTrtype').hide();
+                	$('#txtTrtype').hide();
+                }
+					
             }
 
             function q_gtPost(t_name) {
@@ -443,6 +452,7 @@
                     $('#btnCustchg').attr('disabled', 'disabled');
                     $('#btnVcca').attr('disabled', 'disabled');
                 }
+                
             }
 
             function btnMinus(id) {
@@ -819,8 +829,8 @@
 					<tr>
 						<td><span> </span><a id="lblMount" class="lbl"> </a></td>
 						<td><input id="txtMount" type="text"  class="txt c1 num"/></td>
-						<td> </td>
-						<td> </td>
+						<td><span> </span><a id="lblTrtype" class="lbl"> </a></td>
+						<td><input id="txtTrtype" type="text"  class="txt c1 num"/></td>
 						<td> </td>
 						<td> </td>
 						<td><span> </span><a id="lblTotal" class="lbl"> </a></td>
