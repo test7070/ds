@@ -663,7 +663,7 @@
                 margin: -1px;
             }
             .dbbs {
-                width: 1200px;
+                width: 1400px;
             }
             .tbbs a {
                 font-size: medium;
@@ -862,7 +862,7 @@
 					<input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  />
 					</td>
 					<td align="center" style="width:20px;"> </td>
-					<td align="center" style="width:100px;"><a id='lblTrandate_s'> </a></td>
+					<td align="center" style="width:120px;"><a id='lblTrandate_s'> </a></td>
 					<td align="center" style="width:200px;"><a id='lblStraddr_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblProduct_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblMount_s'> </a></td>
