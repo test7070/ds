@@ -685,7 +685,7 @@
 					<td align="center" style="width:80px;"><a id='lblAction_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblEtireno_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblPrice_s'> </a></td>
-					<td align="center" style="width:200px;"><a id='lblMemo_s'> </a></td>
+					<td align="center" style="width:400px;"><a id='lblMemo_s'> </a></td>
 				</tr>
 				<tr style='background:#cad3ff;'>
 					<td align="center">
