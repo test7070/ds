@@ -253,6 +253,14 @@
 					alert(t_err);
 					return;
 				}
+				if(q_getPara('sys.project').toUpperCase()=='KD' || q_getPara('sys.project').toUpperCase()=='VA'){
+					//一定要輸入會計科目
+					if($('#txtAcc1').val().length==0){
+						alert('請輸入會計科目。');
+						return;						
+					}
+				}
+				
 				sum();
 				var t_noa = trim($('#txtNoa').val());
 				var t_date = trim($('#txtDatea').val());
