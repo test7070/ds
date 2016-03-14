@@ -29,6 +29,7 @@
 			brwNowPage = 0;
 			brwKey = 'noa';
 			q_desc = 1;
+			q_copy = 1;
 			//ajaxPath = ""; //  execute in Root
 			aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
 			, ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
@@ -221,11 +222,14 @@
 			}
 
 			function btnIns() {
-				curData.copy();
+				//curData.copy();
                 _btnIns();
-                curData.paste();
+                //curData.paste();
 				$('#txtNoa').val('AUTO');
 				$('#txtDatea').focus();
+				$('#txtTreno').val('');//複製時排除
+				$('#txtAccno').val('');//複製時排除
+				
 			}
 
 			function btnModi() {

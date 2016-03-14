@@ -28,6 +28,7 @@
             brwNowPage = 0;
             brwKey = 'noa';
             q_desc = 1;
+            q_copy = 1;
             aPop = new Array(['txtCustno', 'lblCust', 'cust', 'noa,comp', 'txtCustno,txtComp', 'cust_b.aspx']
             , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx']
             , ['txtCustno2', 'lblCust2', 'cust', 'noa,comp', 'txtCustno2,txtCust2', 'cust_b.aspx']
@@ -141,6 +142,7 @@
                 $('#txtNoa').val('AUTO');
                 $('#txtDatea').val(q_date());
                 $('#txtDatea').focus();
+                $('#txtTrdno').val('');//複製時排除
             }
             function btnModi() {
                 if (emp($('#txtNoa').val()))
