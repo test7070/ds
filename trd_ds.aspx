@@ -913,7 +913,7 @@
 					<td ><input type="text" id="txtCaseno2.*" style="width:95%;" /></td>
 					<td >
 					   <input type="text" id="txtTranno.*" style="float:left; width: 95%;"/>
-						<input type="text" id="txtTrannoq.*" style="float:left;visibility: hidden; width:1%"/>
+						<input type="text" id="txtTrannoq.*" style="float:left;display:none; width:1%"/>
 						<input type="text" id="txtTranaccy.*" style="float:left;visibility: hidden; width:1%"/>
 					</td>
 					<td >
