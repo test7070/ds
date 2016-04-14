@@ -1,0 +1,160 @@
+zxls_csc_ds:--zxls_csc_ds
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @workerno nvarchar(20)
+	declare @worker nvarchar(20)
+	
+	set @workerno=[1]
+	set @worker=[2]
+	
+	declare @a nvarchar(max)
+	declare @b nvarchar(max)
+	declare @c nvarchar(max)
+	declare @d nvarchar(max)
+	declare @e nvarchar(max)
+	declare @f nvarchar(max)
+	declare @g nvarchar(max)
+	declare @h nvarchar(max)
+	declare @i nvarchar(max)
+	declare @j nvarchar(max)
+	declare @k nvarchar(max)
+	declare @l nvarchar(max)
+	declare @m nvarchar(max)
+	declare @n nvarchar(max)
+	declare @o nvarchar(max)
+	declare @p nvarchar(max)
+	declare @q nvarchar(max)
+	declare @r nvarchar(max)
+	declare @s nvarchar(max)
+	declare @t nvarchar(max)
+	----------------------------------------------------------------------
+	declare @tmp table(
+		pno int,
+		noa nvarchar(20),
+		datea nvarchar(10),
+		trandate nvarchar(10),
+		mon nvarchar(10),
+		shipno nvarchar(20),
+		custno nvarchar(20),
+		straddrno nvarchar(20),
+		uccno nvarchar(20),
+		carno nvarchar(20),
+		calctype nvarchar(20),
+		[weight] float,
+		inmount float,
+		inprice float,
+		inmoney float,
+		outmount float,
+		outprice float,
+		discount float,
+		outmoney float,
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		cardealno nvarchar(20),
+		cardeal nvarchar(50),
+		memo nvarchar(max)
+	)
+	----------------------------------------------------------------------
+	declare @t_date nvarchar(max)
+	declare @count int
+	set @count = 1
+	declare cursor_table cursor for
+	select a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t from ztmpxls order by cast(isnull(noa,'') as int)
+	open cursor_table
+	fetch next from cursor_table
+	into @a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m,@n,@o,@p,@q,@r,@s,@t
+	while(@@FETCH_STATUS <> -1)
+	begin	
+		begin try
+			if(LEN(ISNULL(@a,''))>0)
+			begin
+				set @s = replace(@s,',','')
+				--登錄日期若異常則不寫入
+				set @t_date = cast(CAST(SUBSTRING(@a,1,3) as int)+1911 as nvarchar) +SUBSTRING(@a,4,6)
+				if(isdate(@t_date)=1)
+				begin
+					insert into @tmp(pno,datea,trandate,mon,shipno,custno,straddrno,uccno,carno,calctype
+					,[weight]
+					,inmount,inprice,inmoney
+					,outmount,outprice,discount,outmoney
+					,tgg,cardeal,memo)
+					values(@count,@a,@b,@c,@d,@e,@f,@g,replace(@h,' ',''),@i
+					,cast(replace(@j,',','') as float)
+					,cast(replace(@k,',','') as float)/1000,cast(replace(@l,',','') as float)
+					,round(cast(replace(@k,',','') as float)/1000*cast(replace(@l,',','') as float),0)
+					,cast(replace(@n,',','') as float)/1000,cast(replace(@o,',','') as float),cast(replace(@p,',','') as float)
+					,round(cast(replace(@n,',','') as float)/1000*cast(replace(@o,',','') as float)*cast(replace(@p,',','') as float),0)
+					,@r,@s,@t)			
+					set @count = @count + 1
+				end
+			end
+		end try
+		begin catch
+		
+		end catch
+		fetch next from cursor_table
+		into @a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m,@n,@o,@p,@q,@r,@s,@t
+	end
+	close cursor_table
+	deallocate cursor_table
+	----------------------------------------------------------------------	
+	declare @pno int
+	declare @datea nvarchar(10)
+	declare @curMaxNoa nvarchar(20)
+	declare @noa nvarchar(20)
+	declare @noq nvarchar(10)
+	declare @string nvarchar(max)
+	set @string = '0123456789ABCDEFGHIJKLMN'
+	declare @num int
+	
+	declare cursor_table cursor for
+	select pno,datea from @tmp
+	open cursor_table
+	fetch next from cursor_table
+	into @pno,@datea
+	while(@@FETCH_STATUS <> -1)
+	begin	
+		select @noa = MAX(noa) 
+		from(select noa from carcsc where LEFT(noa,9)='BM'+replace(@datea,'/','')
+		union all
+		select noa from @tmp where LEFT(noa,9)='BM'+replace(@datea,'/','')) as a
+		if(LEN(ISNULL(@noa,''))=0)
+		begin
+			set @noq='001'
+		end
+		else
+		begin
+			set @noq = right(@noa,3)
+			if(right(@noq,2)='99')
+			begin
+				set @noq = Substring(@string,Charindex(LEFT(@noq,1),@string)+1,1)+'00'
+			end
+			else
+			begin
+				set @noq = LEFT(@noq,1) + right('00'+CAST(CAST(right(@noq,2) as int)+1 as nvarchar),2)
+			end
+		end
+		update @tmp set noa='BM'+replace(@datea,'/','')+@noq where pno=@pno
+		fetch next from cursor_table
+		into @pno,@datea
+	end
+	close cursor_table
+	deallocate cursor_table
+
+	insert into carcsc (worker,noa,datea,trandate,mon,carno,driverno,driver,addrno,addr
+	,calctype,discount,[weight],inprice,inmount,inmoney,outprice,outmount,outmoney
+	,boatno,custno,comp,nick,uccno,product,tggno,tgg,cardealno,cardeal,memo,qtime)
+	select @worker,a.noa,a.datea,a.trandate,a.mon
+	,a.carno,b.driverno,c.namea,a.straddrno,d.addr
+	,a.calctype,a.discount,a.[weight] 
+	,a.inprice,a.inmount,a.inmoney,a.outprice,a.outmount,a.outmoney
+	,a.shipno,a.custno,e.comp,e.nick,a.uccno,f.product
+	,g.noa,g.comp,h.noa,h.acomp,a.memo,convert(nvarchar,getDate(),120)
+	from @tmp a
+	left join car2 b on a.carno=b.carno
+	left join driver c on b.driverno=c.noa	
+	left join addr d on a.straddrno=d.noa
+	left join cust e on a.custno=e.noa
+	left join ucc f on a.uccno=f.noa
+	outer apply (select top(1) b.noa,b.comp from tgg b where len(a.tgg)>0 and b.nick=ltrim(rtrim(a.tgg))) g 
+	outer apply (select top(1) b.noa,b.acomp from acomp b where len(a.cardeal)>0 and b.nick=ltrim(rtrim(a.cardeal))) h;

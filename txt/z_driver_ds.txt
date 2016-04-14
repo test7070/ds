@@ -1,0 +1,29 @@
+z_driver_ds01:--z_driver_ds01	
+	SET QUOTED_IDENTIFIER OFF
+	declare @t_bdriverno nvarchar(20) = case when '#non'=[1] then '' else [1] end
+	declare @t_edriverno nvarchar(20) = case when '#non'=[2] then char(255) else [2] end
+	declare @t_isout nvarchar(20) = case when '#non'=[3] then '' else [3] end
+	----------------------------------------------------------------------------------------
+	declare @tmp table(
+		gno nvarchar(10),
+		recno int,
+		noa nvarchar(20),
+		namea nvarchar(20),
+		tel nvarchar(max),
+		mobile nvarchar(max),
+		addr_home nvarchar(max),
+		cartype nvarchar(20),
+		memo nvarchar(max)
+	)
+	insert into @tmp(gno,recno,noa,namea,tel,mobile,addr_home,cartype,memo)
+	select case when len(isnull(leaveofficedate,''))=0 then '1' else '2' end
+		,ROW_NUMBER()over(order by noa)
+		,noa,namea,tel,mobile,addr_home,cartype,memo
+	from driver
+	where noa between @t_bdriverno and @t_edriverno
+	and (len(@t_isout)=0 or (@t_isout='Y' and len(leaveofficedate)=0) or (@t_isout='N' and len(leaveofficedate)>0))
+
+	select  "driver_ds?noa=\'"+noa+"\' and "+cast(recno as nvarchar)+"=$rr?" ghref
+		,recno rr
+		,* 
+	from @tmp order by noa;
