@@ -38,12 +38,12 @@
                 
                 //判斷舊車牌
                 if(q_content!="" && q_getId()[3].substr(0,6)=="a.noa="){
-                	t_oldnoa=replaceAll(q_getId()[3],'a.noa','a.oldnoa')
+                	t_oldnoa=replaceAll(q_getId()[3],'a.noa','a.oldnoa');
                 	t_where =" where=^^ "+q_getId()[3]+" or "+t_oldnoa+"^^ ";
                 	q_content=t_where;
                 }
                 
-                q_gt(q_name, q_content, q_sqlCount, 1)
+                q_gt(q_name, q_content, q_sqlCount, 1);
 
             });
             function main() {
