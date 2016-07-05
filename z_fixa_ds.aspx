@@ -72,12 +72,15 @@
                     }, {/*8 [13]*/
                         type : '6',
                         name : 'xproduct'
-                    }, {/*2 [14][15]*/
+                    }, {/*9 [14][15]*/
                         type : '2',
                         name : 'driver',
                         dbf : 'driver',
                         index : 'noa,namea',
                         src : 'driver_b.aspx'
+                    }, {/*10 [16]*/
+                        type : '6',
+                        name : 'xdate'
                     }]
                 });
                 q_popAssign();
@@ -88,6 +91,9 @@
                 $('#txtDate2').mask('999/99/99');
                 $('#txtDate2').datepicker();
                 $('#chkXoption01').children('input').attr('checked', 'checked');
+                $('#txtXdate').mask('999/99/99');
+                $('#txtXdate').datepicker();
+                $('#txtXdate').val(q_date());
                 
                 $('#txtXmoney').css('text-align','right').keydown(function(e) {
                 	//alert(e.which);

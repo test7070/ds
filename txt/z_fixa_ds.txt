@@ -1,3 +1,74 @@
+z_fixa_ds08:--z_fixa_ds08
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_bproductno nvarchar(20) = case when '#non'=[11] then '' else [11] end
+	declare @t_eproductno nvarchar(20) = case when '#non'=[12] then CHAR(255) else [12] end
+	declare @t_bdate nvarchar(20) = case when '#non'=[16] then '' else [16] end
+---------------------------------------------------------------------------------
+	declare @tmp table(
+		sel int identity(1,1)
+		,productno nvarchar(20)
+		,datea nvarchar(20)
+		,mount float
+	)
+	/*
+	FIXA是用廠商的料,  FIXOUT才是用自己的
+	insert into @tmp(productno,datea,mount)
+	select a.productno,b.datea,-1*a.mount
+	from fixas a
+	left join fixa b on a.noa=b.noa
+	where b.datea<=@t_bdate
+	and a.productno between @t_bproductno and @t_eproductno
+	and len(a.productno)>0
+	*/
+	insert into @tmp(productno,datea,mount)
+	select a.productno,b.datea,a.mount
+	from fixins a
+	left join fixin b on a.noa=b.noa
+	where b.datea<=@t_bdate
+	and a.productno between @t_bproductno and @t_eproductno
+	and len(a.productno)>0
+	
+	insert into @tmp(productno,datea,mount)
+	select a.productno,b.datea,-1*a.mount
+	from fixouts a
+	left join fixout b on a.noa=b.noa
+	where b.datea<=@t_bdate
+	and a.productno between @t_bproductno and @t_eproductno
+	and len(a.productno)>0
+	
+	delete @tmp 
+	from @tmp a
+	left join fixucc b on a.productno=b.noa
+	where b.noa is not null 
+	and a.datea<=isnull(b.begindate,'')
+	
+	insert into @tmp(productno,datea,mount)
+	select noa,isnull(begindate,''),ISNULL(beginmount,0)
+	from fixucc
+	where ISNULL(beginmount,0)!=0
+	------------------------------------------------------------------------------
+	declare @tmpa table(
+		sel int identity(1,1)
+		,gno nvarchar(10)
+		,productno nvarchar(20)
+		,product nvarchar(max)
+		,mount float
+	)
+	insert into @tmpa(gno,productno,mount)
+	select '1',productno,sum(ISNULL(mount,0)) mount from @tmp group by productno
+	
+	update @tmpa set product=ISNULL(b.namea,'')
+	from @tmpa a
+	left join fixucc b on a.productno=b.noa
+	
+	select gno 
+		,sel rr
+		,productno a01
+		,product a02
+		,dbo.getComma(mount,-1) a03
+	from @tmpa;
+
 z_fixa_ds07:--z_fixa_ds07
 	SET QUOTED_IDENTIFIER OFF
 	declare @cmd nvarchar(max)
