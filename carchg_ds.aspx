@@ -173,7 +173,8 @@
 						q_cmbParse("cmbCarteamno", t_item);
 						if(abbm[q_recno]!=undefined)
 							$("#cmbCarteamno").val(abbm[q_recno].carteamno);
-						q_gridv('tview', browHtm, fbrow, abbm, aindex, brwNowPage, brwCount);
+						//q_gridv('tview', browHtm, fbrow, abbm, aindex, brwNowPage, brwCount);
+						q_gridv('tview', browHtm, fbrow, abbm, brwNowPage, brwCount);
 						break;
 					case q_name:
 						if (q_cur == 4)
@@ -484,8 +485,9 @@
 				<table class="tview" id="tview">
 					<tr>
 						<td align="center" style="width:20px; color:black;"><a id='vewChk'> </a></td>
-						<td align="center" style="width:80px; color:black;"><a id='vewCarteam'> </a></td>
 						<td align="center" style="width:100px; color:black;"><a id='vewDatea'> </a></td>
+						<td align="center" style="width:100px; color:black; display:none;"><a id='vewNoa'> </a></td>
+						<td align="center" style="width:80px; color:black;"><a id='vewCarteam'> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id='vewCarno'> </a></td>
 						<td align="center" style="width:140px; color:black;"><a id='vewDriver'> </a></td>
 						<td align="center" style="width:250px; color:black;"><a id='vewItem'> </a></td>
@@ -495,8 +497,9 @@
 					</tr>
 					<tr>
 						<td ><input id="chkBrow.*" type="checkbox" /></td>
-						<td id="carteamno=cmbCarteamno" style="text-align: center;">~carteamno=cmbCarteamno</td>
 						<td id="datea" style="text-align: center;">~datea</td>
+						<td id="noa" style="text-align: center;display:none;">~noa</td>
+						<td id="carteamno=cmbCarteamno" style="text-align: center;">~carteamno=cmbCarteamno</td>
 						<td id="carno" style="text-align: center;">~carno</td>
 						<td id="driver" style="text-align: left;">~driver</td>
 						<td id="minusitem plusitem" style="text-align: left;">~minusitem ~plusitem</td>
