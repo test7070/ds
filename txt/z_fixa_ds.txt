@@ -47,6 +47,12 @@ z_fixa_ds08:--z_fixa_ds08
 	select noa,isnull(begindate,''),ISNULL(beginmount,0)
 	from fixucc
 	where ISNULL(beginmount,0)!=0
+	
+	delete @tmp where mount<=0
+	delete @tmp 
+	from @tmp a
+	left join fixucc b on a.productno=b.noa
+	where b.typea='工資' or b.typea='輪胎'
 	------------------------------------------------------------------------------
 	declare @tmpa table(
 		sel int identity(1,1)
