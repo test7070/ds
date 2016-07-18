@@ -10,6 +10,8 @@ z_fixa_ds08:--z_fixa_ds08
 		,productno nvarchar(20)
 		,datea nvarchar(20)
 		,mount float
+		,unit nvarchar(20)
+		,price float
 	)
 	/*
 	FIXA是用廠商的料,  FIXOUT才是用自己的
@@ -21,16 +23,16 @@ z_fixa_ds08:--z_fixa_ds08
 	and a.productno between @t_bproductno and @t_eproductno
 	and len(a.productno)>0
 	*/
-	insert into @tmp(productno,datea,mount)
-	select a.productno,b.datea,a.mount
+	insert into @tmp(productno,datea,mount,unit,price)
+	select a.productno,b.datea,a.mount,a.unit,a.price
 	from fixins a
 	left join fixin b on a.noa=b.noa
 	where b.datea<=@t_bdate
 	and a.productno between @t_bproductno and @t_eproductno
 	and len(a.productno)>0
 	
-	insert into @tmp(productno,datea,mount)
-	select a.productno,b.datea,-1*a.mount
+	insert into @tmp(productno,datea,mount,unit,price)
+	select a.productno,b.datea,-1*a.mount,a.unit,a.price
 	from fixouts a
 	left join fixout b on a.noa=b.noa
 	where b.datea<=@t_bdate
@@ -60,20 +62,35 @@ z_fixa_ds08:--z_fixa_ds08
 		,productno nvarchar(20)
 		,product nvarchar(max)
 		,mount float
+		,unit nvarchar(20)
+		,price float
+		,total float
 	)
 	insert into @tmpa(gno,productno,mount)
 	select '1',productno,sum(ISNULL(mount,0)) mount from @tmp group by productno
 	
+	update @tmpa set unit=b.unit,price=b.price
+	from @tmpa a
+	outer apply(select top 1 * from @tmp where productno=a.productno order by datea desc) b
+	
+	update @tmpa set total=ROUND(mount*price,0)
+	
 	update @tmpa set product=ISNULL(b.namea,'')
 	from @tmpa a
 	left join fixucc b on a.productno=b.noa
+	
+	insert into @tmpa(gno,total)
+	select '2',sum(isnull(total,0)) from @tmpa
 	
 	select gno 
 		,sel rr
 		,productno a01
 		,product a02
 		,dbo.getComma(mount,-1) a03
-	from @tmpa;
+		,unit a04
+		,dbo.getComma(price,-1) a05
+		,dbo.getComma(total,-1) a06
+	from @tmpa order by sel;
 
 z_fixa_ds07:--z_fixa_ds07
 	SET QUOTED_IDENTIFIER OFF
