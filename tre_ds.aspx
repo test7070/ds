@@ -52,13 +52,13 @@
             tre.prototype = {
                 isLoad : false,
                 carchgno : new Array()
-            }
+            };
 
             $(document).ready(function() {
                 bbmKey = ['noa'];
                 bbsKey = ['noa', 'noq'];
                 q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy)
+                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
             });
             function main() {
                 if (dataErr) {
@@ -264,7 +264,7 @@
                         if (abbm[q_recno] != undefined) {
                             $("#cmbCarteamno").val(abbm[q_recno].carteamno);
                         }
-                        q_gridv('tview', browHtm, fbrow, abbm, aindex, brwNowPage, brwCount);
+                        q_gridv('tview', browHtm, fbrow, abbm, brwNowPage, brwCount);
                         break;
                     case 'carchg':
                         var as = _q_appendData("carchg", "", true);
