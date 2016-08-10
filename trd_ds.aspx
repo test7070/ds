@@ -153,7 +153,13 @@
                 	$('#lblTrtype').hide();
                 	$('#txtTrtype').hide();
                 }
-					
+				
+				//----------------------------------------------------------
+				if(q_getPara('sys.project').toUpperCase()=='DH'){
+					$('.AT').hide();
+					$('#lblMount_bs').text('數量');
+					$('#lblPrice_bs').text('單價');
+				}	
             }
 
             function q_gtPost(t_name) {
@@ -336,7 +342,7 @@
                 }else if(q_cur ==2){
                 	$('#txtWorker2').val(r_name);
                 }else{
-                	alert("error: btnok!")
+                	alert("error: btnok!");
                 }         
                 sum();
                 
@@ -372,6 +378,10 @@
                     });
                 }
                 _bbsAssign();
+                if(q_getPara('sys.project').toUpperCase()=='DH'){
+					$('#viewMount').text('數量');
+					$('#viewPrice').text('單價');
+				}	
             }
 
             function btnIns() {
@@ -394,7 +404,7 @@
 					q_box('z_trd_va.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
 			  	}else{
 	            	var t_aspx = r_comp.indexOf('金勇')>=0?'z_trd_at.aspx':'z_trd_ds.aspx';
-	            	var t_noa = $('#txtNoa').val()
+	            	var t_noa = $('#txtNoa').val();
 	                if(t_noa.length>0 ){
 	                    q_box(t_aspx+"?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
 	                }
