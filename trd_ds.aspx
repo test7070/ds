@@ -379,8 +379,7 @@
                 }
                 _bbsAssign();
                 if(q_getPara('sys.project').toUpperCase()=='DH'){
-					$('#viewMount').text('數量');
-					$('#viewPrice').text('單價');
+					$('.DH').hide();
 				}	
             }
 
@@ -881,9 +880,9 @@
 					<td align="center" style="width:80px;"><a id='lblTotal_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblCarno_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblMemo_s'> </a></td>
-					<td align="center" style="width:150px;"><a id='lblCustorde_s'> </a></td>
-					<td align="center" style="width:150px;"><a id='lblCaseno_s'> </a></td>
-					<td align="center" style="width:150px;"><a id='lblCaseno2_s'> </a></td>
+					<td align="center" style="width:150px;" class="DH"><a id='lblCustorde_s'> </a></td>
+					<td align="center" style="width:150px;" class="DH"><a id='lblCaseno_s'> </a></td>
+					<td align="center" style="width:150px;" class="DH"><a id='lblCaseno2_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblTranno_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblTranmoney_s'> </a></td>
 				</tr>
@@ -916,11 +915,11 @@
 					<td >
 					<input type="text" id="txtMemo.*" style="width:95%;" />
 					</td>
-					<td >
-					<input type="text" id="txtCustorde.*" style="width:95%;" />
+					<td class="DH">
+					<input type="text" id="txtCustorde.*" style="width:95%;"/>
 					</td>
-					<td ><input type="text" id="txtCaseno.*" style="width:95%;" /></td>
-					<td ><input type="text" id="txtCaseno2.*" style="width:95%;" /></td>
+					<td class="DH"><input type="text" id="txtCaseno.*" style="width:95%;"/></td>
+					<td class="DH"><input type="text" id="txtCaseno2.*" style="width:95%;"/></td>
 					<td >
 					   <input type="text" id="txtTranno.*" style="float:left; width: 95%;"/>
 						<input type="text" id="txtTrannoq.*" style="float:left;display:none; width:1%"/>
