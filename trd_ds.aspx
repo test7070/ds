@@ -21,7 +21,7 @@
             q_tables = 's';
             var q_name = "trd";
             var q_readonly = ['txtTax', 'txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount','txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
-            var q_readonlys = ['txtTranno', 'txtTrannoq','txtTrandate','txtStraddr','txtProduct','txtCarno','txtCustorde','txtCaseno','txtMount','txtPrice','txtCustdiscount','txtTotal','txtTranmoney'];
+            var q_readonlys = ['txtTranno', 'txtTrannoq','txtTrandate','txtStraddr','txtEndaddr','txtProduct','txtCarno','txtCustorde','txtCaseno','txtMount','txtPrice','txtCustdiscount','txtTotal','txtTranmoney'];
             var bbmNum = [['txtMoney', 10, 0,1], ['txtTax', 10, 0,1], ['txtTotal', 10, 0,1], ['txtMount', 10, 3,1], ['txtPlusmoney', 10, 0,1], ['txtMinusmoney', 10, 0,1]];
             var bbsNum = [['txtTranmoney', 10, 0,1], ['txtOverweightcost', 10, 0,1], ['txtOthercost', 10, 0,1], ['txtMount', 10, 3,1], ['txtPrice', 10, 3,1], ['txtTotal', 10, 0,1]];
             var bbmMask = [];
@@ -34,11 +34,7 @@
             q_desc = 1;
             q_xchg = 1;
             brwCount2 = 20;
-            aPop = new Array(['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
-            , ['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
-            , ['txtStraddrno', '', 'addr', 'noa,addr', 'txtStraddrno,txtStraddr', 'addr_b2.aspx']
-            , ['txtEndaddrno', '', 'addr', 'noa,addr', 'txtEndaddrno,txtEndaddr', 'addr_b2.aspx']
-            , ['txtBoatno', 'lblBoat', 'boat', 'noa,boat', 'txtBoatno,txtBoat', 'boat_b.aspx']);
+            aPop = new Array();
 
             $(document).ready(function() {
                 //q_bbsShow = -1;
@@ -56,6 +52,19 @@
             }
 
             function mainPost() {
+            	if(q_getPara('sys.project').toUpperCase()=='DH'){
+            		aPop = new Array(['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
+			            , ['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
+			            , ['txtStraddrno', '', 'addr3', 'noa,namea', 'txtStraddrno,txtStraddr', 'addr3_bs_b.aspx']
+			            , ['txtEndaddrno', '', 'addr3', 'noa,namea', 'txtEndaddrno,txtEndaddr', 'addr3_bs_b.aspx']
+			            , ['txtBoatno', 'lblBoat', 'boat', 'noa,boat', 'txtBoatno,txtBoat', 'boat_b.aspx']);
+            	}else{
+            		aPop = new Array(['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
+			            , ['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
+			            , ['txtStraddrno', '', 'addr', 'noa,addr', 'txtStraddrno,txtStraddr', 'addr_b2.aspx']
+			            , ['txtEndaddrno', '', 'addr', 'noa,addr', 'txtEndaddrno,txtEndaddr', 'addr_b2.aspx']
+			            , ['txtBoatno', 'lblBoat', 'boat', 'noa,boat', 'txtBoatno,txtBoat', 'boat_b.aspx']);
+            	}
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtBtrandate', r_picd], ['txtEtrandate', r_picd], ['txtVccadate', r_picd]];
                 q_mask(bbmMask);
@@ -110,8 +119,13 @@
                 	t_where += t_edate.length>0?" and a.datea<='"+t_edate+"'":"";
                 	t_where += t_btrandate.length>0?" and a.trandate>='"+t_btrandate+"'":"";
                 	t_where += t_etrandate.length>0?" and a.trandate<='"+t_etrandate+"'":"";
-                	t_where += t_baddrno.length>0?" and a.straddrno>='"+t_baddrno+"'":"";
-                	t_where += t_eaddrno.length>0?" and a.straddrno<='"+t_eaddrno+"'":"";
+                	if(q_getPara('sys.project').toUpperCase()=='DH'){
+                		t_where += t_baddrno.length>0?" and a.straddrno='"+t_baddrno+"'":"";
+                		t_where += t_eaddrno.length>0?" and a.endaddrno='"+t_eaddrno+"'":"";
+                	}else{
+                		t_where += t_baddrno.length>0?" and a.straddrno>='"+t_baddrno+"'":"";
+                		t_where += t_eaddrno.length>0?" and a.straddrno<='"+t_eaddrno+"'":"";
+                	}
                 	var t_po = "";
                 	if ($.trim($('#txtPo').val()).length > 0) {
                         var tmp = $.trim($('#txtPo').val()).split(',');
@@ -156,7 +170,8 @@
 				
 				//----------------------------------------------------------
 				if(q_getPara('sys.project').toUpperCase()=='DH'){
-					$('.AT').hide();
+					$('.DH_hide').hide();
+					$('.DH_show').show();
 					$('#lblMount_bs').text('數量');
 					$('#lblPrice_bs').text('單價');
 				}	
@@ -241,8 +256,8 @@
                         break;
                     case 'trd_tran':
                         var as = _q_appendData("view_trans", "", true);
-                        q_gridAddRow(bbsHtm, 'tbbs', 'txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
-                        , as.length, as, 'accy,trandate,noa,noq,carno,straddr,total,caseno,mount,price,custdiscount,total,custorde,product,memo', '','');
+                        q_gridAddRow(bbsHtm, 'tbbs', 'txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
+                        , as.length, as, 'accy,trandate,noa,noq,carno,straddr,endaddr,total,caseno,mount,price,custdiscount,total,custorde,product,memo', '','');
                         for ( i = 0; i < q_bbsCount; i++) {
                             if (i < as.length) {
                             }else{
@@ -379,7 +394,9 @@
                 }
                 _bbsAssign();
                 if(q_getPara('sys.project').toUpperCase()=='DH'){
-					$('.DH').hide();
+					$('.DH_hide').hide();
+					$('.DH_show').show();
+					$('#lblCustdiscount_s').text('折讓');
 				}	
             }
 
@@ -861,6 +878,7 @@
 						<td><input id="txtAccno2" type="text"  class="txt c1"/> </td>
 						<td><input id="txtYear2" type="text"  class="txt c1"/> </td>
 					</tr>
+					
 				</table>
 			</div>
 		</div>
@@ -873,6 +891,7 @@
 					<td align="center" style="width:20px;"> </td>
 					<td align="center" style="width:120px;"><a id='lblTrandate_s'> </a></td>
 					<td align="center" style="width:200px;"><a id='lblStraddr_s'> </a></td>
+					<td align="center" style="width:200px; display:none;" class="DH_show"><a id='lblEndaddr_s'>迄點</a></td>
 					<td align="center" style="width:80px;"><a id='lblProduct_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblMount_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblPrice_s'> </a></td>
@@ -880,9 +899,9 @@
 					<td align="center" style="width:80px;"><a id='lblTotal_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblCarno_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblMemo_s'> </a></td>
-					<td align="center" style="width:150px;" class="DH"><a id='lblCustorde_s'> </a></td>
-					<td align="center" style="width:150px;" class="DH"><a id='lblCaseno_s'> </a></td>
-					<td align="center" style="width:150px;" class="DH"><a id='lblCaseno2_s'> </a></td>
+					<td align="center" style="width:150px;" class="DH_hide"><a id='lblCustorde_s'> </a></td>
+					<td align="center" style="width:150px;" class="DH_hide"><a id='lblCaseno_s'> </a></td>
+					<td align="center" style="width:150px;" class="DH_hide"><a id='lblCaseno2_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblTranno_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblTranmoney_s'> </a></td>
 				</tr>
@@ -895,9 +914,8 @@
 					<td >
 					<input type="text" id="txtTrandate.*" style="width:95%;" />
 					</td>
-					<td >
-					<input type="text" id="txtStraddr.*" style="width:95%;" />
-					</td>
+					<td><input type="text" id="txtStraddr.*" style="width:95%;" /></td>
+					<td class="DH_show"><input type="text" id="txtEndaddr.*" style="width:95%;" /></td>
 					<td >
 					<input type="text" id="txtProduct.*" style="width:95%;" />
 					</td>
@@ -915,11 +933,11 @@
 					<td >
 					<input type="text" id="txtMemo.*" style="width:95%;" />
 					</td>
-					<td class="DH">
+					<td class="DH_hide">
 					<input type="text" id="txtCustorde.*" style="width:95%;"/>
 					</td>
-					<td class="DH"><input type="text" id="txtCaseno.*" style="width:95%;"/></td>
-					<td class="DH"><input type="text" id="txtCaseno2.*" style="width:95%;"/></td>
+					<td class="DH_hide"><input type="text" id="txtCaseno.*" style="width:95%;"/></td>
+					<td class="DH_hide"><input type="text" id="txtCaseno2.*" style="width:95%;"/></td>
 					<td >
 					   <input type="text" id="txtTranno.*" style="float:left; width: 95%;"/>
 						<input type="text" id="txtTrannoq.*" style="float:left;display:none; width:1%"/>
