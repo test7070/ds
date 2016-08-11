@@ -125,7 +125,9 @@
 				$('#lblAccno').click(function () {
 	            	q_pop('txtAccno', "accc.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";accc3='" + $('#txtAccno').val() + "';" + $('#txtDatea').val().substring(0,3) + '_' + r_cno, 'accc', 'accc3', 'accc2', "92%", "1054px", q_getMsg('popAccc'), true);
 	       		});
-
+				if(q_getPara('sys.project').toUpperCase()=='DH'){
+                	$('.DH_hide').hide();
+                }
 			}
 			function q_boxClose(s2) {
 				var ret;
@@ -152,9 +154,9 @@
 					case 'car2':
 						var as = _q_appendData("car2", "", true);
 						if (as[0] != undefined) {
-							var t_acc1 = '1123.'+as[0].carownerno
+							var t_acc1 = '1123.'+as[0].carownerno;
 							$('#txtAcc1').val(t_acc1);
-							var t_where = "where=^^ acc1='"+t_acc1+"' ^^"
+							var t_where = "where=^^ acc1='"+t_acc1+"' ^^";
 							q_gt('acc', t_where , 0, 0, 0, "", r_accy+'_1');
 						}						
 						break;
@@ -175,6 +177,9 @@
 							$("#cmbCarteamno").val(abbm[q_recno].carteamno);
 						//q_gridv('tview', browHtm, fbrow, abbm, aindex, brwNowPage, brwCount);
 						q_gridv('tview', browHtm, fbrow, abbm, brwNowPage, brwCount);
+						if(q_getPara('sys.project').toUpperCase()=='DH'){
+		                	$('.DH_hide').hide();
+		                }
 						break;
 					case q_name:
 						if (q_cur == 4)
@@ -297,7 +302,9 @@
 
 			function refresh(recno) {
 				_refresh(recno);
-
+				if(q_getPara('sys.project').toUpperCase()=='DH'){
+                	$('.DH_hide').hide();
+                }
 			}
 
 			function readonly(t_para, empty) {
@@ -487,7 +494,7 @@
 						<td align="center" style="width:20px; color:black;"><a id='vewChk'> </a></td>
 						<td align="center" style="width:100px; color:black;"><a id='vewDatea'> </a></td>
 						<td align="center" style="width:100px; color:black; display:none;"><a id='vewNoa'> </a></td>
-						<td align="center" style="width:80px; color:black;"><a id='vewCarteam'> </a></td>
+						<td align="center" style="width:80px; color:black;" class="DH_hide"><a id='vewCarteam'> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id='vewCarno'> </a></td>
 						<td align="center" style="width:140px; color:black;"><a id='vewDriver'> </a></td>
 						<td align="center" style="width:250px; color:black;"><a id='vewItem'> </a></td>
@@ -499,7 +506,7 @@
 						<td ><input id="chkBrow.*" type="checkbox" /></td>
 						<td id="datea" style="text-align: center;">~datea</td>
 						<td id="noa" style="text-align: center;display:none;">~noa</td>
-						<td id="carteamno=cmbCarteamno" style="text-align: center;">~carteamno=cmbCarteamno</td>
+						<td id="carteamno=cmbCarteamno" style="text-align: center;" class="DH_hide">~carteamno=cmbCarteamno</td>
 						<td id="carno" style="text-align: center;">~carno</td>
 						<td id="driver" style="text-align: left;">~driver</td>
 						<td id="minusitem plusitem" style="text-align: left;">~minusitem ~plusitem</td>
@@ -529,8 +536,8 @@
 						<td><input id="txtDatea"  type="text" class="txt c1" /></td>
 					</tr>
 					<tr>
-						<td><span> </span><a id="lblCarteam" class="lbl"> </a></td>
-						<td><select id="cmbCarteamno" class="txt c1"> </select></td>
+						<td class="DH_hide"><span> </span><a id="lblCarteam" class="lbl"> </a></td>
+						<td class="DH_hide"><select id="cmbCarteamno" class="txt c1"> </select></td>
 						<td><span> </span><a id='lblCarno' class="lbl"> </a></td>
 						<td><input id="txtCarno"  type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblDriver" class="lbl btn" > </a></td>

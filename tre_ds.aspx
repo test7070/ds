@@ -34,13 +34,7 @@
             brwNowPage = 0;
             brwKey = 'Datea';
             q_desc = 1;
-            aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
-            , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx']
-            , ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
-            , ['txtBdriverno', '', 'driver', 'noa,namea', 'txtBdriverno', 'driver_b.aspx']
-            , ['txtEdriverno', '', 'driver', 'noa,namea', 'txtEdriverno', 'driver_b.aspx']
-            , ['txtDriverno_import', 'lblDriverno_import', 'driver', 'noa,namea', 'txtDriverno_import', 'driver_b.aspx']);
-
+            aPop = new Array();
 
             q_xchg = 1;
             brwCount2 = 20;
@@ -69,6 +63,7 @@
             }
 
             function mainPost() {
+            	
                 q_getFormat();
                 bbmMask = [['txtDatea_import', r_picd],['txtBdate_import', r_picd], ['txtEdate_import', r_picd],['txtDatea', r_picd], ['txtDate2', r_picd], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtPaydate', r_picd], ['txtMon', r_picm]];
                 q_mask(bbmMask);
@@ -176,6 +171,11 @@
                 $('#txtDatea_import').datepicker();
                 $('#txtBdate_import').datepicker();
                 $('#txtEdate_import').datepicker();
+                
+                if(q_getPara('sys.project').toUpperCase()=='DH'){
+                	$('.DH_show').show();
+                	$('.DH_hide').hide();
+                }
             }
 
             function q_funcPost(t_func, result) {
@@ -393,6 +393,10 @@
 
             function refresh(recno) {
                 _refresh(recno);
+                if(q_getPara('sys.project').toUpperCase()=='DH'){
+                	$('.DH_show').show();
+                	$('.DH_hide').hide();
+                }
             }
 
             function readonly(t_para, empty) {
@@ -703,7 +707,7 @@
 				<table class="tview" id="tview">
 					<tr>
 						<td align="center" style="width:20px; color:black;"><a id='vewChk'> </a></td>
-						<td align="center" style="width:80px; color:black;"><a id='vewCarteam'> </a></td>
+						<td align="center" style="width:80px; color:black;" class="DH_hide"><a id='vewCarteam'> </a></td>
 						<td align="center" style="width:100px; color:black;"><a id='vewDatea'> </a></td>
 						<td align="center" style="width:80px; color:black;"><a id='vewCarno'> </a></td>
 						<td align="center" style="width:140px; color:black;"><a id='vewDriver'> </a></td>
@@ -718,7 +722,7 @@
 						<td >
 						<input id="chkBrow.*" type="checkbox" />
 						</td>
-						<td id="carteamno=cmbCarteamno" style="text-align: center;">~carteamno=cmbCarteamno</td>
+						<td id="carteamno=cmbCarteamno" style="text-align: center;" class="DH_hide">~carteamno=cmbCarteamno</td>
 						<td id="datea" style="text-align: center;">~datea</td>
 						<td id="carno" style="text-align: center;">~carno</td>
 						<td id="driver" style="text-align: center;">~driver</td>
@@ -764,8 +768,8 @@
 						<td><input id="txtDatea" type="text"  class="txt c1"/></td>
 						<td><span> </span><a id="lblMon" class="lbl"> </a></td>
 						<td><input id="txtMon" type="text"  class="txt c1"/></td>
-						<td><span> </span><a id="lblCarteam" class="lbl"> </a></td>
-						<td><select id="cmbCarteamno" class="txt c1"> </select></td>
+						<td class="DH_hide"><span> </span><a id="lblCarteam" class="lbl"> </a></td>
+						<td class="DH_hide"><select id="cmbCarteamno" class="txt c1"> </select></td>
 					</tr>	
 					<tr class="tr_carchg">
 						<td><span> </span><a id="lblCarchgno" class="lbl btn"> </a></td>
@@ -781,8 +785,10 @@
 						<td><input id="txtPlusmoney" type="text" class="txt c1 num" /></td>
 						<td><span> </span><a id="lblMinusmoney" class="lbl"> </a></td>
 						<td><input id="txtMinusmoney" type="text" class="txt c1 num" /></td>
-						<td><span> </span><a id="lblTolls" class="lbl"> </a></td>
-						<td><input id="txtTolls" type="text" class="txt c1 num"/></td>
+						<td class="DH_hide"><span> </span><a id="lblTolls" class="lbl"> </a></td>
+						<td class="DH_hide"><input id="txtTolls" type="text" class="txt c1 num"/></td>
+						<td><span> </span><a id="lblTotal" class="lbl"> </a></td>
+						<td><input id="txtTotal" type="text" class="txt c1 num" /></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTggno" class="lbl btn"> </a></td>
@@ -792,8 +798,6 @@
 						</td>
 						<td> </td>
 						<td> </td>
-						<td><span> </span><a id="lblTotal" class="lbl"> </a></td>
-						<td><input id="txtTotal" type="text" class="txt c1 num" /></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
@@ -840,12 +844,13 @@
 					<td align="center" style="width:80px;"><a id='lblCustno_s'> </a></td>
 
 					<td align="center" style="width:200px;"><a id='lblStraddr_s'> </a></td>
+					<td align="center" style="width:200px;display:none;" class="DH_show"><a id='lblEndaddr_s'> </a></td>
 					<td align="center" style="width:200px;"><a id='lblProduct_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblMount_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblPrice_s'> </a></td>
-					<td align="center" style="width:100px;"><a id='lblDiscount_s'> </a></td>
+					<td align="center" style="width:100px;" class="DH_hide"><a id='lblDiscount_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblMoney_s'> </a></td>
-					<td align="center" style="width:100px;"><a id='lblTolls_s'> </a></td>
+					<td align="center" style="width:100px;" class="DH_hide"><a id='lblTolls_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblMemo_s'> </a></td>
 					<td align="center" style="width:170px;"><a id='lblTranno_s'> </a></td>
 					<td align="center" style="width:100px;"><a id='lblRs_s'> </a></td>
@@ -873,10 +878,9 @@
 					<td >
 					<input type="text" id="txtComp.*" style="width:95%;" />
 					</td >
-					<td >
-					<input type="text" id="txtStraddr.*" style="width:95%;" />
-					</td>
-					<td >
+					<td><input type="text" id="txtStraddr.*" style="width:95%;" /></td>
+					<td style="display:none;" class="DH_show"><input type="text" id="txtEndaddr.*" style="width:95%;" /></td>
+					<td>
 					<input type="text" id="txtProduct.*" style="width:95%;" />
 					</td>
 					<td >
@@ -885,13 +889,13 @@
 					<td >
 					<input type="text" id="txtPrice.*" style="width:95%;text-align: right;" />
 					</td>
-					<td >
+					<td class="DH_hide">
 					<input type="text" id="txtDiscount.*" style="width:95%;text-align: right;" />
 					</td>
-					<td >
+					<td>
 					<input type="text" id="txtMoney.*" style="width:95%;text-align: right;" />
 					</td>
-					<td >
+					<td class="DH_hide">
 					<input type="text" id="txtTolls.*" style="width:95%;text-align: right;" />
 					</td>
 					<td >

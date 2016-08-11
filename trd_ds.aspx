@@ -52,6 +52,7 @@
             }
 
             function mainPost() {
+            	//DH  有起點、迄點
             	if(q_getPara('sys.project').toUpperCase()=='DH'){
             		aPop = new Array(['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
 			            , ['txtCno', 'lblAcomp', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
