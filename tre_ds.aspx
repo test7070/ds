@@ -677,7 +677,7 @@
 					<input id="txtEdate_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
 					</td>
 				</tr>
-				<tr style="height:35px;">
+				<tr style="height:35px;" class="DH_hide">
 					<td><span> </span><a id="lblCarteamno_import" style="float:right; color: blue; font-size: medium;"> </a></td>
 					<td colspan="4">
 						<select id="cmbCarteamno_import" type="text" style="float:left; width:100px; font-size: medium;"> </select>
