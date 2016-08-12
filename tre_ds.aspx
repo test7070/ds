@@ -265,6 +265,10 @@
                             $("#cmbCarteamno").val(abbm[q_recno].carteamno);
                         }
                         q_gridv('tview', browHtm, fbrow, abbm, brwNowPage, brwCount);
+                        if(q_getPara('sys.project').toUpperCase()=='DH'){
+		                	$('.DH_show').show();
+		                	$('.DH_hide').hide();
+		                }
                         break;
                     case 'carchg':
                         var as = _q_appendData("carchg", "", true);
