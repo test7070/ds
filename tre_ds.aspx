@@ -148,12 +148,28 @@
                 });
                 $('#btnImport_trans').click(function() {
                    if(q_cur != 1 && q_cur != 2){
-                		if(r_accy.substring(0,3)!=$('#txtDatea_import').val().substring(0,3)){
-		            		alert('年度異常!');
-		            		return;
-		            	}
-						Lock(1,{opacity:0});
-	                	q_func('tre.import_ds',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name+','+$('#txtDriverno_import').val());
+                   		if(q_getPara('sys.project').toUpperCase() == 'DH'){
+                   			//var t_noa = $('#txtNoa').val();
+                   			var t_noa = 'AUTO';
+                   			var t_date = $('#txtDatea_import').val();
+                   			var t_bdate = $('#txtBdate_import').val();
+                   			var t_edate = $('#txtEdate_import').val();
+                   			var t_carno = $('#txtCarno_import').val();
+                   			
+                   			q_func('qtxt.query.tre_import_dh', 'tre.txt,tre_import_dh,' 
+                   				+ encodeURI(t_noa) + ';'
+                   				+ encodeURI(t_date) + ';'
+                   				+ encodeURI(t_bdate) + ';'
+                   				+ encodeURI(t_edate) + ';' 
+                   				+ encodeURI(t_carno)); 
+                   		}else{
+                   			if(r_accy.substring(0,3)!=$('#txtDatea_import').val().substring(0,3)){
+			            		alert('年度異常!');
+			            		return;
+			            	}
+							Lock(1,{opacity:0});
+		                	q_func('tre.import_ds',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name+','+$('#txtDriverno_import').val());
+                   		}
                 	}
                 });
                 $('#txtDatea_import').keydown(function(e) {
@@ -180,6 +196,14 @@
 
             function q_funcPost(t_func, result) {
                 switch(t_func) {
+                	case 'qtxt.query.tre_import_dh':
+                		var as = _q_appendData("tmp0", "", true, true);
+                        if (as[0] != undefined) {
+                        	alert(as[0].msg);
+                        	location.reload();
+                        } else {
+                        }
+                		break;
                     case 'tre.import_ds':
                         if (result.length == 0) {
                             alert('No data!');
@@ -687,10 +711,16 @@
 						<select id="cmbCarteamno_import" type="text" style="float:left; width:100px; font-size: medium;"> </select>
 					</td>
 				</tr>
-				<tr style="height:35px;">
+				<tr style="height:35px;" class="DH_hide">
 					<td><span> </span><a id="lblDriverno_import" style="float:right; color: blue; font-size: medium;"> </a></td>
 					<td colspan="4">
 						<input id="txtDriverno_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;display:none;" class="DH_show">
+					<td><span> </span><a id="lblCarno_import" style="float:right; color: blue; font-size: medium;">車牌</a></td>
+					<td colspan="4">
+						<input id="txtCarno_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
 					</td>
 				</tr>
 				<tr style="height:35px;">
