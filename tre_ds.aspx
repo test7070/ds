@@ -378,12 +378,19 @@
             }
 
             function btnPrint() {
-            	if (q_getPara('sys.project') == 'va') {
-					q_box('z_tre_va.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
-			  	}	
-			  	else{
-                	q_box('z_tre_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
-               }
+            	switch(q_getPara('sys.project').toUpperCase()){
+            		case 'VA':
+            			q_box('z_tre_va.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+            			break;
+            		case 'DH':
+            			q_box('z_trans_dh.aspx?' + r_userno + ";" + r_name + ";" + q_time + ";" + JSON.stringify({
+		                    noa : trim($('#txtNoa').val())
+		                }) + ";" + r_accy + "_" + r_cno, 'trans', "95%", "95%", m_print);
+            			break;
+            		default:
+            			q_box('z_tre_ds.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+            			break;	
+            	}
             }
 
             function wrServer(key_value) {
@@ -682,7 +689,7 @@
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
 		<!--#include file="../inc/toolbar.inc"-->
-		<div id="divImport" style="position:absolute; top:400px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+		<div id="divImport" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
 			<table style="width:100%;">
 				<tr style="height:1px;">
 					<td style="width:150px;"></td>
