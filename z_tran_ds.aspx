@@ -22,7 +22,10 @@
             var t_carkind = null;
             var t_carteam = null;
             var t_calctypes = null;
-            aPop = new Array(['txtXcarno', 'lblXcarno', 'car2', 'a.noa,driverno,driver', 'txtXcarno', 'car2_b.aspx'], ['txtXaddr', 'lblXaddr', 'addr', 'noa,addr', 'txtXaddr', 'addr_b.aspx']);
+            aPop = new Array(['txtXcarno', 'lblXcarno', 'car2', 'a.noa,driverno,driver', 'txtXcarno', 'car2_b.aspx']
+            	, ['txtXaddr', 'lblXaddr', 'addr', 'noa,addr', 'txtXaddr', 'addr_b.aspx']
+            	,['txtXstraddrno', 'lblXstraddrno', 'addr3', 'noa,namea', 'txtXstraddrno', 'addr3_bs_b.aspx'] 
+				,['txtXendaddrno', 'lblXendaddrno', 'addr3', 'noa,namea', 'txtXendaddrno', 'addr3_bs_b.aspx'] );
             $(document).ready(function() {
                 _q_boxClose();
                 q_getId();
@@ -171,6 +174,12 @@
 					}, {/*23-[30],[31]-交運月份*/
                         type : '1',
                         name : 'xmon'
+                    }, {/*24-[32]起點1*/
+                        type : '6',
+                        name : 'xstraddrno'
+                    }, {/*25-[33]迄點1*/
+                        type : '6',
+                        name : 'xendaddrno'
                     }]
                 });
                 q_popAssign();
