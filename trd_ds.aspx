@@ -923,7 +923,7 @@
 					<input type="text" id="txtTrandate.*" style="width:95%;" />
 					</td>
 					<td><input type="text" id="txtStraddr.*" style="width:95%;" /></td>
-					<td class="DH_show"><input type="text" id="txtEndaddr.*" style="width:95%;" /></td>
+					<td style="display:none;" class="DH_show"><input type="text" id="txtEndaddr.*" style="width:95%;" /></td>
 					<td >
 					<input type="text" id="txtProduct.*" style="width:95%;" />
 					</td>
