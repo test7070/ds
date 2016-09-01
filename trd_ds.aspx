@@ -257,8 +257,8 @@
                         break;
                     case 'trd_tran':
                         var as = _q_appendData("view_trans", "", true);
-                        q_gridAddRow(bbsHtm, 'tbbs', 'txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
-                        , as.length, as, 'accy,trandate,noa,noq,carno,straddr,endaddr,total,caseno,mount,price,custdiscount,total,custorde,product,memo', '','');
+                        q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
+                        , as.length, as, 'price,accy,trandate,noa,noq,carno,straddr,endaddr,total,caseno,mount,custdiscount,total,custorde,product,memo', '','');
                         for ( i = 0; i < q_bbsCount; i++) {
                             if (i < as.length) {
                             }else{
