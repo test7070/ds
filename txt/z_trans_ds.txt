@@ -284,7 +284,7 @@ z_trans_ds01:-- z_trans_ds01
 	left join acomp d on a.cardealno=d.noa
     where a.datea between @t_bdate and @t_edate
     and a.trandate between @t_btrandate and @t_etrandate
-    and a.straddrno between @t_baddrno and @t_eaddrno
+    and isnull(a.straddrno,'') between @t_baddrno and @t_eaddrno
     and isnull(a.custno,'') between @t_bcustno and @t_ecustno
 	and (len(@t_carno)=0 or CHARINDEX(','+a.carno+',',','+@t_carno+',')>0)
 	and (len(@t_carteam)=0 or CHARINDEX(','+a.carteamno+',',','+@t_carteam+',')>0)
