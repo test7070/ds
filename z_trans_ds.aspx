@@ -58,10 +58,10 @@
             function LoadFinish() {
             	$('#q_report').q_report({
                     fileName : 'z_trans_ds',
-                    options : [{/*[1]-年度*/
+                    options : [{/*[1]*/
                         type : '0',
-                        name : 'accy',
-                        value : q_getId()[4]
+                        name : 'proj',
+                        value : q_getPara('sys.project')
                     }, {/*1  [2][3]*/
                         type : '1',
                         name : 'xdate'
