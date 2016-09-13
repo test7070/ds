@@ -45,7 +45,6 @@
 				t_memo = $('#txtMemo').val();
 				t_tel = $('#txtTel').val();
 				t_fax = $('#txtFax').val();
-				t_fax = $('#txtMemo').val();
 				
 				var t_where = " 1=1 " 
 					+ q_sqlPara2("serial", t_serial);
@@ -62,7 +61,7 @@
 					t_where += " and (charindex('" + t_tel + "',tel)>0 or charindex('" + t_tel + "',mobile)>0 )";
 				if (t_fax.length > 0)
 					t_where += " and charindex('" + t_fax + "',fax)>0";
-				t_where = ' where=^^' + t_where +r_where+ '^^ ';
+				t_where = ' where=^^' + t_where + '^^ ';
 				return t_where;
 			}
 		</script>
