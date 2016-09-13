@@ -11,7 +11,7 @@
 		<script type="text/javascript">
 			var q_name = "cust_s";
 			aPop = new Array(
-				['txtNoa', 'lblNoa', 'cust', 'noa,comp,nick,invoicetitle', 'txtNoa', ''],
+				['txtNoa', 'lblNoa', 'cust', 'noa,comp,nick', 'txtNoa', ''],
 				['txtSerial', 'lblSerial', 'cust', 'serial,noa,comp,nick', 'txtSerial', '']
 			);
 			
