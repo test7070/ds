@@ -175,6 +175,9 @@
 					$('.DH_show').show();
 					$('#lblMount_bs').text('數量');
 					$('#lblPrice_bs').text('單價');
+				}
+				if(q_getPara('sys.project').toUpperCase()=='ES'){
+					$('.ES_hide').hide();
 				}	
             }
 
@@ -398,6 +401,9 @@
 					$('.DH_hide').hide();
 					$('.DH_show').show();
 					$('#lblCustdiscount_s').text('折讓');
+				}
+				if(q_getPara('sys.project').toUpperCase()=='ES'){
+					$('.ES_hide').hide();
 				}	
             }
 
@@ -903,7 +909,7 @@
 					<td align="center" style="width:80px;"><a id='lblProduct_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblMount_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblPrice_s'> </a></td>
-					<td align="center" style="width:80px;"><a id='lblCustdiscount_s'>折數％</a></td>
+					<td align="center" style="width:80px;" class="ES_hide"><a id='lblCustdiscount_s'>折數％</a></td>
 					<td align="center" style="width:80px;"><a id='lblTotal_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblCarno_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblMemo_s'> </a></td>
@@ -931,7 +937,7 @@
 					<input type="text" id="txtMount.*" style="width:95%;text-align: right;" />
 					</td>
 					<td><input type="text" id="txtPrice.*" style="width:95%;text-align: right;" /></td>
-					<td><input type="text" id="txtCustdiscount.*" style="width:95%;text-align: right;" /></td>
+					<td class="ES_hide"><input type="text" id="txtCustdiscount.*" style="width:95%;text-align: right;" /></td>
 					<td >
 					<input type="text" id="txtTotal.*" style="width:95%;text-align: right;" />
 					</td>
