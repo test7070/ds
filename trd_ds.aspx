@@ -67,7 +67,8 @@
 			            , ['txtBoatno', 'lblBoat', 'boat', 'noa,boat', 'txtBoatno,txtBoat', 'boat_b.aspx']);
             	}
                 q_getFormat();
-                bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtBtrandate', r_picd], ['txtEtrandate', r_picd], ['txtVccadate', r_picd]];
+                bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtBtrandate', r_picd], ['txtEtrandate', r_picd], ['txtVccadate', r_picd]
+                			,['textDate',r_picd],['textBdate',r_picd],['textEdate',r_picd]];
                 q_mask(bbmMask);
                 
                 $('#lblTrtype').text('保留%');
@@ -177,10 +178,55 @@
 					$('#lblPrice_bs').text('單價');
 				}
 				if(q_getPara('sys.project').toUpperCase()=='ES'){
+					$('.ES_show').show();
 					$('.ES_hide').hide();
 				}	
+				//----------------------------------------------------------
+				$('#btnImport').click(function() {
+                    $('#divImport').toggle();
+                    $('#textDate').focus();
+                });
+                $('#btnCancel_import').click(function() {
+                    $('#divImport').toggle();
+                });
+                $('#btnImport_trans').click(function() {
+                   if(q_cur != 1 && q_cur != 2){
+                   		var t_key = q_getPara('sys.key_trd');
+                   		var t_date = $('#textDate').val();//登錄日期
+                   		var t_bdate = $('#textBdate').val();
+                   		var t_edate = $('#textEdate').val();
+                   		
+                   		t_key = (t_key.length==0?'BJ':t_key);//一定要有值
+                   		q_func('qtxt.query.trd_import', 'trd.txt,import,' + encodeURI(t_key) + ';'+ encodeURI(t_date) + ';'+ encodeURI(t_bdate) + ';' + encodeURI(t_edate));
+                	}
+                });
+                
+                $('#textDate').datepicker();
+                $('#textBdate').datepicker();
+                $('#textEdate').datepicker();
             }
-
+			function q_funcPost(t_func, result) {
+                switch(t_func) {
+                	case 'trd_post.ca_trd':
+                		location.reload();
+                		break;
+                	case 'qtxt.query.trd_import':
+                		var as = _q_appendData("tmp0", "", true, true);
+                        if (as[0] != undefined) {
+                        	if(as[0].status == 1){
+                        		var t_date = $('#textDate').val();
+                        		q_func('trd_post.ca_trd', t_date + ',' + t_date);
+                        	}else{
+                        		alert(as[0].msg);
+                        	}
+                        } else {
+                        }
+                		break;
+                    default:
+                        break;
+                }
+            }
+            
             function q_gtPost(t_name) {
                 switch (t_name) {
                 	case 'btnDele':
@@ -391,6 +437,7 @@
                         var t_accy = $('#txtTranaccy_'+n).val();
                         var t_noa = $(this).val();
                         var t_aspx = r_comp.indexOf('金勇')>=0?'trans_at.aspx':'trans_ds.aspx';
+                        t_aspx = q_getPara('sys.project').toUpperCase()=='ES'?'trans_es.aspx':t_aspx;
                         if(t_noa.length>0 ){
                             q_box(t_aspx+"?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + t_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
                         }
@@ -487,12 +534,13 @@
                     $('#btnTrans').removeAttr('disabled');
                     $('#btnCustchg').removeAttr('disabled');
                     $('#btnVcca').removeAttr('disabled');
+                    $('#btnImport_trans').attr('disabled', 'disabled');
                 } else {
                     $('#btnTrans').attr('disabled', 'disabled');
                     $('#btnCustchg').attr('disabled', 'disabled');
                     $('#btnVcca').attr('disabled', 'disabled');
+                    $('#btnImport_trans').removeAttr('disabled');
                 }
-                
             }
 
             function btnMinus(id) {
@@ -726,6 +774,38 @@
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
 		<!--#include file="../inc/toolbar.inc"-->
+		<div id="divImport" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+			<table style="width:100%;">
+				<tr style="height:1px;">
+					<td style="width:150px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a style="float:right; color: blue; font-size: medium;">立帳日期</a></td>
+					<td colspan="4">
+					<input id="textDate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a style="float:right; color: blue; font-size: medium;">取貨日期</a></td>
+					<td colspan="4">
+					<input id="textBdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					<span style="float:left; display:block; width:25px;"><a>～</a></span>
+					<input id="textEdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td> </td>
+					<td><input id="btnImport_trans" type="button" value="匯入"/></td>
+					<td></td>
+					<td></td>
+					<td><input id="btnCancel_import" type="button" value="關閉"/></td>
+				</tr>
+			</table>
+		</div>
 		
 		<div id="dmain">
 			<div class="dview" id="dview">
@@ -892,6 +972,7 @@
 						<td><span> </span><a id="lblAccno2" class="lbl btn"> </a></td>
 						<td><input id="txtAccno2" type="text"  class="txt c1"/> </td>
 						<td><input id="txtYear2" type="text"  class="txt c1"/> </td>
+						<td><input type="button" id="btnImport" value="整批匯入" style="display:none;" class="ES_show"/></td>
 					</tr>
 					
 				</table>
