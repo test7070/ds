@@ -67,6 +67,10 @@
                 q_getFormat();
                 bbmMask = [['txtDatea_import', r_picd],['txtBdate_import', r_picd], ['txtEdate_import', r_picd],['txtDatea', r_picd], ['txtDate2', r_picd], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtPaydate', r_picd], ['txtMon', r_picm]];
                 q_mask(bbmMask);
+		
+				if(q_getPara('sys.project').toUpperCase()=='DH'){
+					$('#lblDate_import').text('收貨日期');	
+				}
 
                 q_gt('carteam', '', 0, 0, 0, "");
                 $('#lblAccno').click(function() {
