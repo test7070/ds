@@ -29,6 +29,8 @@
             brwKey = 'noa';
             brwCount2 = 15;
 			
+			aPop = new Array(['txtBankno2', 'lblBank', 'bank', 'noa,bank', 'txtBankno2,txtBank2', 'bank_b.aspx']);
+            
 			t_cardeal = '';
             $(document).ready(function() {
                 bbmKey = ['noa'];
@@ -94,7 +96,7 @@
                         		t_cardeal += ',' + as[i].noa + '@' + as[i].comp;
                         	}
                         }
-                        q_gt(q_name, q_content, q_sqlCount, 1)
+                        q_gt(q_name, q_content, q_sqlCount, 1);
                 		break;
                 	case 'checkDriverno_change':
                 		var as = _q_appendData("driver", "", true);
@@ -169,7 +171,7 @@
                 }else if(q_cur ==2){
                 	$('#txtWorker2').val(r_name);
                 }else{
-                	alert("error: btnok!")
+                	alert("error: btnok!");
                 }
             	//------------------------------------
                 if(q_cur==1){
@@ -485,6 +487,19 @@
 						<td><input id="txtTakeofficedate" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblLeaveofficedate" class="lbl"> </a></td>
 						<td><input id="txtLeaveofficedate" type="text" class="txt c1"/></td>
+					</tr>
+					<tr>
+						<td><span> </span><a id="lblBank" class="lbl btn">銀行</a></td>
+						<td colspan="3">
+							<input id="txtBankno2" type="text" class="txt" style="width:35%;"/>
+							<input id="txtBank2" type="text" class="txt" style="width:65%;"/>
+						</td>
+					</tr>
+					<tr>
+						<td><span> </span><a class="lbl">匯款帳號</a></td>
+						<td colspan="2"><input id="txtAccount" type="text" class="txt c1"/></td>
+						<td><span> </span><a class="lbl">戶名</a></td>
+						<td colspan="2"><input id="txtAccountname" type="text" class="txt c1"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblMemo" class="lbl"> </a></td>
