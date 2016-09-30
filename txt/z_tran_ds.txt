@@ -60,14 +60,15 @@ z_tran_dh01:--z_tran_dh01    z_tran_ds.txt
 		,mount2 float
 		,price2 float
 		,price3 float
+		,discount float
 		,total2 float
 	)
 	insert into @tmp(gno,tranaccy,tranno,trannoq,datea,trandate,custno,cust,driverno,driver,carno
 		,productno,product,straddrno,straddr,endaddrno,endaddr
-		,mount,price,custdiscount,total,mount2,price2,price3,total2)
+		,mount,price,custdiscount,total,mount2,price2,price3,discount,total2)
 	select '1',accy,noa,noq,datea,trandate,custno,nick,driverno,driver,carno,uccno
 		,product,straddrno,straddr,endaddrno,endaddr
-		,mount,price,custdiscount,total,mount2,price2,price3,total2
+		,mount,price,custdiscount,total,mount2,price2,price3,discount,total2
 	from view_trans a
 	where isnull(a.datea,'') between @t_bdate and @t_edate
 	and isnull(a.trandate,'') between @t_btrandate and @t_etrandate
@@ -95,7 +96,7 @@ z_tran_dh01:--z_tran_dh01    z_tran_ds.txt
 		,"trans_bs?noa=\'"+tranno+"\' and "+cast(sel as nvarchar)+"=$rr?"+tranaccy ghref
 		,datea a01
 		,trandate a02
-		,custno a03
+		,cust a03
 		,driver a04
 		,carno a05
 		,product a06
@@ -107,7 +108,8 @@ z_tran_dh01:--z_tran_dh01    z_tran_ds.txt
 		,dbo.getComma(total,-1) a12
 		,dbo.getComma(mount2,-1) a13
 		,dbo.getComma(ISNULL(price2,0)+isnull(price3,0),-1) a14
-		,dbo.getComma(total,-1) a15
+		,dbo.getComma(discount,-1) a15
+		,dbo.getComma(total2,-1) a16
 	from @tmp 
 	order by sel;
 
