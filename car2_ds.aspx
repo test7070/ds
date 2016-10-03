@@ -285,7 +285,7 @@
                 $('#btnChange').click(function(e) {
                 	if(!emp($('#txtChangecarno').val())&&q_cur==2){
                 		var t_where = "where=^^ a.noa ='"+$('#txtChangecarno').val()+"' ^^";
-						q_gt('car2', t_where, 0, 0, 0, "");
+						q_gt('car2', t_where, 0, 0, 0, "checkCar");
 					}
 				});
 				
@@ -472,24 +472,19 @@
                         if(abbm[q_recno])
                         	$("#cmbCarstyleno").val(abbm[q_recno].carstyleno);
                         break;
+                    case 'checkCar':
+                    	/*var as = _q_appendData("car2", "", true);
+                    	if(as[0]==undefined){
+                    		if(!emp($('#txtChangecarno').val())){
+                				q_func( 'changecarno.change', $('#txtNoa').val()+','+$('#txtChangecarno').val());
+							}
+                    	}else{
+                    		alert('車牌重覆!!');
+                    	}*/
+                    	break;
                     case q_name:
-                    	
                         if (q_cur == 4)
                             q_Seek_gtPost();
-
-                        if (q_cur == 2)
-                        {
-                        	var as = _q_appendData("car2", "", true);
-	                    	if(as[0]==undefined){
-	                    		if(!emp($('#txtChangecarno').val())){
-	                				q_func( 'changecarno.change', $('#txtNoa').val()+','+$('#txtChangecarno').val());
-                					//q_func( 'cara.carnoChange', 't_old,t_new');
-								}
-	                    	}else{
-	                    		alert('車牌重覆!!');
-	                    	}
-                        }
-
                         break;
                 }
             }
