@@ -62,9 +62,10 @@
                 q_cmbParse("cmbIsprint", q_getPara('car2.isprint'));
                 q_cmbParse("cmbAuto", q_getPara('car2.auto'));
                 
-                if(q_getPara('sys.project').toUpperCase()!="DC" && q_getPara('sys.project').toUpperCase()!="DS"){
+                /*if(q_getPara('sys.project').toUpperCase()!="DC" 
+                	&& q_getPara('sys.project').toUpperCase()!="DS"){
                 	$(".btns").hide();
-                }
+                }*/
                 
                 q_gt('carbrand', '', 0, 0, 0, "");
                 q_gt('carkind', '', 0, 0, 0, "");
@@ -473,14 +474,14 @@
                         	$("#cmbCarstyleno").val(abbm[q_recno].carstyleno);
                         break;
                     case 'checkCar':
-                    	/*var as = _q_appendData("car2", "", true);
+                    	var as = _q_appendData("car2", "", true);
                     	if(as[0]==undefined){
                     		if(!emp($('#txtChangecarno').val())){
                 				q_func( 'changecarno.change', $('#txtNoa').val()+','+$('#txtChangecarno').val());
 							}
                     	}else{
                     		alert('車牌重覆!!');
-                    	}*/
+                    	}
                     	break;
                     case q_name:
                         if (q_cur == 4)
