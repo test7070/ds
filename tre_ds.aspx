@@ -158,14 +158,14 @@
                    			var t_date = $('#txtDatea_import').val();
                    			var t_bdate = $('#txtBdate_import').val();
                    			var t_edate = $('#txtEdate_import').val();
-                   			var t_carno = $('#txtCarno_import').val();
+                   			var t_driverno = $('#txtDriverno_import').val();
                    			
                    			q_func('qtxt.query.tre_import_dh', 'tre.txt,tre_import_dh,' 
                    				+ encodeURI(t_noa) + ';'
                    				+ encodeURI(t_date) + ';'
                    				+ encodeURI(t_bdate) + ';'
                    				+ encodeURI(t_edate) + ';' 
-                   				+ encodeURI(t_carno)); 
+                   				+ encodeURI(t_driverno)); 
                    		}else{
                    			if(r_accy.substring(0,3)!=$('#txtDatea_import').val().substring(0,3)){
 			            		alert('年度異常!');
@@ -722,13 +722,13 @@
 						<select id="cmbCarteamno_import" type="text" style="float:left; width:100px; font-size: medium;"> </select>
 					</td>
 				</tr>
-				<tr style="height:35px;" class="DH_hide">
+				<tr style="height:35px;">
 					<td><span> </span><a id="lblDriverno_import" style="float:right; color: blue; font-size: medium;"> </a></td>
 					<td colspan="4">
 						<input id="txtDriverno_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
 					</td>
 				</tr>
-				<tr style="height:35px;display:none;" class="DH_show">
+				<tr style="height:35px;" class="DH_hide">
 					<td><span> </span><a id="lblCarno_import" style="float:right; color: blue; font-size: medium;">車牌</a></td>
 					<td colspan="4">
 						<input id="txtCarno_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
