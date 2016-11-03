@@ -76,6 +76,7 @@ z_tran_dh01:--z_tran_dh01    z_tran_ds.txt
 	and isnull(a.driverno,'') between @t_bdriverno and @t_edriverno
 	and (len(@t_straddrno)=0 or  CHARINDEX(','+a.straddrno+',',@t_straddrno)>0)
 	and (len(@t_endaddrno)=0 or  CHARINDEX(','+a.endaddrno+',',@t_endaddrno)>0)
+	order by a.trandate,a.noa
 	
 	insert into @tmp(gno,mount,custdiscount,total,mount2,total2)
 	select '2',SUM(ISNULL(mount,0)),SUM(ISNULL(custdiscount,0)),SUM(ISNULL(total,0))
