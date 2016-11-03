@@ -286,6 +286,7 @@ z_fixa_ds06:--z_fixa_ds06  (FIXA,FIXIN)全算、(FIXOUT)只算工資費用、(TI
 		where a.outdate between @t_bdate and @t_edate
 			and (len(@t_carno)=0 or a.carno=@t_carno)
 			and (ISNULL(b.typea,'')='工資' or ISNULL(b.typea,'')='費用')
+			and (a.tggno between @t_btggno and @t_etggno)
 		union all                                                          
 		select '3' gno,'1' pno,'tire_ds',a.noa,a.datea,a.tggno,a.carno,a.cardno,b.etireno,'',isnull(b.[action],'')+ISNULL(b.etireno,''),'','','',0,0,b.memo
 		from tire a 
@@ -335,6 +336,7 @@ z_fixa_ds06:--z_fixa_ds06  (FIXA,FIXIN)全算、(FIXOUT)只算工資費用、(TI
 		from fixout a 
 			where a.outdate between @t_bdate and @t_edate
 				and (len(@t_carno)=0 or a.carno=@t_carno)
+				and (a.tggno between @t_btggno and @t_etggno)
 		union all
 		select tggno,ISNULL(wmoney,0),0,ISNULL(dmoney,0),ISNULL(emoney,0) ,0,0
 		from tire a 
