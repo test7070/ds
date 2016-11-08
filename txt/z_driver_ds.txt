@@ -14,11 +14,13 @@ z_driver_ds01:--z_driver_ds01
 		addr_home nvarchar(max),
 		cartype nvarchar(20),
 		memo nvarchar(max)
+		,idno nvarchar(20)
+		,birthday nvarchar(20)
 	)
-	insert into @tmp(gno,recno,noa,namea,tel,mobile,addr_home,cartype,memo)
+	insert into @tmp(gno,recno,noa,namea,tel,mobile,addr_home,cartype,memo,idno,birthday)
 	select case when len(isnull(leaveofficedate,''))=0 then '1' else '2' end
 		,ROW_NUMBER()over(order by noa)
-		,noa,namea,tel,mobile,addr_home,cartype,memo
+		,noa,namea,tel,mobile,addr_home,cartype,memo,idno,birthday
 	from driver
 	where noa between @t_bdriverno and @t_edriverno
 	and (len(@t_isout)=0 or (@t_isout='Y' and len(leaveofficedate)=0) or (@t_isout='N' and len(leaveofficedate)>0))
