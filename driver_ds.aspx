@@ -51,6 +51,8 @@
             	q_cmbParse("cmbSex",q_getPara('sys.sex'));
             	q_cmbParse("cmbCartype",q_getPara('driver.cartype'));
             	q_cmbParse("cmbCardealno",t_cardeal);
+            	q_cmbParse("cmbMark", ('').concat(new Array('A', 'B', 'AB', 'O')));
+            	
                 q_mask(bbmMask);
                 $('#txtNoa').change(function(e){
                 	$(this).val($.trim($(this).val()).toUpperCase());    	
@@ -424,7 +426,7 @@
 			<div class="dbbm">
 				<table class="tbbm"  id="tbbm">
 					<tr style="height:1px;">
-						<td> </td>
+						<td><input id="txtIndate" type="text" class="txt c1" style="display: none;"/> </td>
 						<td> </td>
 						<td> </td>
 						<td> </td>
@@ -445,8 +447,8 @@
 						<td><input id="txtIdno" type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblBirthday" class="lbl"> </a></td>
 						<td><input id="txtBirthday" type="text" class="txt c1"/></td>
-						<td><span> </span><a id='lblIndate' class="lbl" style="display: none;"> </a></td>
-						<td><input id="txtIndate" type="text" class="txt c1" style="display: none;"/></td>
+						<td><span> </span><a class="lbl">血型</a></td>
+						<td><select id="cmbMark" class="txt c1"> </select></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblTel" class="lbl"> </a></td>
