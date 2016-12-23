@@ -254,10 +254,21 @@
                 _btnIns();
                 $('#txtNoa').val('AUTO');
                 $('#txtDatea').val(q_date());
-                $('#txtWacc1').val(q_getPara('fixa.wacc1'));
-                $('#txtCacc1').val(q_getPara('fixa.cacc1'));
-                $('#txtDacc1').val(q_getPara('fixa.dacc1'));
-                $('#txtEacc1').val(q_getPara('fixa.eacc1'));
+                //fixa_ds,fixin_ds,fixout_ds,tire_ds
+                switch(q_getPara('sys.project').toUpperCase()){
+                	case 'VA':
+                		$('#txtWacc1').val('5850.04');
+		                $('#txtCacc1').val('5850.02');
+		                $('#txtDacc1').val('5850.03');
+		                $('#txtEacc1').val('5850.04');
+                		break;
+                	default:
+                		$('#txtWacc1').val('5850.04');
+		                $('#txtCacc1').val('5850.02');
+		                $('#txtDacc1').val('5850.03');
+		                $('#txtEacc1').val('5850.16');
+                		break;
+                }
                 t_where = "where=^^ acc1='" + $('#txtWacc1').val() + "' or acc1='" + $('#txtCacc1').val() + "' or acc1='" + $('#txtDacc1').val() + "' or acc1='" + $('#txtEacc1').val() + "'^^";
                 Lock(1, {
                     opacity : 0
