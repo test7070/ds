@@ -853,7 +853,10 @@
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblNoa" class="lbl"> </a></td>
-						<td><input id="txtNoa" type="text" class="txt c1"/></td>
+						<td>
+							<input id="txtNoa" type="text" class="txt c1"/>
+							<input id="txtQtime" type="text" style="display:none;"/>
+						</td>
 						<td><span> </span><a id="lblDatea" class="lbl"> </a></td>
 						<td><input id="txtDatea" type="text"  class="txt c1"/></td>
 						<td><span> </span><a id="lblCust" class="lbl btn"> </a></td>
