@@ -68,7 +68,7 @@
             	}
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtBtrandate', r_picd], ['txtEtrandate', r_picd], ['txtVccadate', r_picd]
-                			,['textDate',r_picd],['textBdate',r_picd],['textEdate',r_picd]];
+                			,['textMon',r_picm]];
                 q_mask(bbmMask);
                 
                 $('#lblTrtype').text('保留%');
@@ -182,6 +182,8 @@
 					$('.ES_hide').hide();
 				}	
 				//----------------------------------------------------------
+				q_cmbParse("combType", "月結,現金,回收");
+
 				$('#btnImport').click(function() {
                     $('#divImport').toggle();
                     $('#textDate').focus();
@@ -191,26 +193,39 @@
                 });
                 $('#btnImport_trans').click(function() {
                    if(q_cur != 1 && q_cur != 2){
-                   		var t_key = q_getPara('sys.key_trd');
+                   		/*var t_key = q_getPara('sys.key_trd');
                    		var t_date = $('#textDate').val();//登錄日期
                    		var t_bdate = $('#textBdate').val();
                    		var t_edate = $('#textEdate').val();
-                   		
                    		t_key = (t_key.length==0?'BJ':t_key);//一定要有值
                    		q_func('qtxt.query.trd_import', 'trd.txt,import,' + encodeURI(t_key) + ';'+ encodeURI(t_date) + ';'+ encodeURI(t_bdate) + ';' + encodeURI(t_edate));
+                		*/
+                		var t_key = q_getPara('sys.key_trd');
+                   		var t_mon = $('#textMon').val();//帳款月份
+                   		var t_type = $('#combType').val();
+                   		t_key = (t_key.length==0?'BF':t_key);//一定要有值
+                   		q_func('qtxt.query.trd_import_es', 'trd.txt,import_es,' + encodeURI(t_key) + ';'+ encodeURI(t_mon) + ';'+ encodeURI(t_type));
                 	}
                 });
                 
-                $('#textDate').datepicker();
-                $('#textBdate').datepicker();
-                $('#textEdate').datepicker();
+                //$('#textDate').datepicker();
+                //$('#textBdate').datepicker();
+                //$('#textEdate').datepicker();
             }
 			function q_funcPost(t_func, result) {
                 switch(t_func) {
-                	case 'trd_post.ca_trd':
+            		case 'qtxt.query.trd_import_es':
+            			var as = _q_appendData("tmp0", "", true, true);
+                        if (as[0] != undefined) {
+                        	alert(as[0].msg);
+                        }
+                        location.reload();
+            			break;
+                	/*
+                	 case 'trd_post.ca_trd':
                 		location.reload();
                 		break;
-                	case 'qtxt.query.trd_import':
+                	 case 'qtxt.query.trd_import':
                 		var as = _q_appendData("tmp0", "", true, true);
                         if (as[0] != undefined) {
                         	if(as[0].status == 1){
@@ -221,7 +236,7 @@
                         	}
                         } else {
                         }
-                		break;
+                		break;*/
                     default:
                         break;
                 }
@@ -784,6 +799,18 @@
 					<td style="width:80px;"></td>
 				</tr>
 				<tr style="height:35px;">
+					<td><span> </span><a style="float:right; color: blue; font-size: medium;">帳款月份</a></td>
+					<td colspan="4">
+					<input id="textMon"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a style="float:right; color: blue; font-size: medium;">結帳方式</a></td>
+					<td colspan="4">
+					<select id="combType"  style="float:left; width:100px; font-size: medium;"> </select>
+					</td>
+				</tr>
+				<!--<tr style="height:35px;">
 					<td><span> </span><a style="float:right; color: blue; font-size: medium;">立帳日期</a></td>
 					<td colspan="4">
 					<input id="textDate"  type="text" style="float:left; width:100px; font-size: medium;"/>
@@ -796,7 +823,7 @@
 					<span style="float:left; display:block; width:25px;"><a>～</a></span>
 					<input id="textEdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
 					</td>
-				</tr>
+				</tr>-->
 				<tr style="height:35px;">
 					<td> </td>
 					<td><input id="btnImport_trans" type="button" value="匯入"/></td>
