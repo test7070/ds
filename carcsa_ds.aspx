@@ -623,7 +623,7 @@
             }
 
             function bbsSave(as) {
-                if (!as['carno'] && !as['tranno']) {
+                if (!as['carno'] && !as['tranno'] && !as['driverno']) {
                     as[bbsKey[1]] = '';
                     return;
                 }
