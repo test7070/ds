@@ -118,7 +118,7 @@
 		       	if(t_tre=='N'){
 		       		t_where +="and total2!=0 and not exists(select noa from view_tres"+r_accy+" where view_tres"+r_accy+".tranno=view_trans"+r_accy+".noa)";
 		       	}
-		        t_where = ' where=^^' + t_where + '^^ ';
+		        t_where = ' where=^^' + t_where + '^^ order=^^datea desc, noa desc ^^';
 		        return t_where;
             }
 		</script>
