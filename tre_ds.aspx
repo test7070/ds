@@ -38,7 +38,7 @@
 
             q_xchg = 1;
             brwCount2 = 20;
-
+			var t_carteam = "";
             function tre() {
             }
 
@@ -52,7 +52,7 @@
                 bbmKey = ['noa'];
                 bbsKey = ['noa', 'noq'];
                 q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
+                q_gt('carteam', '', 0, 0, 0, "");
             });
             function main() {
                 if (dataErr) {
@@ -67,12 +67,10 @@
                 q_getFormat();
                 bbmMask = [['txtDatea_import', r_picd],['txtBdate_import', r_picd], ['txtEdate_import', r_picd],['txtDatea', r_picd], ['txtDate2', r_picd], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtPaydate', r_picd], ['txtMon', r_picm]];
                 q_mask(bbmMask);
-		
-				if(q_getPara('sys.project').toUpperCase()=='DH'){
-					$('#lblDate_import').text('收貨日期');	
-				}
-
-                q_gt('carteam', '', 0, 0, 0, "");
+				
+				q_cmbParse("cmbCarteamno", t_carteam);
+                q_cmbParse("cmbCarteamno_import", t_carteam);
+                
                 $('#lblAccno').click(function() {
                     q_pop('txtAccno', "accc.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";accc3='" + $('#txtAccno').val() + "';" + $('#txtYear1').val() + '_' + r_cno, 'accc', 'accc3', 'accc2', "92%", "1054px", q_getMsg('popAccc'), true);
                 });
@@ -192,9 +190,14 @@
                 $('#txtBdate_import').datepicker();
                 $('#txtEdate_import').datepicker();
                 
-                if(q_getPara('sys.project').toUpperCase()=='DH'){
-                	$('.DH_show').show();
-                	$('.DH_hide').hide();
+                switch(q_getPara('sys.project').toUpperCase()){
+                	case 'DH':
+                		$('.DH_show').show();
+                		$('.DH_hide').hide();
+                		$('#lblDate_import').text('收貨日期');	
+                		break;
+                	default:
+                		break;
                 }
             }
 
@@ -243,6 +246,25 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'carteam':
+                        var as = _q_appendData("carteam", "", true);
+                        t_carteam = "@";
+                        for ( i = 0; i < as.length; i++) {
+                            t_carteam = t_carteam + (t_carteam.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
+                        }
+                        /*q_cmbParse("cmbCarteamno", t_item);
+                        q_cmbParse("cmbCarteamno_import", t_item);
+                        if (abbm[q_recno] != undefined) {
+                            $("#cmbCarteamno").val(abbm[q_recno].carteamno);
+                        }
+                        q_gridv('tview', browHtm, fbrow, abbm, brwNowPage, brwCount);
+                        if(q_getPara('sys.project').toUpperCase()=='DH'){
+		                	$('.DH_show').show();
+		                	$('.DH_hide').hide();
+		                }*/
+		                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
+                        break;
+                        
                 	case 'btnDele':
                 		var as = _q_appendData("pays", "", true);
                         if (as[0] != undefined) {
@@ -281,23 +303,7 @@
 		                Unlock(1);
 		                $('#txtDatea').focus();
                 		break;
-                    case 'carteam':
-                        var as = _q_appendData("carteam", "", true);
-                        var t_item = "@";
-                        for ( i = 0; i < as.length; i++) {
-                            t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
-                        }
-                        q_cmbParse("cmbCarteamno", t_item);
-                        q_cmbParse("cmbCarteamno_import", t_item);
-                        if (abbm[q_recno] != undefined) {
-                            $("#cmbCarteamno").val(abbm[q_recno].carteamno);
-                        }
-                        q_gridv('tview', browHtm, fbrow, abbm, brwNowPage, brwCount);
-                        if(q_getPara('sys.project').toUpperCase()=='DH'){
-		                	$('.DH_show').show();
-		                	$('.DH_hide').hide();
-		                }
-                        break;
+                    
                     case 'carchg':
                         var as = _q_appendData("carchg", "", true);
                         var t_plusmoney = 0, t_minusmoney = 0;
@@ -360,10 +366,17 @@
             }
 
             function bbsAssign() {
-                for (var ix = 0; ix < q_bbsCount; ix++) {
-                    $('#lblNo_' + ix).text(ix + 1);
+                for (var i = 0; i < q_bbsCount; i++) {
+					$('#lblNo_' + i).text(i + 1);
+                    if($('#btnMinus_' + i).hasClass('isAssign'))
+                    	continue;
                 }
                 _bbsAssign();
+                $('#tbbs').find('tr.data').children().hover(function(e){
+					$(this).parent().css('background','yellow');
+				},function(e){
+					$(this).parent().css('background','#cad3ff');
+				});
             }
 
             function btnIns() {
@@ -911,7 +924,7 @@
 					<td align="center" style="width:100px;"><a id='lblOthercost_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblOrdeno_s'> </a></td>
 				</tr>
-				<tr  style='background:#cad3ff;'>
+				<tr class="data" style='background:#cad3ff;'>
 					<td align="center">
 					<input class="btn"  id="btnMinus.*" type="button" value='-' style=" font-weight: bold;" />
 					<input id="txtNoq.*" type="text" style="display: none;" />
