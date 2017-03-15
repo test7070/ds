@@ -30,12 +30,12 @@
             brwKey = 'noa';
             brwCount2 = 15;
             aPop = new Array(['txtSalesno', 'lblSales', 'sss', 'noa,namea', 'txtSalesno,txtSales', 'sss_b.aspx']);
-
+			
+			var custtype;
             $(document).ready(function() {
                 bbmKey = ['noa'];
                 q_brwCount();
-                
-                q_gt('acomp', "where=^^left(acomp,2)='峻富'^^", 0, 0, 0, 'acomp');
+                q_gt('custtype', "", 0, 0, 0, 'custtype');
             });
 
             function main() {
@@ -46,8 +46,30 @@
                 mainForm(0);
             }
 
+			function AddDataList(elementid,string){
+				var obj = $('#'+elementid);
+				var dl_id = guid();
+				var options = '<datalist id="'+dl_id+'">';
+				var data = string.split(',');
+				for(var i=0;i<data.length;i++){
+					options += '<option value="'+data[i]+'"></option>';
+                }
+                options+='</datalist>';
+				obj.attr('list',dl_id);
+				$(options).insertAfter(obj);
+			}
+			var guid = (function() {
+				function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);}
+				return function() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' +s4() + '-' + s4() + s4() + s4();};
+			})();
+			
             function mainPost() {
                 q_mask(bbmMask);
+                AddDataList('txtTypea',t_custtype);
+                $('#lblTypea').click(function() {
+                    t_where = "";
+                    q_box("custtype.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'custtype', "95%", "95%", q_getMsg('lblTypea'));
+                });   
                 $('#txtNoa').change(function(e){
                 	$(this).val($.trim($(this).val()).toUpperCase());    	
 					if($(this).val().length>0){
@@ -70,15 +92,21 @@
 	            	}
                 });
                 $('#btnConn').click(function() {
+                	switch(q_getPara('sys.project')){
+                		case 'WH':
+                			
+                			break;
+                		default:
+                			break;
+                	}
+                	
                     t_where = "noa='" + $('#txtNoa').val() + "'";
                     q_box("conn_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "95%", "85%", q_getMsg('btnConn'));
                 });
                 
-                
-                
                 $('#btnDetail').click(function() {
                     t_where = "noa='" + $('#txtNoa').val() + "'";
-                    q_box("custdetail_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'custdetail', "95%", "650px", q_getMsg('btnDetail'));
+                    q_box("custdetail_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'custdetail', "95%", "95%", q_getMsg('btnDetail'));
                 });
                 $('#txtUacc1').change(function(e){
                 	var patt = /^(\d{4})([^\.,.]*)$/g;
@@ -109,6 +137,16 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'custtype':
+                		t_custtype = new Array();
+                		var as = _q_appendData("custtype", "", true);
+                		if (as[0] != undefined){
+                			for(var i=0;i<as.length;i++){
+                				t_custtype += (t_custtype.length>0?',':'')+as[i].namea;
+                			}	
+                		}
+                		q_gt('acomp', "where=^^left(acomp,2)='峻富'^^", 0, 0, 0, 'acomp');
+                		break;
                 	case 'acomp':
                 		var as = _q_appendData("acomp", "", true);
                         if (as[0] != undefined){
@@ -477,10 +515,10 @@
 						<td><input id="txtNoa"  type="text" class="txt c1"/></td>
 						<td><span> </span><a id="lblSerial" class="lbl"> </a></td>
 						<td><input id="txtSerial"  type="text"  class="txt c1"/></td>
-						<td><span> </span><a id="lblTypea" class="lbl" style="display:none;"> </a></td>
+						<td><span> </span><a id="lblTypea" class="lbl btn">類型</a></td>
 						<td>
-							<input type="button" id="btnHistory" value="歷史報價" style="display:none;"/>
-							<select id="cmbTypea"  class="txt c1" style="display:none;"> </select>
+							<input id="txtTypea" type="text" class="txt c1"/>
+							<!--<select id="cmbTypea"  class="txt c1" style="display:none;"> </select>-->
 						</td>
 					</tr>
 					<tr>
@@ -510,8 +548,9 @@
 					</tr>
 					<tr>
 						<td> </td>
-						<td><input id="btnDetail" type="button" /></td>
-						<td><input id="btnConn" type="button" /></td>
+						<td><input id="btnDetail" type="button" style="width:100px;"/></td>
+						<td><input id="btnConn" type="button"  style="width:100px;"/></td>
+						<td><input type="button" id="btnHistory" value="歷史報價" style="width:100px;display:none;"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblAddr_fact" class="lbl"> </a></td>
