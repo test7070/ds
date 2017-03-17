@@ -161,7 +161,7 @@
                     }
                     t_vccano = 'vccano=' + $('#txtVccano').val();
                     /*未請款發票才抓*/
-                    t_where = "  buyerno='" + $('#txtCustno').val() + "' and (trdno='" + $('#txtNoa').val() + "' or len(isnull(trdno,''))=0) ";
+                    t_where = " (custno='" + $('#txtCustno').val() + "' or buyerno='" + $('#txtCustno').val() + "')and (trdno='" + $('#txtNoa').val() + "' or len(isnull(trdno,''))=0) and taxtype!='6'";
                     q_box("vcca_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_vccano + ";", 'vcca1', "95%", "650px", q_getMsg('popVcca'));
                 });
                 
@@ -293,7 +293,15 @@
                		 	var tmp = $('#txtVccano').val().split(',');
                     	for (var i in tmp)
                    			t_where += (t_where.length > 0 ? ' or ' : '') + "noa='" + tmp[i] + "'";
-                		q_box("vcca_ds.aspx?"+ r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno+";ORIGIN=TRD&ORGCUSTNO="+$('#txtCustno').val()+"&CUSTNO2="+t_custno2+"&CUST2="+t_cust2, 'vcca', "95%", "95%", q_getMsg("popVcca"));
+                		
+                		switch(q_getPara('sys.project').toUpperCase()){
+                			case 'ES':
+                				q_box("vcca.aspx?"+ r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno+";ORIGIN=TRD&ORGCUSTNO="+$('#txtCustno').val()+"&CUSTNO2="+t_custno2+"&CUST2="+t_cust2, 'vcca', "95%", "95%", q_getMsg("popVcca"));
+                				break;
+                			default:
+                				q_box("vcca_ds.aspx?"+ r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";" + r_accy + '_' + r_cno+";ORIGIN=TRD&ORGCUSTNO="+$('#txtCustno').val()+"&CUSTNO2="+t_custno2+"&CUST2="+t_cust2, 'vcca', "95%", "95%", q_getMsg("popVcca"));
+                				break;
+                		}
                 		break;
                     case 'custchg':
                         var as = _q_appendData("custchg", "", true);
