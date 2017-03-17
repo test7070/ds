@@ -34,8 +34,13 @@
             brwNowPage = 0;
             brwKey = 'Datea';
             q_desc = 1;
-            aPop = new Array();
-
+            aPop = aPop = new Array(['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
+            , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp', 'txtTggno,txtTgg', 'tgg_b.aspx']
+            , ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
+            , ['txtBdriverno', '', 'driver', 'noa,namea', 'txtBdriverno', 'driver_b.aspx']
+            , ['txtEdriverno', '', 'driver', 'noa,namea', 'txtEdriverno', 'driver_b.aspx']
+            , ['textDriverno_import', 'lblDriverno_import', 'driver', 'noa,namea', 'textDriverno_import', 'driver_b.aspx']);
+            
             q_xchg = 1;
             brwCount2 = 20;
 			var t_carteam = "";
@@ -156,7 +161,7 @@
                    			var t_date = $('#txtDatea_import').val();
                    			var t_bdate = $('#txtBdate_import').val();
                    			var t_edate = $('#txtEdate_import').val();
-                   			var t_driverno = $('#txtDriverno_import').val();
+                   			var t_driverno = $('#textDriverno_import').val();
                    			
                    			q_func('qtxt.query.tre_import_dh', 'tre.txt,tre_import_dh,' 
                    				+ encodeURI(t_noa) + ';'
@@ -170,7 +175,7 @@
 			            		return;
 			            	}
 							Lock(1,{opacity:0});
-		                	q_func('tre.import_ds',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name+','+$('#txtDriverno_import').val());
+		                	q_func('tre.import_ds',r_accy+','+$('#cmbCarteamno_import').val()+','+$('#txtBdate_import').val()+','+$('#txtEdate_import').val()+','+$('#txtDatea_import').val()+','+r_name+','+$('#textDriverno_import').val());
                    		}
                 	}
                 });
@@ -738,15 +743,15 @@
 				<tr style="height:35px;">
 					<td><span> </span><a id="lblDriverno_import" style="float:right; color: blue; font-size: medium;"> </a></td>
 					<td colspan="4">
-						<input id="txtDriverno_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
+						<input id="textDriverno_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
 					</td>
 				</tr>
-				<tr style="height:35px;" class="DH_hide">
+				<!--<tr style="height:35px;" class="DH_hide">
 					<td><span> </span><a id="lblCarno_import" style="float:right; color: blue; font-size: medium;">車牌</a></td>
 					<td colspan="4">
 						<input id="txtCarno_import"  type="text" style="float:left; width:100px; font-size: medium;"/>
 					</td>
-				</tr>
+				</tr>-->
 				<tr style="height:35px;">
 					<td> </td>
 					<td>
