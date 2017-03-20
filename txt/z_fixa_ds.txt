@@ -403,11 +403,11 @@ z_fixa_ds02:--z_fixa_ds02
 	--------------------------------------------------------------------------------------
 	SET QUOTED_IDENTIFIER OFF
 	declare @cmd nvarchar(max)
+	declare @t_btggno nvarchar(20) = case when '#non'=[5] then '' else [5] end
+	declare @t_etggno nvarchar(20) = case when '#non'=[6] then CHAR(255) else [6] end
 	declare @t_bnoa nvarchar(20)= case when '#non'=[11] then '' else [11] end
 	declare @t_enoa nvarchar(20)= case when '#non'=[12] then CHAR(255) else [12] end
 	declare @t_product nvarchar(max) = case when '#non'=[13] then '' else [13] end
-	declare @t_btggno nvarchar(20) = case when '#non'=[5] then '' else [5] end
-	declare @t_etggno nvarchar(20) = case when '#non'=[6] then CHAR(255) else [6] end
 	--------------------------------------------------------------------------------------
 	select '1' gno
 		,ROW_NUMBER()over(order by noa) rr 
