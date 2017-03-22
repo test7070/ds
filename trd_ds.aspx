@@ -161,7 +161,7 @@
                     }
                     t_vccano = 'vccano=' + $('#txtVccano').val();
                     /*未請款發票才抓*/
-                    t_where = " (custno='" + $('#txtCustno').val() + "' or buyerno='" + $('#txtCustno').val() + "')and (trdno='" + $('#txtNoa').val() + "' or len(isnull(trdno,''))=0) and taxtype!='6'";
+                    t_where = " (custno='" + $('#txtCustno').val() + "' or buyerno='" + $('#txtCustno').val() + "' or serial=(select serial from cust where noa='" + $('#txtCustno').val() + "'))and (trdno='" + $('#txtNoa').val() + "' or len(isnull(trdno,''))=0) and taxtype!='6'";
                     q_box("vcca_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_vccano + ";", 'vcca1', "95%", "95%", q_getMsg('popVcca'));
                 });
                 
