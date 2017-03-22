@@ -138,7 +138,7 @@
             function q_gtPost(t_name) {
                 switch (t_name) {
                 	case 'custtype':
-                		t_custtype = new Array();
+                		t_custtype ='';
                 		var as = _q_appendData("custtype", "", true);
                 		if (as[0] != undefined){
                 			for(var i=0;i<as.length;i++){
