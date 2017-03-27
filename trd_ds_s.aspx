@@ -43,18 +43,19 @@
                 t_invono = $.trim($('#txtInvono').val());
                 t_umm = $.trim($('#cmbUmm').val());
                 t_tranno = $.trim($('#txtTranno').val());
-
+				t_memo = $.trim($('#txtMemo').val());
+				
                 var t_where = " 1=1 and (len(isnull(datea,''))!=9 or datea>='101/08/01') " + q_sqlPara2("noa", t_noa) + q_sqlPara2("custno", t_custno) + q_sqlPara2("mon", t_mon) + q_sqlPara2("datea", t_bdate, t_edate);
                 if (t_comp.length > 0)
-                    t_where += " and charindex('%" + t_comp + "%',comp)>0";
+                    t_where += " and charindex('" + t_comp + "',comp)>0";
                 if (t_invono.length > 0)
-                    t_where += " and charindex('%" + t_invono + "%',vccano)>0";
+                    t_where += " and charindex('" + t_invono + "',vccano)>0";
                 if (t_umm == 'Y')
                     t_where += " and unpay=0";
                 if (t_umm == 'N')
                     t_where += " and unpay!=0";
                 if (t_memo.length >0)
-                    t_where += " and charindex('%" + t_memo + "%',memo)>0";
+                    t_where += " and charindex('" + t_memo + "',memo)>0";
                 if(t_tranno.length>0)
 		       		t_where += " and exists(select noa from view_trds"+r_accy+" where view_trds"+r_accy+".noa=view_trd"+r_accy+".noa and view_trds"+r_accy+".tranno='"+t_tranno+"')";
                 t_where = ' where=^^' + t_where + '^^ ';
@@ -119,6 +120,12 @@
 					<td class='seek'  style="width:20%;"><a id='lblTranno'></a></td>
 					<td>
 					<input class="txt" id="txtTranno" type="text" style="width:215px; font-size:medium;" />
+					</td>
+				</tr>
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblMemo'>備註</a></td>
+					<td>
+					<input class="txt" id="txtMemo" type="text" style="width:215px; font-size:medium;" />
 					</td>
 				</tr>
 			</table>
