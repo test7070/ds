@@ -857,7 +857,7 @@
 						<td align="center" style="width:70px; color:black;"><a id="vewTotal"> </a> </td>
 						<td align="center" style="width:70px; color:black;"><a id="vewMount"> </a> </td>
 						<td align="center" style="width:100px; color:black;"><a id="vewVccano"> </a></td>
-						<td align="center" style="width:70px; color:black;"><a id="vewUnpay"> </a></td>
+						<td align="center" style="width:150px; color:black;"><a id="vewMemo">備註</a></td>
 					</tr>
 					<tr>
 						<td ><input id="chkBrow.*" type="checkbox"/></td>
@@ -870,7 +870,7 @@
 						<td id="total,0,1" style="text-align: right;">~total,0,1</td>
 						<td id="mount" style="text-align: right;">~mount</td>
 						<td id="vccano,10" style="text-align: left;" >~vccano,10</td>
-						<td id="unpay,0,1" style="text-align: right;">~unpay,0,1</td>
+						<td id="memo" style="text-align: left;">~memo</td>
 					</tr>
 				</table>
 			</div>

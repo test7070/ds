@@ -46,13 +46,15 @@
 
                 var t_where = " 1=1 and (len(isnull(datea,''))!=9 or datea>='101/08/01') " + q_sqlPara2("noa", t_noa) + q_sqlPara2("custno", t_custno) + q_sqlPara2("mon", t_mon) + q_sqlPara2("datea", t_bdate, t_edate);
                 if (t_comp.length > 0)
-                    t_where += " and patindex('%" + t_comp + "%',comp)>0";
+                    t_where += " and charindex('%" + t_comp + "%',comp)>0";
                 if (t_invono.length > 0)
-                    t_where += " and patindex('%" + t_invono + "%',vccano)>0";
+                    t_where += " and charindex('%" + t_invono + "%',vccano)>0";
                 if (t_umm == 'Y')
                     t_where += " and unpay=0";
                 if (t_umm == 'N')
                     t_where += " and unpay!=0";
+                if (t_memo.length >0)
+                    t_where += " and charindex('%" + t_memo + "%',memo)>0";
                 if(t_tranno.length>0)
 		       		t_where += " and exists(select noa from view_trds"+r_accy+" where view_trds"+r_accy+".noa=view_trd"+r_accy+".noa and view_trds"+r_accy+".tranno='"+t_tranno+"')";
                 t_where = ' where=^^' + t_where + '^^ ';
