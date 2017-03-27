@@ -203,8 +203,9 @@
                 		var t_key = q_getPara('sys.key_trd');
                    		var t_mon = $('#textMon').val();//帳款月份
                    		var t_type = $('#combType').val();
+                   		var t_getdate = $('#textGetdate').val();//收款日
                    		t_key = (t_key.length==0?'BF':t_key);//一定要有值
-                   		q_func('qtxt.query.trd_import_es', 'trd.txt,import_es,' + encodeURI(t_key) + ';'+ encodeURI(t_mon) + ';'+ encodeURI(t_type));
+                   		q_func('qtxt.query.trd_import_es', 'trd.txt,import_es,' + encodeURI(t_key) + ';'+ encodeURI(t_mon) + ';'+ encodeURI(t_type) + ';'+ encodeURI(t_getdate));
                 	}
                 });
                 
@@ -818,20 +819,20 @@
 					<select id="combType"  style="float:left; width:100px; font-size: medium;"> </select>
 					</td>
 				</tr>
-				<!--<tr style="height:35px;">
-					<td><span> </span><a style="float:right; color: blue; font-size: medium;">立帳日期</a></td>
+				<tr style="height:35px;">
+					<td><span> </span><a style="float:right; color: blue; font-size: medium;">收款日</a></td>
 					<td colspan="4">
-					<input id="textDate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					<input id="textGetdate" list="listGetdate" type="text" style="float:left; width:100px; font-size: medium;"/>
+					<datalist id="listGetdate">
+						<option value=''> </option>
+						<option value='10'> </option>
+						<option value='15'> </option>
+						<option value='20'> </option>
+						<option value='25'> </option>
+					</datalist>
+					
 					</td>
 				</tr>
-				<tr style="height:35px;">
-					<td><span> </span><a style="float:right; color: blue; font-size: medium;">取貨日期</a></td>
-					<td colspan="4">
-					<input id="textBdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
-					<span style="float:left; display:block; width:25px;"><a>～</a></span>
-					<input id="textEdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
-					</td>
-				</tr>-->
 				<tr style="height:35px;">
 					<td> </td>
 					<td><input id="btnImport_trans" type="button" value="匯入"/></td>
