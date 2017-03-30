@@ -215,6 +215,17 @@
             }
 			function q_funcPost(t_func, result) {
                 switch(t_func) {
+                	case 'qtxt.query.trd2vcca':
+            			var as = _q_appendData("tmp0", "", true, true);
+                        if (as[0] != undefined) {
+                        	if(as[0].status=='1'){
+                        		$('#txtVccano').val(as[0].invoice);
+                        		$('#txtTax').val(as[0].tax);
+                        		$('#txtTotal').val(as[0].total);
+                        	}
+                        	alert(as[0].msg);
+                        }
+            			break;
             		case 'qtxt.query.trd_import_es':
             			var as = _q_appendData("tmp0", "", true, true);
                         if (as[0] != undefined) {
@@ -403,6 +414,18 @@
                 if(string[3]!=undefined){
                 	abbm[q_recno]['year2'] = string[3];
                		//$('#txtYear2').val(string[3]);
+                }
+                //存檔產生發票
+                switch(q_getPara('sys.project').toUpperCase()){
+                	case 'DC':
+                		var t_vccano = $.trim($('#txtVccano').val());
+                		var t_money = q_float('txtMoney');
+                		var t_noa = $.trim($('#txtNoa').val());
+                		if(t_vccano.length==0 && t_money>0)
+                			q_func('qtxt.query.trd2vcca', 'trd.txt,trd2vcca,' + encodeURI(t_noa)); 
+                		break;
+                	default:
+                		break;
                 }
                 Unlock(1);
             }
