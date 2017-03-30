@@ -417,7 +417,7 @@
                 }
                 //存檔產生發票
                 switch(q_getPara('sys.project').toUpperCase()){
-                	case 'DC':
+                	case 'WH':
                 		var t_vccano = $.trim($('#txtVccano').val());
                 		var t_money = q_float('txtMoney');
                 		var t_noa = $.trim($('#txtNoa').val());
