@@ -518,6 +518,9 @@
 
             function btnPrint() {
             	switch(q_getPara('sys.project').toUpperCase()){
+            		case 'AT':
+            			q_box("z_trd_at.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
+            			break;
             		case 'VA':
             			q_box('z_trd_va.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
             			break;
@@ -526,13 +529,9 @@
 		                    noa : trim($('#txtNoa').val())
 		                }) + ";" + r_accy + "_" + r_cno, 'trans', "95%", "95%", m_print);
             			break;
-            		default:
-            			var t_aspx = r_comp.indexOf('金勇')>=0?'z_trd_at.aspx':'z_trd_ds.aspx';
-	            	var t_noa = $('#txtNoa').val();
-	                if(t_noa.length>0 ){
-	                    q_box(t_aspx+"?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
-	                }
-            			break;	
+        			default:
+        				q_box("z_trd_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
+        				break;
             	}
             }
 
