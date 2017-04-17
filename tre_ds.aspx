@@ -76,6 +76,9 @@
 				q_cmbParse("cmbCarteamno", t_carteam);
                 q_cmbParse("cmbCarteamno_import", t_carteam);
                 
+                
+                
+                
                 $('#lblAccno').click(function() {
                     q_pop('txtAccno', "accc.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";accc3='" + $('#txtAccno').val() + "';" + $('#txtYear1').val() + '_' + r_cno, 'accc', 'accc3', 'accc2', "92%", "1054px", q_getMsg('popAccc'), true);
                 });
@@ -382,6 +385,14 @@
 				},function(e){
 					$(this).parent().css('background','#cad3ff');
 				});
+				switch(q_getPara('sys.project').toUpperCase()){
+                	case 'DS':
+                		$('#lblTrandate_x').text('登錄日期');
+                		break;
+                	default:
+                		$('#lblTrandate_x').text('交運日期');
+                		break;
+                }
             }
 
             function btnIns() {
@@ -902,7 +913,7 @@
 					<input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  />
 					</td>
 					<td align="center" style="width:20px;"></td>
-					<td align="center" style="width:100px;"><a id='lblTrandate_s'> </a></td>
+					<td align="center" style="width:100px;"><a id='lblTrandate_x'> </a></td>
 
 					<td align="center" style="width:80px;"><a id='lblCustno_s'> </a></td>
 
