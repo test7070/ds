@@ -344,8 +344,8 @@
                         
                         switch(q_getPara('sys.project').toUpperCase()){
                         	case 'ES':
-                        		q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
-                        , as.length, as, 'price,accy,trandate,noa,noq,carno,aaddr,endaddr,total,caseno,mount,custdiscount,total,custorde,product,memo', '','');
+                        		q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo,txtOthercost'
+                        , as.length, as, 'price,accy,trandate,noa,noq,carno,aaddr,endaddr,total,caseno,mount,custdiscount,total,custorde,product,memo,reserve', '','');
                         		break;
                         	default:
                         		q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
@@ -563,6 +563,17 @@
             function sum() {
                 if (!(q_cur == 1 || q_cur == 2))
                     return;
+                
+                if(q_getPara('sys.project').toUpperCase()=='ES'){
+                	if($('#txtVccano').val().length == 0){
+                		var t_tax = 0;
+                		for ( i = 0; i < q_bbsCount; i++) {
+		                    t_tax = t_tax.add(q_float('txtOthercost_' + i));
+		                }
+                		$('#txtTax').val(t_tax);
+                	}
+                }    
+                    
                	//小數 可能會有問題需注意
                 var t_money = 0,t_mount = 0;
                 for ( i = 0; i < q_bbsCount; i++) {
@@ -1093,6 +1104,7 @@
 					<td class="ES_hide"><input type="text" id="txtCustdiscount.*" style="width:95%;text-align: right;" /></td>
 					<td >
 					<input type="text" id="txtTotal.*" style="width:95%;text-align: right;" />
+					<input type="text" id="txtOthercost.*" style="display:none;" />
 					</td>
 					<td >
 					<input type="text" id="txtCarno.*" style="width:95%;" />
