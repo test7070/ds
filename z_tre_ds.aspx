@@ -53,29 +53,32 @@
 						type : '0',
 						name : 'accy',
 						value : q_getId()[4]
-					}, {
-						type : '1',
+					}, {//   1
+						type : '1',   
 						name : 'date'
-					}, {
+					}, {//   2
 						type : '2',
 						name : 'tgg',
 						dbf : 'tgg',
 						index : 'noa,comp',
 						src : 'tgg_b.aspx'
-					}, {
+					}, {//   3
 						type : '2',
 						name : 'driver',
 						dbf : 'driver',
 						index : 'noa,namea',
 						src : 'driver_b.aspx'
-					}, {
+					}, {//   4
 						type : '8', //select
 						name : 'xcarteam',
 						value : t_carteam.split(',')
-					}, {
+					}, {//   5
                         type : '5',
                         name : 'xacomp',
                         value : t_acomp.split(',')
+                    }, {//   6   [10]
+                        type : '6',
+                        name : 'xtreno'
                     }]
 				});
 				q_popAssign();
