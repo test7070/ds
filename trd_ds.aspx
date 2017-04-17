@@ -341,8 +341,18 @@
                         break;
                     case 'trd_tran':
                         var as = _q_appendData("view_trans", "", true);
-                        q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
+                        
+                        switch(q_getPara('sys.project').toUpperCase()){
+                        	case 'ES':
+                        		q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
+                        , as.length, as, 'price,accy,trandate,noa,noq,carno,aaddr,endaddr,total,caseno,mount,custdiscount,total,custorde,product,memo', '','');
+                        		break;
+                        	default:
+                        		q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
                         , as.length, as, 'price,accy,trandate,noa,noq,carno,straddr,endaddr,total,caseno,mount,custdiscount,total,custorde,product,memo', '','');
+                        		break;
+                        }
+                        
                         for ( i = 0; i < q_bbsCount; i++) {
                             if (i < as.length) {
                             }else{
@@ -436,11 +446,11 @@
             		Unlock(1);
             		return;
 				}
-				if($('#txtDatea').val().substring(0,3)!=r_accy){
+				/*if($('#txtDatea').val().substring(0,3)!=r_accy){
 					alert('年度異常錯誤，請切換到【'+$('#txtDatea').val().substring(0,3)+'】年度再作業。');
 					Unlock(1);
             		return;
-				}
+				}*/
                 if ($('#txtMon').val().length > 0 && !(/^[0-9]{3}\/(?:0?[1-9]|1[0-2])$/g).test($('#txtMon').val())){
                     alert(q_getMsg('lblMon') + '錯誤。');
                     Unlock(1);
