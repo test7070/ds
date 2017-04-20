@@ -52,6 +52,11 @@
             }
 
             function mainPost() {
+            	//再興要能修正稅額
+            	if(q_getPara('sys.project').toUpperCase()=='ES'){
+            		q_readonly = ['txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount','txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
+            	}
+            	$('#txtTax').change(function(e){sum();});
             	//DH  有起點、迄點
             	if(q_getPara('sys.project').toUpperCase()=='DH'){
             		aPop = new Array(['txtCustno', 'lblCust', 'cust', 'noa,comp,nick', 'txtCustno,txtComp,txtNick', 'cust_b.aspx']
@@ -565,7 +570,7 @@
                     return;
                 
                 if(q_getPara('sys.project').toUpperCase()=='ES'){
-                	if($('#txtVccano').val().length == 0){
+                	if($('#txtVccano').val().length == 0 ){
                 		var t_tax = 0;
                 		for ( i = 0; i < q_bbsCount; i++) {
 		                    t_tax = t_tax.add(q_float('txtOthercost_' + i));
