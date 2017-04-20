@@ -14,6 +14,11 @@
 		<script src="css/jquery/ui/jquery.ui.widget.js"></script>
 		<script src="css/jquery/ui/jquery.ui.datepicker_tw.js"></script>
 		<script type="text/javascript">
+			/*	用 vcca2_b.aspx
+			 *  TRD只能匯入一張VCCA    
+			 *  VCCA能匯入多張TRD
+			 */
+			
             this.errorHandler = null;
             function onPageError(error) {
                 alert("An error occurred:\r\n" + error.Message);
@@ -158,16 +163,28 @@
                     q_box("custchg_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_custchgno + ";", 'custchg', "95%", "650px", q_getMsg('popCustchg'));
                 });
                 $("#btnVcca").click(function(e) {
-                    Lock(1,{opacity:0});
-                    if ($('#txtCustno').val().length == 0) {
-                        alert('請輸入客戶編號!');
-                        Unlock(1);
-                        return;
-                    }
-                    t_vccano = 'vccano=' + $('#txtVccano').val();
-                    /*未請款發票才抓*/
-                    t_where = " (custno='" + $('#txtCustno').val() + "' or buyerno='" + $('#txtCustno').val() + "' or serial=(select serial from cust where noa='" + $('#txtCustno').val() + "'))and (trdno='" + $('#txtNoa').val() + "' or len(isnull(trdno,''))=0) and taxtype!='6'";
-                    q_box("vcca_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_vccano + ";", 'vcca1', "95%", "95%", q_getMsg('popVcca'));
+                	if(q_getPara('sys.project').toUpperCase()=='ES'){
+                		var t_where ='';
+                		var t_custno = $.trim($('#txtCustno').val());
+	                	var t_trdno = $.trim($('#txtNoa').val());
+	                	var t_vccano = $.trim($('#txtVccano').val());
+	                	if(t_custno.length==0){
+	                		alert('請輸入客戶編號!');
+	                		return;
+	                	}
+	                	q_box("vcca2trd_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where+";"+";"+JSON.stringify({project:q_getPara('sys.project').toUpperCase(),custno:t_custno,vccano:t_vccano,trdno:t_trdno}), "vcca2trd", "95%", "95%", '');
+                	}else{
+                		Lock(1,{opacity:0});
+	                    if ($('#txtCustno').val().length == 0) {
+	                        alert('請輸入客戶編號!');
+	                        Unlock(1);
+	                        return;
+	                    }
+	                    t_vccano = 'vccano=' + $('#txtVccano').val();
+	                    /*未請款發票才抓*/
+	                    t_where = " (custno='" + $('#txtCustno').val() + "' or buyerno='" + $('#txtCustno').val() + "' or serial=(select serial from cust where noa='" + $('#txtCustno').val() + "'))and (trdno='" + $('#txtNoa').val() + "' or len(isnull(trdno,''))=0) and taxtype!='6'";
+	                    q_box("vcca_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where + ";;" + t_vccano + ";", 'vcca1', "95%", "95%", q_getMsg('popVcca'));
+                	}
                 });
                 
                 if(q_getPara('sys.project').toUpperCase()!="VA"){
@@ -378,6 +395,14 @@
             function q_boxClose(s2) {
                 var ret;
                 switch (b_pop) {
+                	case 'vcca2trd':
+                		as = b_ret;
+                		if(as!=undefined && as[0]!=undefined){
+                			$('#txtVccano').val(as[0].noa);
+                			$('#txtTax').val(as[0].tax3);
+                		}
+                		sum();
+                		break;
                     case 'custchg':
                         if (b_ret != null) {
                             var t_where = '1!=1'; 
