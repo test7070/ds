@@ -559,6 +559,11 @@
 
             function btnPrint() {
             	switch(q_getPara('sys.project').toUpperCase()){
+            		case 'ES':
+            			q_box('z_trans_es.aspx?' + r_userno + ";" + r_name + ";" + q_time + ";" + JSON.stringify({
+		                    noa : trim($('#txtNoa').val())
+		                }) + ";" + r_accy + "_" + r_cno, 'trans', "95%", "95%", m_print);
+		                break;
             		case 'AT':
             			q_box("z_trd_at.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
             			break;
