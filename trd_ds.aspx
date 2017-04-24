@@ -168,11 +168,12 @@
                 		var t_custno = $.trim($('#txtCustno').val());
 	                	var t_trdno = $.trim($('#txtNoa').val());
 	                	var t_vccano = $.trim($('#txtVccano').val());
+	                	var t_condition = "";
 	                	if(t_custno.length==0){
 	                		alert('請輸入客戶編號!');
 	                		return;
 	                	}
-	                	q_box("vcca2trd_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where+";"+";"+JSON.stringify({project:q_getPara('sys.project').toUpperCase(),custno:t_custno,vccano:t_vccano,trdno:t_trdno}), "vcca2trd", "95%", "95%", '');
+	                	q_box("vcca2trd_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where+";"+";"+JSON.stringify({project:q_getPara('sys.project').toUpperCase(),custno:t_custno,vccano:t_vccano,trdno:t_trdno,condition:t_condition}), "vcca2trd", "95%", "95%", '');
                 	}else{
                 		Lock(1,{opacity:0});
 	                    if ($('#txtCustno').val().length == 0) {
