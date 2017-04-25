@@ -14,10 +14,6 @@
 		<script src="css/jquery/ui/jquery.ui.widget.js"></script>
 		<script src="css/jquery/ui/jquery.ui.datepicker_tw.js"></script>
 		<script type="text/javascript">
-			/*	用 vcca2_b.aspx
-			 *  TRD只能匯入一張VCCA    
-			 *  VCCA能匯入多張TRD
-			 */
 			
             this.errorHandler = null;
             function onPageError(error) {
