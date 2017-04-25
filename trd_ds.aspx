@@ -59,7 +59,7 @@
             function mainPost() {
             	//再興要能修正稅額
             	if(q_getPara('sys.project').toUpperCase()=='ES'){
-            		q_readonly = ['txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount','txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
+            		q_readonly = ['txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount','txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
             	}
             	$('#txtTax').change(function(e){sum();});
             	//DH  有起點、迄點
@@ -399,8 +399,13 @@
                 	case 'vcca2trd':
                 		as = b_ret;
                 		if(as!=undefined && as[0]!=undefined){
-                			$('#txtVccano').val(as[0].noa);
-                			$('#txtTax').val(as[0].tax3);
+                			var t_vcca = '',t_tax=0;
+                			for(var i=0;i<as.length;i++){
+                				t_vcca += (t_vcca.length>0?',':'')+as[i].noa;
+                				t_tax += parseFloat(as[i].tax3);
+                			}
+                			$('#txtVccano').val(t_vcca);
+                			$('#txtTax').val(t_tax);
                 		}
                 		sum();
                 		break;
