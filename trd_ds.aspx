@@ -577,7 +577,7 @@
 		                }) + ";" + r_accy + "_" + r_cno, 'trans', "95%", "95%", m_print);
             			break;
         			default:
-        				q_box("z_trd_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + t_noa + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
+        				q_box("z_trd_ds.aspx?" + r_userno + ";" + r_name + ";" + q_time + "; noa='" + trim($('#txtNoa').val()) + "';" + r_accy, 'trans', "95%", "95%", q_getMsg("popTrans"));
         				break;
             	}
             }
