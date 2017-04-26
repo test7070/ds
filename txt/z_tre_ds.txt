@@ -23,30 +23,7 @@ z_tre_ds06:--z_tre_ds06  ref z_tre_ds02   papersize A4
 	-------------------------------------------------------------------------------
 	declare @string nvarchar(max)
 	declare @n int
-	--解析要計算的種類
-	IF OBJECT_ID('tempdb..#carteam')is not null
-	BEGIN
-		set @cmd = 'drop table #carteam'
-		EXECUTE sp_executesql @cmd
-	END
-	create table #carteam(
-		noa nvarchar(20)
-	)
-	set @string = @t_carteamno
-	while(1=1)
-	begin
-		set @n = PATINDEX('%,%',@string)
-		if @n=0
-		begin
-			if LEN(@string)>0
-			begin
-				insert into #carteam select @string
-			end
-			break
-		end
-		insert into #carteam select LEFT(@string,@n-1)	
-		set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
-	end
+	
 	---------------------------------------------------------------
 	IF OBJECT_ID('tempdb..#z_tre_ds02 ')is not null
 	BEGIN
@@ -109,15 +86,19 @@ z_tre_ds06:--z_tre_ds06  ref z_tre_ds02   papersize A4
 		ztotal2 float,
 		po nvarchar(50)
 	)
-	set @cmd = 
-	" select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driver,d.driver,b.carteamno,g.team
+	insert into #z_tre_ds02 (pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
+		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
+		,inmount,pton,mount,price,total
+		,outmount,pton2,mount2,price2,price3,discount,total2
+		,tolls,memo,po) 
+	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driver,d.driver,b.carteamno,g.team
 		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
 		,d.inmount,d.pton,d.mount,d.price,d.total
 		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
 		,d.tolls,d.memo,d.po
 	 from view_tre b
 	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
-	 left join #carteam c on b.carteamno=c.noa
+	
 	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
 	 left join tgg e on b.tggno=e.noa
 	 left join cust f on d.custno=f.noa
@@ -125,14 +106,8 @@ z_tre_ds06:--z_tre_ds06  ref z_tre_ds02   papersize A4
 	 where (b.noa is not null)
 	 --and len(d.driverno)>0
 	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
-	 and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)"
-	insert into #z_tre_ds02 (pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
-		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
-		,inmount,pton,mount,price,total
-		,outmount,pton2,mount2,price2,price3,discount,total2
-		,tolls,memo,po)
-	execute sp_executesql @cmd,N'@t_bdate nvarchar(10),@t_edate nvarchar(10),@t_bdriverno nvarchar(20),@t_edriverno nvarchar(20)'
-	,@t_bdate=@t_bdate,@t_edate=@t_edate,@t_bdriverno=@t_bdriverno,@t_edriverno=@t_edriverno
+	 and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
 	---------------------------------------------------------------------------------------------
 	declare @treno nvarchar(20)
 	declare @carchgno nvarchar(max)
@@ -293,10 +268,11 @@ z_tre_ds06:--z_tre_ds06  ref z_tre_ds02   papersize A4
 			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
 			values(@page,@n%@rowline,'4',@driverno,@driver
 			,CAST(@recno+1-@xx as nvarchar),@trandate,@carno,@addr,@product
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3) 
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@price)),1)),4,12))+'.'+RIGHT(CAST(@price as nvarchar),3) 
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)),@po
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@discount)),1)),4,12))+'.'+RIGHT(CAST(@discount as nvarchar),3))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1))
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -356,8 +332,9 @@ z_tre_ds06:--z_tre_ds06  ref z_tre_ds02   papersize A4
 			,g41,g42,g43,g44,g45,g46)
 			values(@page,@n%@rowline,'5',@driverno,@driver
 			,CAST(@recno+1-@xx as nvarchar),@datea,@item
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12)),@memo)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,@memo)
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -411,21 +388,21 @@ z_tre_ds06:--z_tre_ds06  ref z_tre_ds02   papersize A4
 		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
 		insert into @tmp(page,n,gno,driverno,driver,g51,g52,g53,g54,g55)
 			values(@page,@n%@rowline,'6',@driverno,@driver
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@money),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
 		
 		set @curline = @curline + 1
 		set @n = @n + 1
 		insert into @tmp(page,n,gno,driverno,driver,g51,g52,g53,g54,g55)
 			values(@page,@n%@rowline,'7',@driverno,@driver
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@money),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
 			
 		update @tmp set cpage=page+1,tpage=@page+1 where driverno=@driverno
 		---------------------------------------------------
@@ -466,30 +443,7 @@ z_tre_ds04:--z_tre_ds04  ref z_tre_ds02
 	-------------------------------------------------------------------------------
 	declare @string nvarchar(max)
 	declare @n int
-	--解析要計算的種類
-	IF OBJECT_ID('tempdb..#carteam')is not null
-	BEGIN
-		set @cmd = 'drop table #carteam'
-		EXECUTE sp_executesql @cmd
-	END
-	create table #carteam(
-		noa nvarchar(20)
-	)
-	set @string = @t_carteamno
-	while(1=1)
-	begin
-		set @n = PATINDEX('%,%',@string)
-		if @n=0
-		begin
-			if LEN(@string)>0
-			begin
-				insert into #carteam select @string
-			end
-			break
-		end
-		insert into #carteam select LEFT(@string,@n-1)	
-		set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
-	end
+	
 	---------------------------------------------------------------
 	IF OBJECT_ID('tempdb..#z_tre_ds02 ')is not null
 	BEGIN
@@ -553,29 +507,28 @@ z_tre_ds04:--z_tre_ds04  ref z_tre_ds02
 		po nvarchar(50)
 	)
 
-	set @cmd = 
-	" select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team"+
-	"	,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product"+
-	"	,d.inmount,d.pton,d.mount,d.price,d.total"+
-	"	,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2"+
-	"	,d.tolls,d.memo,d.po"+
-	" from view_tre"+@t_accy+" b"+
-	" left join view_tres"+@t_accy+" a on a.noa=b.noa"+
-	" left join #carteam c on b.carteamno=c.noa"+
-	" left join view_trans"+@t_accy+" d on a.tranno=d.noa and a.trannoq=d.noq"+
-	" left join tgg e on b.tggno=e.noa"+
-	" left join cust f on d.custno=f.noa"+
-	" left join carteam g on b.carteamno=g.noa"+
-	" where (b.noa is not null)"+
-	" and (isnull(b.datea,0) between @t_bdate and @t_edate)"+
-	" and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)"
 	insert into #z_tre_ds02 (pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
 		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
 		,inmount,pton,mount,price,total
 		,outmount,pton2,mount2,price2,price3,discount,total2
 		,tolls,memo,po)
-	execute sp_executesql @cmd,N'@t_bdate nvarchar(10),@t_edate nvarchar(10),@t_bdriverno nvarchar(20),@t_edriverno nvarchar(20)'
-	,@t_bdate=@t_bdate,@t_edate=@t_edate,@t_bdriverno=@t_bdriverno,@t_edriverno=@t_edriverno
+		 
+	 select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team
+		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
+		,d.inmount,d.pton,d.mount,d.price,d.total
+		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
+		,d.tolls,d.memo,d.po
+	 from view_tre b
+	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
+	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
+	 left join tgg e on b.tggno=e.noa
+	 left join cust f on d.custno=f.noa
+	 left join carteam g on b.carteamno=g.noa
+	 where (b.noa is not null)
+	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
+	 and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
+	 
 	---------------------------------------------------------------------------------------------
 	declare @treno nvarchar(20)
 	declare @carchgno nvarchar(max)
@@ -731,10 +684,11 @@ z_tre_ds04:--z_tre_ds04  ref z_tre_ds02
 			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
 			values(@page,@n%@rowline,'4',@driverno,@driver
 			,CAST(@recno+1 as nvarchar),@trandate,@carno,@addr,@product
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@price)),1)),4,12))+'.'+RIGHT(CAST(@price as nvarchar),3) 
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)),@po
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@discount)),1)),4,12))+'.'+RIGHT(CAST(@discount as nvarchar),3))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1))
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -790,8 +744,9 @@ z_tre_ds04:--z_tre_ds04  ref z_tre_ds02
 			,g41,g42,g43,g44,g45,g46)
 			values(@page,@n%@rowline,'5',@driverno,@driver
 			,CAST(@recno+1 as nvarchar),@datea,@item
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12)),@memo)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,@memo)
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -839,11 +794,11 @@ z_tre_ds04:--z_tre_ds04  ref z_tre_ds02
 		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
 		insert into @tmp(page,n,gno,driverno,driver,g51,g52,g53,g54,g55)
 			values(@page,@n%@rowline,'6',@driverno,@driver
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@money),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
 	
 		update @tmp set cpage=page+1,tpage=@page+1 where driverno=@driverno
 		---------------------------------------------------
@@ -856,6 +811,7 @@ z_tre_ds04:--z_tre_ds04  ref z_tre_ds02
 	select @t_acomp acomp,* from @tmp order by driverno,page,n
 	--------------------------------------------------------------------------------------------
 	drop table #z_tre_ds02 ;
+
 
 z_tre_ds03:--z_tre_ds03  ref z_tre_ds01
 	SET QUOTED_IDENTIFIER OFF
@@ -873,36 +829,10 @@ z_tre_ds03:--z_tre_ds03  ref z_tre_ds01
 	-------------------------------------------------------------------------------
 	declare @string nvarchar(max)
 	declare @n int
-	------------------------------------------------------------------------------- 
-	--解析要計算的種類
-	IF OBJECT_ID('tempdb..#carteam')is not null
-	BEGIN
-		set @cmd = 'drop table #carteam'
-		EXECUTE sp_executesql @cmd
-	END
-	create table #carteam(
-		noa nvarchar(20)
-	)
-	set @string = @t_carteamno
-	while(1=1)
-	begin
-		set @n = PATINDEX('%,%',@string)
-		if @n=0
-		begin
-			if LEN(@string)>0
-			begin
-				insert into #carteam select @string
-			end
-			break
-		end
-		insert into #carteam select LEFT(@string,@n-1)	
-		set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
-	end
 	---------------------------------------------------------------
 	IF OBJECT_ID('tempdb..#z_tre_ds01')is not null
 	BEGIN
-		set @cmd = 'drop table #z_tre_ds01'
-		EXECUTE sp_executesql @cmd
+		drop table #z_tre_ds01
 	END
 	create table #z_tre_ds01(
 		pno nvarchar(10),
@@ -973,7 +903,6 @@ z_tre_ds03:--z_tre_ds03  ref z_tre_ds01
 		,d.tolls,d.memo,d.po
 	 from view_tre b
 	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
-	 left join #carteam c on b.carteamno=c.noa
 	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
 	 left join tgg e on b.tggno=e.noa
 	 left join cust f on d.custno=f.noa
@@ -981,7 +910,8 @@ z_tre_ds03:--z_tre_ds03  ref z_tre_ds01
 	 where ( len(@t_treno)>0 and charindex(','+b.noa+',',','+@t_treno+',')>0)
 		or ( len(@t_treno)=0 and ((b.noa is not null)
 	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
-	 and (isnull(b.tggno,0) between @t_btggno and @t_etggno)))
+	 and (isnull(b.tggno,0) between @t_btggno and @t_etggno))
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0))
 	 
 	---------------------------------------------------------------------------------------------
 	declare @treno nvarchar(20)
@@ -1135,10 +1065,12 @@ z_tre_ds03:--z_tre_ds03  ref z_tre_ds01
 			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
 			values(@page,@n%@rowline,'4',@tggno,@tgg,@tggnick
 			,CAST(@recno+1 as nvarchar),@trandate,@carno,@addr,@product
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@price)),1)),4,12))+'.'+RIGHT(CAST(@price as nvarchar),3) 
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)),@po
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@discount)),1)),4,12))+'.'+RIGHT(CAST(@discount as nvarchar),3) )
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1))
+
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -1194,8 +1126,9 @@ z_tre_ds03:--z_tre_ds03  ref z_tre_ds01
 			,g41,g42,g43,g44,g45,g46)
 			values(@page,@n%@rowline,'5',@tggno,@tgg,@tggnick
 			,CAST(@recno+1 as nvarchar),@datea,@item
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12)),@memo)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,@memo)
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -1243,11 +1176,11 @@ z_tre_ds03:--z_tre_ds03  ref z_tre_ds01
 		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
 		insert into @tmp(page,n,gno,tggno,tgg,tggnick,g51,g52,g53,g54,g55)
 			values(@page,@n%@rowline,'6',@tggno,@tgg,@tggnick
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@money),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
 	
 		update @tmp set cpage=page+1,tpage=@page+1 where tggno=@tggno
 		---------------------------------------------------
@@ -1284,37 +1217,9 @@ z_tre_ds02:--z_tre_ds02
 	set @t_carteamno = case when '#non'=[8] then '' else [8] end
 	set @t_acomp = case when '#non'=[9] then '' else [9] end
 	-------------------------------------------------------------------------------
-	declare @string nvarchar(max)
-	declare @n int
-	--解析要計算的種類
-	IF OBJECT_ID('tempdb..#carteam')is not null
-	BEGIN
-		set @cmd = 'drop table #carteam'
-		EXECUTE sp_executesql @cmd
-	END
-	create table #carteam(
-		noa nvarchar(20)
-	)
-	set @string = @t_carteamno
-	while(1=1)
-	begin
-		set @n = PATINDEX('%,%',@string)
-		if @n=0
-		begin
-			if LEN(@string)>0
-			begin
-				insert into #carteam select @string
-			end
-			break
-		end
-		insert into #carteam select LEFT(@string,@n-1)	
-		set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
-	end
-	---------------------------------------------------------------
 	IF OBJECT_ID('tempdb..#z_tre_ds02 ')is not null
 	BEGIN
-		set @cmd = 'drop table #z_tre_ds02 '
-		EXECUTE sp_executesql @cmd
+		drop table #z_tre_ds02
 	END
 	create table #z_tre_ds02 (
 		pno nvarchar(10),
@@ -1373,30 +1278,32 @@ z_tre_ds02:--z_tre_ds02
 		po nvarchar(50)
 	)
 
-	set @cmd = 
-	" select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team"+
-	"	,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product"+
-	"	,d.inmount,d.pton,d.mount,d.price,d.total"+
-	"	,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2"+
-	"	,d.tolls,d.memo,d.po"+
-	" from view_tre"+@t_accy+" b"+
-	" left join view_tres"+@t_accy+" a on a.noa=b.noa"+
-	" left join #carteam c on b.carteamno=c.noa"+
-	" left join view_trans"+@t_accy+" d on a.tranno=d.noa and a.trannoq=d.noq"+
-	" left join tgg e on b.tggno=e.noa"+
-	" left join cust f on d.custno=f.noa"+
-	" left join carteam g on b.carteamno=g.noa"+
-	" where (b.noa is not null)"+
-	" and (isnull(b.datea,0) between @t_bdate and @t_edate)"+
-	" and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)"
 	insert into #z_tre_ds02 (pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
 		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
 		,inmount,pton,mount,price,total
 		,outmount,pton2,mount2,price2,price3,discount,total2
-		,tolls,memo,po)
-	execute sp_executesql @cmd,N'@t_bdate nvarchar(10),@t_edate nvarchar(10),@t_bdriverno nvarchar(20),@t_edriverno nvarchar(20)'
-	,@t_bdate=@t_bdate,@t_edate=@t_edate,@t_bdriverno=@t_bdriverno,@t_edriverno=@t_edriverno
+		,tolls,memo,po) 
+	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team
+		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
+		,d.inmount,d.pton,d.mount,d.price,d.total
+		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
+		,d.tolls,d.memo,d.po
+	 from view_tre b
+	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
+	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
+	 left join tgg e on b.tggno=e.noa
+	 left join cust f on d.custno=f.noa
+	 left join carteam g on b.carteamno=g.noa
+	 where (b.noa is not null)
+	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
+	 and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
+	 
+
 	---------------------------------------------------------------------------------------------
+	declare @string nvarchar(max)
+	declare @n int
+
 	declare @treno nvarchar(20)
 	declare @carchgno nvarchar(max)
 	declare @tggno nvarchar(20)
@@ -1483,6 +1390,8 @@ z_tre_ds02:--z_tre_ds02
 		g55 nvarchar(max) -- g38 + g44 - g45
 	)
 	--------------------------------------------------------------------------------------------
+	
+
 	declare @rowline int -- 每頁可用行數
 	declare @endline int -- 頁尾行數
 	declare @page int
@@ -1551,10 +1460,11 @@ z_tre_ds02:--z_tre_ds02
 			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
 			values(@page,@n%@rowline,'4',@driverno,@driver
 			,CAST(@recno+1 as nvarchar),@trandate,@carno,isnull(@addr,'')+' '+isnull(@product,''),''
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@price)),1)),4,12))+'.'+RIGHT(CAST(@price as nvarchar),3) 
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)),@po
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@discount)),1)),4,12))+'.'+RIGHT(CAST(@discount as nvarchar),3))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1))
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -1610,8 +1520,8 @@ z_tre_ds02:--z_tre_ds02
 			,g41,g42,g43,g44,g45,g46)
 			values(@page,@n%@rowline,'5',@driverno,@driver
 			,CAST(@recno+1 as nvarchar),@datea,@item
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12)),@memo)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1),@memo)
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -1659,11 +1569,11 @@ z_tre_ds02:--z_tre_ds02
 		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
 		insert into @tmp(page,n,gno,driverno,driver,g51,g52,g53,g54,g55)
 			values(@page,@n%@rowline,'6',@driverno,@driver
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@money),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
 	
 		update @tmp set cpage=page+1,tpage=@page+1 where driverno=@driverno
 		---------------------------------------------------
@@ -1675,7 +1585,7 @@ z_tre_ds02:--z_tre_ds02
 
 	select @t_acomp acomp,* from @tmp order by driverno,page,n
 	--------------------------------------------------------------------------------------------
-	drop table #z_tre_ds02 ;
+	drop table #z_tre_ds02 ;;
 
 z_tre_ds01:--z_tre_ds01
 	SET QUOTED_IDENTIFIER OFF
@@ -1703,35 +1613,9 @@ z_tre_ds01:--z_tre_ds01
 	declare @string nvarchar(max)
 	declare @n int
 	------------------------------------------------------------------------------- 
-	--解析要計算的種類
-	IF OBJECT_ID('tempdb..#carteam')is not null
-	BEGIN
-		set @cmd = 'drop table #carteam'
-		EXECUTE sp_executesql @cmd
-	END
-	create table #carteam(
-		noa nvarchar(20)
-	)
-	set @string = @t_carteamno
-	while(1=1)
-	begin
-		set @n = PATINDEX('%,%',@string)
-		if @n=0
-		begin
-			if LEN(@string)>0
-			begin
-				insert into #carteam select @string
-			end
-			break
-		end
-		insert into #carteam select LEFT(@string,@n-1)	
-		set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
-	end
-	---------------------------------------------------------------
 	IF OBJECT_ID('tempdb..#z_tre_ds01')is not null
 	BEGIN
-		set @cmd = 'drop table #z_tre_ds01'
-		EXECUTE sp_executesql @cmd
+		drop table #z_tre_ds01
 	END
 	create table #z_tre_ds01(
 		pno nvarchar(10),
@@ -1790,29 +1674,27 @@ z_tre_ds01:--z_tre_ds01
 		po nvarchar(50),
 	)
 
-	set @cmd = 
-	" select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team"+
-	"	,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product"+
-	"	,d.inmount,d.pton,d.mount,d.price,d.total"+
-	"	,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2"+
-	"	,d.tolls,d.memo,d.po"+
-	" from view_tre"+@t_accy+" b"+
-	" left join view_tres"+@t_accy+" a on a.noa=b.noa"+
-	" left join #carteam c on b.carteamno=c.noa"+
-	" left join view_trans"+@t_accy+" d on a.tranno=d.noa and a.trannoq=d.noq"+
-	" left join tgg e on b.tggno=e.noa"+
-	" left join cust f on d.custno=f.noa"+
-	" left join carteam g on b.carteamno=g.noa"+
-	" where (b.noa is not null)"+
-	" and (isnull(b.datea,0) between @t_bdate and @t_edate)"+
-	" and (isnull(b.tggno,0) between @t_btggno and @t_etggno)"
 	insert into #z_tre_ds01(pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
 		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
 		,inmount,pton,mount,price,total
 		,outmount,pton2,mount2,price2,price3,discount,total2
 		,tolls,memo,po)
-	execute sp_executesql @cmd,N'@t_bdate nvarchar(10),@t_edate nvarchar(10),@t_btggno nvarchar(20),@t_etggno nvarchar(20)'
-	,@t_bdate=@t_bdate,@t_edate=@t_edate,@t_btggno=@t_btggno,@t_etggno=@t_etggno
+	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team
+		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
+		,d.inmount,d.pton,d.mount,d.price,d.total
+		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
+		,d.tolls,d.memo,d.po
+	 from view_tre b
+	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
+	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
+	 left join tgg e on b.tggno=e.noa
+	 left join cust f on d.custno=f.noa
+	 left join carteam g on b.carteamno=g.noa
+	 where (b.noa is not null)
+	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
+	 and (isnull(b.tggno,0) between @t_btggno and @t_etggno)
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
+
 	---------------------------------------------------------------------------------------------
 	declare @treno nvarchar(20)
 	declare @carchgno nvarchar(max)
@@ -1965,10 +1847,12 @@ z_tre_ds01:--z_tre_ds01
 			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
 			values(@page,@n%@rowline,'4',@tggno,@tgg,@tggnick
 			,CAST(@recno+1 as nvarchar),@trandate,@carno,@addr,@product
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3) 
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@price)),1)),4,12))+'.'+RIGHT(CAST(@price as nvarchar),3) 
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)),@po
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,floor(@discount)),1)),4,12))+'.'+RIGHT(CAST(@discount as nvarchar),3) )
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1)
+			)
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -2024,8 +1908,9 @@ z_tre_ds01:--z_tre_ds01
 			,g41,g42,g43,g44,g45,g46)
 			values(@page,@n%@rowline,'5',@tggno,@tgg,@tggnick
 			,CAST(@recno+1 as nvarchar),@datea,@item
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12)),@memo)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,@memo)
 			set @recno = @recno + 1
 			set @curline = @curline + 1
 			set @n = @n + 1
@@ -2073,11 +1958,11 @@ z_tre_ds01:--z_tre_ds01
 		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
 		insert into @tmp(page,n,gno,tggno,tgg,tggnick,g51,g52,g53,g54,g55)
 			values(@page,@n%@rowline,'6',@tggno,@tgg,@tggnick
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money, case when @mount>0 then floor(@mount) else ceiling(@mount) end),1)),4,12))+'.'+RIGHT(CAST(@mount as nvarchar),3)
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@money),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@plus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@minus),1)),4,12))
-			,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,@total),1)),4,12)))
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
 	
 		update @tmp set cpage=page+1,tpage=@page+1 where tggno=@tggno
 		---------------------------------------------------
