@@ -92,15 +92,8 @@
 	            	}
                 });
                 $('#btnConn').click(function() {
-                	switch(q_getPara('sys.project')){
-                		case 'WH':
-                			
-                			break;
-                		default:
-                			break;
-                	}
                 	
-                    t_where = "noa='" + $('#txtNoa').val() + "'";
+                	t_where = "noa='" + $('#txtNoa').val() + "'";
                     q_box("conn_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "95%", "85%", q_getMsg('btnConn'));
                 });
                 

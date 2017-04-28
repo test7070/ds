@@ -93,6 +93,12 @@
 						}*/
 					}
                 });
+                
+                $('#btnConn').click(function() {
+                	var t_where = "noa='" + $('#txtNoa').val() + "' and typea='tgg'";
+                    q_box("conn_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "95%", "650px", q_getMsg('btnConn'));
+                });
+                
                 $('#txtSerial').change(function() {
                 	$(this).val($.trim($(this).val()).toUpperCase());
                 	if ($(this).val().length > 0 && checkId($(this).val())!=2){
@@ -207,7 +213,7 @@
                 }else if(q_cur ==2){
                 	$('#txtWorker2').val(r_name);
                 }else{
-                	alert("error: btnok!")
+                	alert("error: btnok!");
                 }
                 //------------------------------------
                 if(q_cur==1){
@@ -472,7 +478,8 @@
 						<td><span> </span><a id="lblSerial" class="lbl"> </a></td>
 						<td><input id="txtSerial"  type="text"  class="txt c1"/></td>
 						<td><span> </span><a id="lblTypea" class="lbl" style="display:none;"> </a></td>
-						<td><select id="cmbTypea"  class="txt c1" style="display:none;"> </select></td>
+						<td><input id="btnConn" type="button" value="連絡人"/>
+							<select id="cmbTypea"  class="txt c1" style="display:none;"> </select></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblComp" class="lbl"> </a></td>
