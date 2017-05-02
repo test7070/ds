@@ -198,9 +198,9 @@
                 $('#txtXmon2').mask('999/99');
                 
                 $('#txtXcheckrate').val(q_getMsg('trate1'));
-                $('#chkXcarkind').children('input').attr('checked', 'checked');
-                $('#chkXcarteam').children('input').attr('checked', 'checked');
-                $('#chkXcalctype').children('input').attr('checked', 'checked');
+                //$('#chkXcarkind').children('input').attr('checked', 'checked');
+                //$('#chkXcarteam').children('input').attr('checked', 'checked');
+                //$('#chkXcalctype').children('input').attr('checked', 'checked');
                 
                 $('#textMon').mask('999/99');
                 $('#btnTrans_sum').click(function(e) {
