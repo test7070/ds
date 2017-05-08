@@ -38,12 +38,14 @@
             , ['txtTggno', 'lblTgg', 'tgg', 'noa,comp,nick', 'txtTggno,txtComp,txtNick', 'tgg_b.aspx']
             );
            
+           
+           	var t_acomp='',t_part='';
             $(document).ready(function() {
                 bbmKey = ['noa'];
                 bbsKey = ['noa', 'noq'];
                 q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1);
-
+                
+                q_gt('acomp', '', 0, 0, 0, "");
             });
             function main() {
                 if (dataErr) {
@@ -63,8 +65,9 @@
                 $('#txtPaydate').datepicker();
                 $('#txtIndate').datepicker();
                 
-                q_gt('acomp', '', 0, 0, 0, "");
-                q_gt('part', '', 0, 0, 0, "");
+                q_cmbParse("cmbCno", t_part);
+            	q_cmbParse("cmbPartno",'@,'+ t_item,'s');
+                
                 $("#cmbCno").focus(function() {
                     var len = $(this).children().length > 0 ? $(this).children().length : 1;
                     $(this).attr('size', len + "");
@@ -132,18 +135,27 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+            		
+                	
+                	case 'acomp':
+                        var as = _q_appendData("acomp", "", true);
+                        if (as[0] != undefined) {
+                            t_acomp = " @ ";
+                            for ( i = 0; i < as.length; i++) {
+                                t_acomp = t_acomp + (t_acomp.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].acomp;
+                            }
+                        }
+                        q_gt('part', '', 0, 0, 0, "");
+                        break;
                 	case 'part':
                         var as = _q_appendData("part", "", true);
                         if (as[0] != undefined) {
-                            var t_item = "";
+                            t_part = "";
                             for ( i = 0; i < as.length; i++) {
-                                t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].part;
-                            }
-                            q_cmbParse("cmbPartno",'@,'+ t_item,'s');
-                            if (abbm[q_recno] != undefined) {
-                                $("#cmbPartno").val(abbm[q_recno].partno);
+                                t_part = t_part + (t_part.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].part;
                             }
                         }
+                        q_gt(q_name, q_content, q_sqlCount, 1);
                         break;
                 	case 'btnDele':
                 		var as = _q_appendData("pays", "", true);
@@ -206,19 +218,6 @@
                         }
                         sum();
                         Unlock(1);
-                        break;
-                    case 'acomp':
-                        var as = _q_appendData("acomp", "", true);
-                        if (as[0] != undefined) {
-                            var t_item = " @ ";
-                            for ( i = 0; i < as.length; i++) {
-                                t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].acomp;
-                            }
-                            q_cmbParse("cmbCno", t_item);
-                            if (abbm[q_recno] != undefined) {
-                                $("#cmbCno").val(abbm[q_recno].cno);
-                            }
-                        }
                         break;
                     case q_name:
                         if (q_cur == 4)
