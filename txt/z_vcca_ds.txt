@@ -102,6 +102,8 @@ z_vcca_ds01:--z_vcca_ds01 發票明細表
 	close cursor_table
 	deallocate cursor_table
 	
+	update @tmp set memo = replace(memo,'chr(10)','')
+	
 	update @tmp set buyer = '<a style="float:left'+char(59)+'">'+ISNULL(buyer,'')+'</a><a style="float:left'+char(59)+'color:red'+char(59)+'">&nbsp'+CHAR(59)+ISNULL(memo,'')+'</a>'
 	where len(ISNULL(memo,''))>0
 	select * 
