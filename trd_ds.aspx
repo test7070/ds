@@ -22,7 +22,7 @@
             q_tables = 's';
             var q_name = "trd";
             var q_readonly = ['txtTax', 'txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount','txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
-            var q_readonlys = ['txtTranno', 'txtTrannoq','txtTrandate','txtStraddr','txtEndaddr','txtProduct','txtCarno','txtCustorde','txtCaseno','txtMount','txtPrice','txtCustdiscount','txtTotal','txtTranmoney'];
+            var q_readonlys = ['txtTranno', 'txtTrannoq','txtTrandate','txtStraddr','txtEndaddr','txtProduct','txtCarno','txtCustorde','txtCaseno','txtMount','txtPrice','txtCustdiscount','txtTotal','txtTranmoney','txtOthercost'];
             var bbmNum = [['txtMoney', 10, 0,1], ['txtTax', 10, 0,1], ['txtTotal', 10, 0,1], ['txtMount', 10, 3,1], ['txtPlusmoney', 10, 0,1], ['txtMinusmoney', 10, 0,1]];
             var bbsNum = [['txtTranmoney', 10, 0,1], ['txtOverweightcost', 10, 0,1], ['txtOthercost', 10, 0,1], ['txtMount', 10, 3,1], ['txtPrice', 10, 3,1], ['txtTotal', 10, 0,1]];
             var bbmMask = [];
@@ -540,6 +540,7 @@
 				}
 				if(q_getPara('sys.project').toUpperCase()=='ES'){
 					$('.ES_hide').hide();
+					$('.ES_show').show();
 				}	
             }
 
@@ -1112,6 +1113,7 @@
 					<td align="center" style="width:80px;"><a id='lblPrice_s'> </a></td>
 					<td align="center" style="width:80px;" class="ES_hide"><a id='lblCustdiscount_s'>折數％</a></td>
 					<td align="center" style="width:80px;"><a id='lblTotal_s'> </a></td>
+					<td align="center" style="width:80px; display:none;" class="ES_show"><a>稅額</a></td>
 					<td align="center" style="width:80px;"><a id='lblCarno_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblMemo_s'> </a></td>
 					<td align="center" style="width:150px;" class="DH_hide"><a id='lblCustorde_s'> </a></td>
@@ -1139,10 +1141,8 @@
 					</td>
 					<td><input type="text" id="txtPrice.*" style="width:95%;text-align: right;" /></td>
 					<td class="ES_hide"><input type="text" id="txtCustdiscount.*" style="width:95%;text-align: right;" /></td>
-					<td >
-					<input type="text" id="txtTotal.*" style="width:95%;text-align: right;" />
-					<input type="text" id="txtOthercost.*" style="display:none;" />
-					</td>
+					<td ><input type="text" id="txtTotal.*" style="width:95%;text-align: right;" /></td>
+					<td style="display:none;" class="ES_show"><input type="text" id="txtOthercost.*" style="width:95%;text-align: right;" /></td>
 					<td >
 					<input type="text" id="txtCarno.*" style="width:95%;" />
 					</td>
