@@ -557,7 +557,7 @@
             }
             .dbbm {
                 float: left;
-                width: 480px;
+                width: 550px;
                 /*margin: -1px;
                  border: 1px black solid;*/
                 border-radius: 5px;
@@ -644,11 +644,7 @@
             }
 		</style>
 	</head>
-	<body ondragstart="return false" draggable="false"
-	ondragenter="event.dataTransfer.dropEffect='none'; event.stopPropagation(); event.preventDefault();"
-	ondragover="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
-	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
-	>
+	<body>
 		<!--#include file="../inc/toolbar.inc"-->
 		<div id="dmain">
 			<div class="dview" id="dview">
