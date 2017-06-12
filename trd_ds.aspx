@@ -1083,6 +1083,7 @@
 						<td><span> </span><a id="lblAccno" class="lbl btn"> </a></td>
 						<td><input id="txtAccno" type="text"  class="txt c1"/></td>
 						<td><input id="txtYear1" type="text"  class="txt c1"/> </td>
+						<td><input type="button" id="btnTrd2umm" value="匯出收款單" style="display:none;" class="ES_show"/></td>
 					</tr>
 					<tr>
 						<td><span> </span><a id="lblWorker" class="lbl"> </a></td>
