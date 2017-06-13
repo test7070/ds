@@ -270,19 +270,14 @@
                    		var t_custno = $('#textCustno_2umm').val().replace(',','&');
                    		var t_paydate = $('#textPaydate_2umm').val();
                    		var t_cno = $('#combAcomp_2umm').val();
-                   		
-                   		if(t_paydate.length==0){
-                   			alert('請輸入付款日期');
-                   		}else{
-                   			t_key = (t_key.length==0?'FD':t_key);//一定要有值
-                   			q_func('qtxt.query.trd2umm', 'trd.txt,trd2umm,' + encodeURI(t_key) + ';'+ encodeURI(t_bdate)+ ';'+ encodeURI(t_edate) + ';' + encodeURI(t_custno)+ ';' + encodeURI(t_paydate)+ ';' + encodeURI(t_cno));
-                   		}
+               			t_key = (t_key.length==0?'FB':t_key);//一定要有值
+               			q_func('qtxt.query.trd2umm', 'trd.txt,trd2umm,' + encodeURI(t_key) + ';'+ encodeURI(t_bdate)+ ';'+ encodeURI(t_edate) + ';' + encodeURI(t_custno)+ ';' + encodeURI(t_paydate)+ ';' + encodeURI(t_cno));
                 	}
                 });
             }
 			function q_funcPost(t_func, result) {
                 switch(t_func) {
-                	case 'qtxt.query.tre2pay':
+                	case 'qtxt.query.trd2umm':
             			var as = _q_appendData("tmp0", "", true, true);
                         if (as[0] != undefined) {
                         	alert(as[0].msg);
