@@ -74,11 +74,11 @@
             	}
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd], ['txtMon', r_picm], ['txtBdate', r_picd], ['txtEdate', r_picd], ['txtBtrandate', r_picd], ['txtEtrandate', r_picd], ['txtVccadate', r_picd]
-                			,['textMon',r_picm]];
+                			,['textMon',r_picm],['textBdate_2umm',r_picd],['textEdate_2umm',r_picd],['textPaydate_2umm',r_picd]];
+           		
                 q_mask(bbmMask);
                 
                 $('#lblTrtype').text('保留%');
-                
 				$('#txtBdate').datepicker();
 				$('#txtEdate').datepicker();
 				$('#txtBtrandate').datepicker();
@@ -228,12 +228,66 @@
                 	}
                 });
                 
-                //$('#textDate').datepicker();
-                //$('#textBdate').datepicker();
-                //$('#textEdate').datepicker();
+                //-----------------------------------------------
+                //再興  批次沖帳,目前只用現金的部份
+                $('#btnTrd2umm').click(function(e){
+                	$('#div2umm').toggle();
+                	
+                });
+                q_cmbParse("combPaytype_2umm", "現金");
+                $('#textBdate_2umm').datepicker();
+                $('#textEdate_2umm').datepicker();
+                $('#textPaydate_2umm').datepicker();
+                
+                $('#div2umm').mousedown(function(e) {
+                    if (e.button == 2) {
+                        $(this).data('xtop', parseInt($(this).css('top')) - e.clientY);
+                        $(this).data('xleft', parseInt($(this).css('left')) - e.clientX);
+                    }
+                }).mousemove(function(e) {
+                    if (e.button == 2 && e.target.nodeName != 'INPUT') {
+                        $(this).css('top', $(this).data('xtop') + e.clientY);
+                        $(this).css('left', $(this).data('xleft') + e.clientX);
+                    }
+                }).bind('contextmenu', function(e) {
+                    if (e.target.nodeName != 'INPUT')
+                        e.preventDefault();
+                });
+
+                $('#btn2umm').click(function() {
+                    $('#div2umm').toggle();
+                    $('#textDate_2umm').focus();
+                });
+                $('#btnCancel_2umm').click(function() {
+                    $('#div2umm').toggle();
+                });
+                $('#btnImport_2umm').click(function() {
+                   if(q_cur != 1 && q_cur != 2){
+                   		var t_key = q_getPara('sys.key_umm');
+                   		var t_bdate = $('#textBdate_2umm').val();
+                   		var t_edate = $('#textEdate_2umm').val();
+                   		var t_custno = $('#textCustno_2umm').val().replace(',','&');
+                   		var t_paydate = $('#textPaydate_2umm').val();
+                   		var t_cno = $('#combAcomp_2umm').val();
+                   		
+                   		if(t_paydate.length==0){
+                   			alert('請輸入付款日期');
+                   		}else{
+                   			t_key = (t_key.length==0?'FD':t_key);//一定要有值
+                   			q_func('qtxt.query.trd2umm', 'trd.txt,trd2umm,' + encodeURI(t_key) + ';'+ encodeURI(t_bdate)+ ';'+ encodeURI(t_edate) + ';' + encodeURI(t_custno)+ ';' + encodeURI(t_paydate)+ ';' + encodeURI(t_cno));
+                   		}
+                	}
+                });
             }
 			function q_funcPost(t_func, result) {
                 switch(t_func) {
+                	case 'qtxt.query.tre2pay':
+            			var as = _q_appendData("tmp0", "", true, true);
+                        if (as[0] != undefined) {
+                        	alert(as[0].msg);
+                        } else {
+                        }
+                		break;
                 	case 'qtxt.query.trd2vcca':
             			var as = _q_appendData("tmp0", "", true, true);
                         if (as[0] != undefined) {
@@ -920,6 +974,57 @@
 					<td></td>
 					<td></td>
 					<td><input id="btnCancel_import" type="button" value="關閉"/></td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="div2umm" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:220px; background-color: #cad3ff; border: 5px solid gray;">
+			<table style="width:100%;">
+				<tr style="height:1px;">
+					<td style="width:150px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+					<td style="width:80px;"></td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblPaytype_2umm" style="float:right; color: blue; font-size: medium;">結帳方式</a></td>
+					<td colspan="4">
+						<select id='combPaytype_2umm' style="float:left; width:100px; font-size: medium;"> </select>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblDatea_2umm" style="float:right; color: blue; font-size: medium;">立帳日期</a></td>
+					<td colspan="4">
+						<input id="textBdate_2umm"  type="text" style="float:left; width:100px; font-size: medium;"/>
+						<span style="display:block;float:left;width:20px;">～</span>
+						<input id="textEdate_2umm"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblCustno_2umm" style="float:right; color: blue; font-size: medium;">客戶編號</a></td>
+					<td colspan="4">
+						<input id="textCustno_2umm"  type="text" style="float:left; width:225px; font-size: medium;" title="多個客用','區隔"/>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblPaydate_2umm" style="float:right; color: blue; font-size: medium;">付款日期</a></td>
+					<td colspan="4">
+					<input id="textPaydate_2umm"  type="text" style="float:left; width:100px; font-size: medium;"/>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td><span> </span><a id="lblAcomp_2pay" style="float:right; color: blue; font-size: medium;">公司</a></td>
+					<td colspan="4">
+						<select id="combAcomp_2pay" style="float:left; width:225px; font-size: medium;"> </select>
+					</td>
+				</tr>
+				<tr style="height:35px;">
+					<td> </td>
+					<td><input id="btnImport_2pay" type="button" value="轉收款作業"/></td>
+					<td></td>
+					<td></td>
+					<td><input id="btnCancel_2pay" type="button" value="關閉"/></td>
 				</tr>
 			</table>
 		</div>
