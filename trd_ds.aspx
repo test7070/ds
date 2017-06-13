@@ -36,13 +36,14 @@
             q_xchg = 1;
             brwCount2 = 20;
             aPop = new Array();
-
+			
+			var t_acomp= "";
             $(document).ready(function() {
                 //q_bbsShow = -1;
                 bbmKey = ['noa'];
                 bbsKey = ['noa', 'noq'];
                 q_brwCount();
-                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
+                q_gt('acomp', '', 0, 0, 0, "");
             });
             function main() {
                 if (dataErr) {
@@ -232,8 +233,8 @@
                 //再興  批次沖帳,目前只用現金的部份
                 $('#btnTrd2umm').click(function(e){
                 	$('#div2umm').toggle();
-                	
                 });
+                q_cmbParse("combAcomp_2umm", t_acomp);
                 q_cmbParse("combPaytype_2umm", "現金");
                 $('#textBdate_2umm').datepicker();
                 $('#textEdate_2umm').datepicker();
@@ -329,6 +330,16 @@
             
             function q_gtPost(t_name) {
                 switch (t_name) {
+                	case 'acomp':
+                		var as = _q_appendData("acomp", "", true);
+						if (as[0] != undefined) {
+							t_acomp = "@";
+							for ( i = 0; i < as.length; i++) {
+								t_acomp = t_acomp + (t_acomp.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].acomp;
+							}
+						}
+                		q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
+                		break;
                 	case 'btnDele':
                 		var as = _q_appendData("umms", "", true);
                         if (as[0] != undefined) {
@@ -1014,17 +1025,17 @@
 					</td>
 				</tr>
 				<tr style="height:35px;">
-					<td><span> </span><a id="lblAcomp_2pay" style="float:right; color: blue; font-size: medium;">公司</a></td>
+					<td><span> </span><a id="lblAcomp_2umm" style="float:right; color: blue; font-size: medium;">公司</a></td>
 					<td colspan="4">
-						<select id="combAcomp_2pay" style="float:left; width:225px; font-size: medium;"> </select>
+						<select id="combAcomp_2umm" style="float:left; width:225px; font-size: medium;"> </select>
 					</td>
 				</tr>
 				<tr style="height:35px;">
 					<td> </td>
-					<td><input id="btnImport_2pay" type="button" value="轉收款作業"/></td>
+					<td><input id="btnImport_2umm" type="button" value="轉收款作業"/></td>
 					<td></td>
 					<td></td>
-					<td><input id="btnCancel_2pay" type="button" value="關閉"/></td>
+					<td><input id="btnCancel_2umm" type="button" value="關閉"/></td>
 				</tr>
 			</table>
 		</div>
