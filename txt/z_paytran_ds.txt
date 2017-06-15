@@ -96,13 +96,14 @@ z_paytran_ds1:--z_paytran_ds1
 	end
 	else
 	begin
+		-- 再興 都用trandate
 		insert into #z_paytran_ds1
 		select '0',a.driverno,d.namea,a.carno,sum(isnull(a.total2,0)),SUM(ISNULL(a.tolls,0)),0,0,0,0,0,0,0,0,0
 		from view_trans a
 		left join calctypes b  on a.calctype=b.noa+b.noq
 		left join driver d on a.driverno=d.noa
 		where (a.driverno between @t_bdriverno and @t_edriverno)
-		and (a.datea between @t_bdate and @t_edate)
+		and (case when exists(select * from acomp where CHARINDEX('再興',acomp)>0) then a.trandate else a.datea end between @t_bdate and @t_edate)
 		and (len(@t_carno)=0 or @t_carno=a.carno)
 		and (len(@t_carteamno)=0 or CHARINDEX(a.carteamno,@t_carteamno)>0)
 		group  by  a.driverno,d.namea,a.carno
@@ -145,22 +146,23 @@ z_paytran_ds1:--z_paytran_ds1
 		tolls float,
 		plusmoney float,
 		minusmoney float,
-		total float
+		total float,
+		tranno nvarchar(20)
 	)
-	set @cmd=
-	" select a.driverno,b.namea,a.carno,sum(a.[money]),sum(a.tolls),sum(a.plusmoney),sum(a.minusmoney),sum(isnull(a.total,0)+isnull(a.unopay,0))"+
-	" from view_tre"+@t_accy+" a"+
-	" left join driver b on a.driverno=b.noa"+
-	" where (a.driverno between @t_bdriverno and @t_edriverno)"+
-	" and ((a.bdate between @t_bdate and @t_edate) or (a.edate between @t_bdate and @t_edate))"+
-	" and (len(@t_carno)=0 or @t_carno=a.carno)"+
-	" and (len(@t_carteamno)=0 or CHARINDEX(a.carteamno,@t_carteamno)>0) "+
-	" group by a.driverno,b.namea,a.carno"
-	insert into #tmp1
-	execute sp_executesql @cmd,N'@t_carno nvarchar(20),@t_bdriverno nvarchar(20),@t_edriverno nvarchar(20),@t_bdate  nvarchar(10),@t_edate nvarchar(10),@t_carteamno nvarchar(max)'
-	,@t_carno=@t_carno,@t_bdriverno=@t_bdriverno,@t_edriverno=@t_edriverno,@t_bdate=@t_bdate,@t_edate=@t_edate,@t_carteamno=@t_carteamno
-	
-	
+	insert into #tmp1(driverno,driver,carno,[money],tolls,plusmoney,minusmoney,total)
+	select a.driverno,b.namea,isnull(a.carno,c.carno),sum(a.[money]),sum(a.tolls),sum(a.plusmoney),sum(a.minusmoney),sum(isnull(a.total,0)+isnull(a.unopay,0))
+	from view_tre a
+	left join driver b on a.driverno=b.noa
+	outer apply(select top 1 x.noa,y.carno
+		from view_tres x 
+		left join view_trans y on x.tranno=y.noa
+		where x.accy=a.accy and x.noa=a.noa and x.trandate between @t_bdate and @t_edate) c
+	where (a.driverno between @t_bdriverno and @t_edriverno)
+	and ((a.bdate between @t_bdate and @t_edate) or (a.edate between @t_bdate and @t_edate) or c.noa is not null)
+	and (len(@t_carno)=0 or @t_carno=isnull(a.carno,c.carno))
+	and (len(@t_carteamno)=0 or CHARINDEX(a.carteamno,@t_carteamno)>0)
+	group by a.driverno,b.namea,isnull(a.carno,c.carno)
+
 	declare cursor_table cursor for
 	select driverno,carno,[money],tolls,plusmoney,minusmoney,total from #tmp1
 	open cursor_table
