@@ -1,3 +1,175 @@
+z_paytran_es01:--z_paytran_es01  再興  z_paytran_ds.txt  
+	declare @t_bdate nvarchar(20) = '106/04/01'
+	declare @t_edate nvarchar(20) = '106/04/30'
+	declare @t_bdriverno nvarchar(20) = ''
+	declare @t_edriverno nvarchar(20) = char(255)
+	declare @t_detail nvarchar(max) = ''
+	--------------------------------------------------------------------------------
+	declare @tmpa table(
+		sel int identity(1,1)
+		,noa nvarchar(20)
+		,trandate nvarchar(20)
+		,driverno nvarchar(20)
+		,driver nvarchar(50)
+		,paytype nvarchar(20) -- ship
+		,istax  nvarchar(20) -- rs
+		,total float
+		,total2 float
+		,tax float --reserve
+		,[money] float --實付
+		,money_tre float 
+		,cust nvarchar(20)
+	)
+	insert into @tmpa(noa,trandate,driverno,driver,paytype,istax,total,total2,tax,[money],cust)
+	select a.noa,a.trandate,a.driverno,a.driver,a.ship,a.rs,a.total,a.total2,a.reserve
+		,case when charindex('公司',isnull(b.cartype,''))>0  then a.total2 else isnull(a.[total2],0)-case when a.ship='現金' then isnull(a.[total],0)+isnull(a.[reserve],0) else 0 end end
+		,a.nick
+	from view_trans a
+	left join driver b on a.driverno=b.noa
+	where a.trandate between @t_bdate and @t_edate
+	and isnull(a.driverno,'') between @t_bdriverno and @t_edriverno
+	and not(ISNULL(a.total,0)=0 and ISNULL(a.total2,0)=0 and ISNULL(a.reserve,0)=0)
+	order by a.driverno,a.trandate,a.noa
+	
+	update @tmpa set money_tre = b.[money]
+	from @tmpa a
+	left join view_tres b on a.noa=b.tranno
+	where b.noa is not null
+	--------------------------------------------------------------------------------
+	declare @tmpb table(
+		sel int identity(1,1)
+		,noa nvarchar(20)
+		,datea nvarchar(20)
+		,driverno nvarchar(20)
+		,driver nvarchar(20)
+		,plusitem nvarchar(50)
+		,plusmoney float
+		,minusitem nvarchar(50)
+		,minusmoney float 
+		,memo nvarchar(max)
+		,istre int
+	)
+	insert into @tmpb(noa,datea,driverno,driver,plusitem,plusmoney,minusitem,minusmoney,memo,istre)
+	select noa,datea,driverno,driver,plusitem,plusmoney,minusitem,minusmoney,memo,0
+	from carchg a
+	where a.datea between @t_bdate and @t_edate
+	and isnull(a.driverno,'') between @t_bdriverno and @t_edriverno
+	and not(ISNULL(a.plusmoney,0)=0 and ISNULL(a.minusmoney,0)=0)
+	order by a.driverno,a.datea,a.noa
+	
+	update @tmpb set istre=1
+	from @tmpb a
+	outer apply(select top 1 * from view_tre where CHARINDEX(a.noa,carchgno)>0) b
+	where b.noa is not null
+	--------------------------------------------------------------------------------
+	declare @tmp table(
+		sel int identity(1,1)
+		,recno int
+		,gno nvarchar(10)
+		,pno int
+		,driverno nvarchar(20)
+		,driver nvarchar(20)
+		,money01 float --運費應付
+		,money02 float --運費已付
+		,money03 float --加減項應付
+		,money04 float --加減項已付
+		,money05 float --應付總計
+		,money06 float --已付總計
+		,money07 float --未付總計
+		
+		,tranno nvarchar(20)
+		,trandate nvarchar(20)
+		,paytype nvarchar(20)
+		,istax nvarchar(20)
+		,total float
+		,total2 float
+		,tax float
+		,[money] float
+		,[money_tre] float
+		,cust nvarchar(50)
+		
+		,carchgno nvarchar(20)
+		,carchgdate nvarchar(20)
+		,item nvarchar(max)
+		,itemmoney float
+		,memo nvarchar(max)
+		,itemmoney_tre float
+	)
+	insert into @tmp(gno,pno,driverno,money01,money02)
+	select '1',1,a.driverno,SUM(ISNULL(a.[money],0)),SUM(ISNULL(a.[money_tre],0))
+	from @tmpa a
+	group by a.driverno
+	
+	insert into @tmp(gno,pno,driverno)
+	select '1',1,a.driverno
+	from @tmpb a
+	left join @tmp b on a.driverno=b.driverno
+	where b.driverno is null
+	group by a.driverno
+	
+	update @tmp set money03=b.money03,money04=b.money04
+	from @tmp a
+	left join (select driverno
+		,SUM(ISNULL(plusmoney,0)+ISNULL(minusmoney,0)) money03
+		,SUM(case istre when 1 then isnull(plusmoney,0)+isnull(minusmoney,0) else 0 end) money04
+		from @tmpb group by driverno) b on a.driverno=b.driverno
+	
+	update @tmp set money05 = ISNULL(money01,0)+ISNULL(money03,0)
+		,money06 = ISNULL(money02,0)+ISNULL(money04,0)
+		,money07 = ISNULL(money01,0)+ISNULL(money03,0)-ISNULL(money02,0)-ISNULL(money04,0)
+	
+	insert into @tmp(gno,pno,driverno,money01,money02,money03,money04,money05,money06,money07)
+	select '4',4,CHAR(255),SUM(ISNULL(money01,0)),SUM(ISNULL(money02,0)),SUM(ISNULL(money03,0))
+		,SUM(ISNULL(money04,0)),SUM(ISNULL(money05,0)),SUM(ISNULL(money06,0)),SUM(ISNULL(money07,0))
+	from @tmp
+	where gno='1'
+	
+	update @tmp set driver=b.namea
+	from @tmp a
+	left join driver b on a.driverno=b.noa
+	
+	update @tmp set recno=b.recno
+	from @tmp a
+	left join (select sel,ROW_NUMBER()over(order by driverno) recno from @tmp ) b on a.sel=b.sel
+	
+	if len(@t_detail)>0
+	begin
+		insert into @tmp(gno,pno,driverno,driver,tranno,trandate,paytype,istax,total,total2,tax,[money],[money_tre],cust)
+		select '2',2,driverno,driver,noa tranno,trandate,paytype,istax,total,total2,tax,[money],[money_tre],cust
+		from @tmpa
+		order by driverno,sel
+		
+		insert into @tmp(gno,pno,driverno,driver,carchgno,carchgdate,item,itemmoney,itemmoney_tre)
+		select '2',2,driverno,driver,noa,datea
+			,isnull(plusitem,'')+isnull(minusitem,'')
+			,abs(ISNULL(plusmoney,0)-ISNULL(minusmoney,0))
+			,case istre when 1 then  abs(ISNULL(plusmoney,0)-ISNULL(minusmoney,0)) else 0 end
+		from @tmpb
+		order by driverno,sel
+	end
+	--------------------------------------------------------------------------------
+	--select * from @tmpa
+	--select * from @tmpb
+	--select * from @tmp
+	
+	select gno
+		,recno rr
+		,driverno a00
+		,driver a01
+		,dbo.getComma(money01,-1) a02
+		,dbo.getComma(money03,-1) a03 
+		,dbo.getComma(money05,-1) a04 
+		,dbo.getComma(money06,-1) a04a 
+		,dbo.getComma(money07,-1) a05
+		,tranno b01
+		,dbo.getComma(total2,-1) b02
+		,cust b03
+		,carchgno c01
+		,dbo.getComma(itemmoney,-1) c02
+		,item c03
+	from @tmp
+	order by driverno,pno,sel;
+
 z_paytran_ds1:--z_paytran_ds1
 	SET QUOTED_IDENTIFIER OFF
 	declare @cmd nvarchar(max)

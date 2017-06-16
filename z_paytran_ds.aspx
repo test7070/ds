@@ -65,6 +65,10 @@
 						type : '8',
 						name : 'xcarteam',
 						value : t_carteam.split(',')
+					}, {/*9*/
+						type : '8', //select
+						name : 'xdetail',
+						value : "detail@明細".split(',')
 					}]
 				});
 				q_popAssign();
