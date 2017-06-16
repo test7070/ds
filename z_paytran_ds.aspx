@@ -30,11 +30,11 @@
 				$('#q_report').q_report({
 					fileName : 'z_paytran_ds',
 					options : [{
-						type : '0',
+						type : '0',       //[1]  
 						name : 'accy',
 						value : q_getId()[4]
-					}, {/*1*/
-						type : '1',
+					}, {/*1*/             //[2][3] 
+						type : '1',             
 						name : 'date'
 					}, {/*2*/
 						type : '2',
@@ -61,11 +61,11 @@
 					}, {/*7*/
 						type : '6',
 						name : 'xnoa'
-					},{/*8*/
+					},{/*8*/                   //[12]
 						type : '8',
 						name : 'xcarteam',
 						value : t_carteam.split(',')
-					}, {/*9*/
+					}, {/*9*/                  //[13]
 						type : '8', //select
 						name : 'xdetail',
 						value : "detail@明細".split(',')
