@@ -1,0 +1,71 @@
+z_rc2_dsp01:--z_rc2_dsp01	
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_bnoa nvarchar(20) = case when '#non'=[1] then '' else [1] end 
+	declare @t_enoa nvarchar(20) = case when '#non'=[2] then char(255) else [2] end 
+	declare @t_bdate nvarchar(10) = case when '#non'=[3] then '' else [3] end 
+	declare @t_edate nvarchar(10) = case when '#non'=[4] then char(255) else [4] end 
+	declare @t_btggno nvarchar(20) = case when '#non'=[5] then '' else [5] end 
+	declare @t_etggno nvarchar(20) = case when '#non'=[6] then char(255) else [6] end 
+	-----------------------------------------------------------------------------------------
+	declare @tmp table(
+		pno nvarchar(10),
+		gno nvarchar(10),
+		recno int,
+		rr int,
+		accy nvarchar(10),
+		noa nvarchar(20),
+		noq nvarchar(10),
+		custno nvarchar(20),
+		comp nvarchar(40),
+		nick nvarchar(20),
+		datea nvarchar(10),
+		
+		productno nvarchar(20),
+		product nvarchar(50),
+		price float,
+		mount float,
+		totals float,
+		
+		[money] float,
+		tax float,
+		total float,
+		
+		memo nvarchar(max),
+		ghref nvarchar(max)
+	)
+	
+	insert into @tmp(pno,gno,recno,accy,noa,noq,custno,comp,nick,datea
+		,productno,product,price,mount,totals,memo
+		,[money],tax,total)
+	select '1','1',ROW_NUMBER()over(partition by isnull(b.accy,''),isnull(b.noa,'') order by a.noq)
+		,isnull(b.accy,''),isnull(b.noa,''),isnull(a.noq,''),b.tggno,b.comp,c.nick,b.datea
+		,a.productno,a.product,a.price,a.mount,a.total
+		,b.memo
+		,b.[money],b.tax,b.total
+	from view_rc2 b
+	left join view_rc2s a on a.accy=b.accy and a.noa=b.noa
+	left join tgg c on b.tggno=c.noa
+	where b.datea between @t_bdate and @t_edate
+	and b.noa between @t_bnoa and @t_enoa
+	and ISNULL(b.tggno,'') between @t_btggno and @t_etggno
+	--and ISNULL(a.productno,'') between @t_bproductno and @t_eproductno
+	------------------------------------------------------------------------------------
+	update @tmp set gno = case when recno!=1 then '2' else gno end
+	
+	update @tmp set rr = b.rr,ghref = "rc2_ds?noa=\'"+a.noa+"\' and "+cast(b.rr as nvarchar)+"=$rr?"+a.accy
+	from @tmp a
+	left join (select accy,noa,noq,ROW_NUMBER()over(order by datea,accy,noa,noq) rr from @tmp where recno=1)b on a.accy=b.accy and a.noa=b.noa and a.noq=b.noq
+
+	insert into @tmp(pno,gno,mount,totals,[money],tax,total)
+	select '3','3',SUM(ISNULL(mount,0)),SUM(ISNULL(totals,0))
+	,SUM(case when recno=1 then ISNULL([money],0) else 0 end)
+	,SUM(case when recno=1 then ISNULL([tax],0) else 0 end)
+	,SUM(case when recno=1 then ISNULL([total],0) else 0 end)
+	from @tmp
+
+	select * 
+		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,totals),1)),4,12)) tts
+		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,[money]),1)),4,12)) mmm
+		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,total),1)),4,12)) ttt
+	from @tmp order by pno,datea,accy,noa,noq;

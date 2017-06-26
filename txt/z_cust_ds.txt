@@ -1,0 +1,160 @@
+z_cust_ds01:--z_cust_ds01
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_namea nvarchar(max) = '[1]'
+	declare @t_bcustno nvarchar(20) = case when '#non'=[2] then '' else [2] end
+	declare @t_ecustno nvarchar(20) = case when '#non'=[3] then CHAR(255) else [3] end
+	declare @t_btggno nvarchar(20) = case when '#non'=[4] then '' else [4] end
+	declare @t_etggno nvarchar(20) = case when '#non'=[5] then CHAR(255) else [5] end
+	declare @t_bsssno nvarchar(20) = case when '#non'=[6] then '' else [6] end
+	declare @t_esssno nvarchar(20) = case when '#non'=[7] then CHAR(255) else [7] end
+	declare @t_isout nvarchar(max) = case when '#non'=[8] then '' else [8] end
+	---------------------------------------------------------------------------------------
+	declare @tmp table(
+		recno int,
+		noa nvarchar(20),
+		comp nvarchar(50),
+		nick nvarchar(20),
+		serial nvarchar(20),
+		tel nvarchar(max),
+		mobile nvarchar(max),
+		zip_comp nvarchar(20),
+		addr_comp nvarchar(max),
+		paytype nvarchar(50),
+		b_conn nvarchar(50)
+	)
+	insert into @tmp(recno,noa,comp,nick,serial,tel,mobile,zip_comp,addr_comp,paytype,b_conn)
+	select row_number()over(order by noa)
+	,noa,comp,nick,serial,tel,mobile,zip_comp,addr_comp,paytype 
+	,(select top 1 namea from conn where a.noa=noa) b_conn
+	from cust a
+	where noa between @t_bcustno and @t_ecustno
+	order by noa
+	
+	select '1' gno
+		,recno rr
+		,@t_namea ww
+		,zip_comp zc
+		,addr_comp ac
+		,* 
+		,"cust_ds?noa=\'"+noa+"\' and "+cast(recno as nvarchar)+"=$rr?" ghref
+	from @tmp;
+	
+z_cust_ds02:--z_cust_ds02
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_namea nvarchar(max) = '[1]'
+	declare @t_bcustno nvarchar(20) = case when '#non'=[2] then '' else [2] end
+	declare @t_ecustno nvarchar(20) = case when '#non'=[3] then CHAR(255) else [3] end
+	declare @t_btggno nvarchar(20) = case when '#non'=[4] then '' else [4] end
+	declare @t_etggno nvarchar(20) = case when '#non'=[5] then CHAR(255) else [5] end
+	declare @t_bsssno nvarchar(20) = case when '#non'=[6] then '' else [6] end
+	declare @t_esssno nvarchar(20) = case when '#non'=[7] then CHAR(255) else [7] end
+	declare @t_isout nvarchar(max) = case when '#non'=[8] then '' else [8] end
+	---------------------------------------------------------------------------------------
+	declare @tmp table(
+		recno int,
+		noa nvarchar(20),
+		comp nvarchar(50),
+		nick nvarchar(20),
+		serial nvarchar(20),
+		tel nvarchar(max),
+		mobile nvarchar(max),
+		zip_comp nvarchar(20),
+		addr_comp nvarchar(max),
+		paytype nvarchar(50),
+		b_conn nvarchar(50)
+	)
+	insert into @tmp(recno,noa,comp,nick,serial,tel,mobile,zip_comp,addr_comp,paytype,b_conn)
+	select row_number()over(order by noa)
+	,noa,comp,nick,serial,tel,mobile,zip_comp,addr_comp,paytype 
+	,(select top 1 namea from conn where a.noa=noa) b_conn
+	from tgg a
+	where noa between @t_btggno and @t_etggno
+	order by noa
+	
+	select '1' gno
+		,recno rr
+		,@t_namea ww
+		,zip_comp zc
+		,addr_comp ac
+		,* 
+		,"tgg_ds?noa=\'"+noa+"\' and "+cast(recno as nvarchar)+"=$rr?" ghref
+	from @tmp;
+z_cust_ds03:--z_cust_ds03
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_namea nvarchar(max) = '[1]'
+	declare @t_bcustno nvarchar(20) = case when '#non'=[2] then '' else [2] end
+	declare @t_ecustno nvarchar(20) = case when '#non'=[3] then CHAR(255) else [3] end
+	declare @t_btggno nvarchar(20) = case when '#non'=[4] then '' else [4] end
+	declare @t_etggno nvarchar(20) = case when '#non'=[5] then CHAR(255) else [5] end
+	declare @t_bsssno nvarchar(20) = case when '#non'=[6] then '' else [6] end
+	declare @t_esssno nvarchar(20) = case when '#non'=[7] then CHAR(255) else [7] end
+	declare @t_isout nvarchar(max) = case when '#non'=[8] then '' else [8] end
+	---------------------------------------------------------------------------------------	
+	declare @tmp table(
+		gno nvarchar(10),
+		recno int,
+		noa nvarchar(20),
+		namea nvarchar(50),
+		job nvarchar(20),
+		tel nvarchar(50),
+		mobile1 nvarchar(50),
+		mobile2 nvarchar(50),
+		addr_home nvarchar(max),
+		addr_conn nvarchar(max)
+	)
+	insert into @tmp(gno,recno,noa,namea,job,tel,mobile1,mobile2,addr_home,addr_conn)
+	select case when len(isnull(outdate,''))>0 then '2' else '1' end
+	,row_number()over(order by noa)
+	,noa,namea,job,tel,mobile1,mobile2,addr_home,addr_conn
+	from sss a
+	where noa between @t_bsssno and @t_esssno
+	and (len(@t_isout)=0 or (@t_isout='N' and len(isnull(outdate,''))=0) or (@t_isout='Y' and len(isnull(outdate,''))>0) )
+	order by noa
+	
+	select recno rr
+		,@t_namea ww
+		,namea nnn
+		,'<a style="font-family:'+ "'Times New Roman','標楷體', serif"+char(59)+'">'+addr_home+'</a>' ah
+		,'<a style="font-family:'+ "'Times New Roman','標楷體', serif"+char(59)+'">'+addr_conn+'</a>' ac
+		,* 
+		,"sss_ds?noa=\'"+noa+"\' and "+cast(recno as nvarchar)+"=$rr?" ghref
+	from @tmp;
+	
+z_cust_ds04:--z_cust_ds04
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_namea nvarchar(max) = '[1]'
+	declare @t_bcustno nvarchar(20) = case when '#non'=[2] then '' else [2] end
+	declare @t_ecustno nvarchar(20) = case when '#non'=[3] then CHAR(255) else [3] end
+	declare @t_btggno nvarchar(20) = case when '#non'=[4] then '' else [4] end
+	declare @t_etggno nvarchar(20) = case when '#non'=[5] then CHAR(255) else [5] end
+	declare @t_bsssno nvarchar(20) = case when '#non'=[6] then '' else [6] end
+	declare @t_esssno nvarchar(20) = case when '#non'=[7] then CHAR(255) else [7] end
+	declare @t_isout nvarchar(max) = case when '#non'=[8] then '' else [8] end
+	declare @t_bproductno nvarchar(20) = case when '#non'=[9] then '' else [9] end
+	declare @t_eproductno nvarchar(20) = case when '#non'=[10] then CHAR(255) else [10] end
+	---------------------------------------------------------------------------------------
+	declare @tmp table(
+		recno int,
+		noa nvarchar(20),
+		product nvarchar(max),
+		spec nvarchar(max)
+	)
+	insert into @tmp(recno,noa,product,spec)
+	select row_number()over(order by noa)
+	,noa,product,spec
+	from ucc a
+	where noa between @t_bproductno and @t_eproductno
+	order by noa
+	
+	select '1' gno
+		,recno rr
+		,@t_namea ww
+		,'<a style="font-family:'+ "'Times New Roman','標楷體', serif"+char(59)+'">'+product+'</a>' a01
+		,'<a style="font-family:'+ "'Times New Roman','標楷體', serif"+char(59)+'">'+spec+'</a>' a02
+		,* 
+		,"ucc_ds?noa=\'"+noa+"\' and "+cast(recno as nvarchar)+"=$rr?" ghref
+	from @tmp;
