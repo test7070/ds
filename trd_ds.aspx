@@ -21,7 +21,7 @@
             }
             q_tables = 's';
             var q_name = "trd";
-            var q_readonly = ['txtTax', 'txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount','txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
+            var q_readonly = ['txtTax', 'txtQtime', 'txtNoa', 'txtMoney', 'txtTotal','txtWorker2','txtWorker', 'txtMount','txtStraddr', 'txtEndaddr', 'txtPlusmoney', 'txtMinusmoney', 'txtVccano', 'txtCustchgno','txtAccno','txtAccno2','txtYear2','txtYear1'];
             var q_readonlys = ['txtTranno', 'txtTrannoq','txtTrandate','txtStraddr','txtEndaddr','txtProduct','txtCarno','txtCustorde','txtCaseno','txtMount','txtPrice','txtCustdiscount','txtTotal','txtTranmoney','txtOthercost'];
             var bbmNum = [['txtMoney', 10, 0,1], ['txtTax', 10, 0,1], ['txtTotal', 10, 0,1], ['txtMount', 10, 3,1], ['txtPlusmoney', 10, 0,1], ['txtMinusmoney', 10, 0,1]];
             var bbsNum = [['txtTranmoney', 10, 0,1], ['txtOverweightcost', 10, 0,1], ['txtOthercost', 10, 0,1], ['txtMount', 10, 3,1], ['txtPrice', 10, 3,1], ['txtTotal', 10, 0,1]];
@@ -571,7 +571,7 @@
             function _btnSeek() {
                 if (q_cur > 0 && q_cur < 4)
                     return;
-                q_box('trd_ds_s.aspx', q_name + '_s', "600px", "450px", q_getMsg("popSeek"));
+                q_box('trd_ds_s.aspx', q_name + '_s', "600px", "550px", q_getMsg("popSeek"));
             }
 
             function bbsAssign() {
@@ -1083,7 +1083,6 @@
 						<td><span> </span><a id="lblNoa" class="lbl"> </a></td>
 						<td>
 							<input id="txtNoa" type="text" class="txt c1"/>
-							<input id="txtQtime" type="text" style="display:none;"/>
 						</td>
 						<td><span> </span><a id="lblDatea" class="lbl"> </a></td>
 						<td><input id="txtDatea" type="text"  class="txt c1"/></td>
@@ -1206,7 +1205,10 @@
 						<td><input id="txtYear2" type="text"  class="txt c1"/> </td>
 						<td><input type="button" id="btnImport" value="整批匯入" style="display:none;" class="ES_show"/></td>
 					</tr>
-					
+					<tr>
+						<td><span> </span><a id="lblQtime" class="lbl">匯入時間</a></td>
+						<td colspan="3"><input id="txtQtime" type="text"  class="txt c1"/></td>
+					</tr>
 				</table>
 			</div>
 		</div>

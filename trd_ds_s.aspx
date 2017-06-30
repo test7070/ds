@@ -44,6 +44,7 @@
                 t_umm = $.trim($('#cmbUmm').val());
                 t_tranno = $.trim($('#txtTranno').val());
 				t_memo = $.trim($('#txtMemo').val());
+				t_qtime = $.trim($('#txtQtime').val());
 				
                 var t_where = " 1=1 and (len(isnull(datea,''))!=9 or datea>='101/08/01') " + q_sqlPara2("noa", t_noa) + q_sqlPara2("custno", t_custno) + q_sqlPara2("mon", t_mon) + q_sqlPara2("datea", t_bdate, t_edate);
                 if (t_comp.length > 0)
@@ -56,6 +57,8 @@
                     t_where += " and unpay!=0";
                 if (t_memo.length >0)
                     t_where += " and charindex('" + t_memo + "',memo)>0";
+                if (t_qtime.length >0)
+                    t_where += " and charindex('" + t_qtime + "',qtime)>0";
                 if(t_tranno.length>0)
 		       		t_where += " and exists(select noa from view_trds"+r_accy+" where view_trds"+r_accy+".noa=view_trd"+r_accy+".noa and view_trds"+r_accy+".tranno='"+t_tranno+"')";
                 t_where = ' where=^^' + t_where + '^^ ';
@@ -126,6 +129,12 @@
 					<td class='seek'  style="width:20%;"><a id='lblMemo'>備註</a></td>
 					<td>
 					<input class="txt" id="txtMemo" type="text" style="width:215px; font-size:medium;" />
+					</td>
+				</tr>
+				<tr class='seek_tr'>
+					<td class='seek'  style="width:20%;"><a id='lblQtime'>匯入時間</a></td>
+					<td>
+					<input class="txt" id="txtQtime" type="text" style="width:215px; font-size:medium;" />
 					</td>
 				</tr>
 			</table>
