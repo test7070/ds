@@ -1,4 +1,4 @@
-z_fixa_ds08:--z_fixa_ds08
+﻿z_fixa_ds08:--z_fixa_ds08
 	SET QUOTED_IDENTIFIER OFF
 	declare @cmd nvarchar(max)
 	declare @t_bproductno nvarchar(20) = case when '#non'=[11] then '' else [11] end
@@ -409,15 +409,16 @@ z_fixa_ds02:--z_fixa_ds02
 	declare @t_enoa nvarchar(20)= case when '#non'=[12] then CHAR(255) else [12] end
 	declare @t_product nvarchar(max) = case when '#non'=[13] then '' else [13] end
 	--------------------------------------------------------------------------------------
-	select '1' gno
-		,ROW_NUMBER()over(order by noa) rr 
-		,"fixucc_ds?noa=\'"+noa+"\' and "+cast(ROW_NUMBER()over(order by noa) as nvarchar)+"=$rr?" ghref
-		,noa,namea,unit,typea,tggno,tgg comp
-	from fixucc
-	where noa between @t_bnoa and @t_enoa
-	and isnull(tggno,'') between @t_btggno and @t_etggno
-	and (len(@t_product)=0 or CHARINDEX(@t_product,namea)>0)
-	order by noa;
+	select '1' gno 
+	,ROW_NUMBER()over(order by noa) rr 
+	,"fixucc_ds?noa=\'"+noa+"\' and "+cast(ROW_NUMBER()over(order by noa) as nvarchar)+"=$rr?" ghref 
+	,noa,namea,unit,typea,tggno,tgg comp 
+	from fixucc 
+	where noa between @t_bnoa and @t_enoa 
+	and isnull(tggno,'') between @t_btggno and @t_etggno 
+	and (len(@t_product)=0 or CHARINDEX(@t_product,namea)>0) 
+	and indate between @t_bdate and @t_edate 
+	order by noa 
 
 
 z_fixa_ds04:--z_fixa_ds04
