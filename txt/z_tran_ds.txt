@@ -1004,7 +1004,7 @@ z_tran_ds09:--z_tran_ds09
 	" ,a.mount,a.price,a.total"+
 	" ,a.mount2,a.price2,a.price3,a.discount,a.total2"+
 	" ,a.reserve,a.tolls,a.memo"+
-	" from view_trans"+@t_accy+" a"+
+	" from view_trans a"+
 	" left join carteam b on a.carteamno = b.noa"+
 	" left join calctypes c on a.calctype = c.noa+c.noq"+
 	" left join acomp d on a.cardealno=d.noa"+
@@ -2182,7 +2182,7 @@ z_tran_ds08:--z_tran_ds08
 	" ,a.mount,a.price,a.total"+
 	" ,a.mount2,a.price2,a.price3,a.discount,a.total2"+
 	" ,a.reserve,a.tolls,a.memo"+
-	" from view_trans"+@t_accy+" a"+
+	" from view_trans a"+
 	" left join carteam b on a.carteamno = b.noa"+
 	" left join calctypes c on a.calctype = c.noa+c.noq"+
 	" where (left(a.trandate,6) between left(@t_btrandate,6) and left(@t_etrandate,6))"
