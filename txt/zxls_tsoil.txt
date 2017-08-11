@@ -1,0 +1,176 @@
+zxls_tsoil:--zxls_tsoil
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @workerno nvarchar(max) = [1]
+	declare @worker nvarchar(max) = [2]
+	declare @filename nvarchar(max) = [3]
+	declare @curdate nvarchar(max) = convert(nvarchar,getDate(),120)
+	-------------------------------------------------------------------------
+	declare @tmp table(
+		pno int identity(1,1),
+		noa nvarchar(20),
+		datea nvarchar(10),
+		timea nvarchar(10),
+		carno nvarchar(20),
+		product nvarchar(20),
+		price float,
+		mount float,
+		[money] float,
+		discount float,
+		total float,
+		miles float,
+		oilstationno nvarchar(20),
+		oilstation nvarchar(20),
+		driverno nvarchar(20),
+		driver nvarchar(20)
+	)
+	-------------------------------------------------------------------------
+	declare @a nvarchar(max)
+	declare @b nvarchar(max)
+	declare @c nvarchar(max)
+	declare @d nvarchar(max)
+	declare @e nvarchar(max)
+	declare @f nvarchar(max)
+	declare @g nvarchar(max)
+	declare @h nvarchar(max)
+	declare @i nvarchar(max)
+	declare @j nvarchar(max)
+	declare @k nvarchar(max)
+	declare @l nvarchar(max)
+	declare @m nvarchar(max)
+	declare @n nvarchar(max)
+	
+	declare @datea nvarchar(10)
+	declare @timea nvarchar(10)
+	declare @carno nvarchar(20)
+	declare @miles float
+	declare @product nvarchar(20)
+	declare @price float
+	declare	@mount float
+	declare @money float
+	declare @discount float
+	declare @total float
+	declare @driverno nvarchar(20)
+	declare @driver nvarchar(20)
+	
+	declare @oilstationno nvarchar(20)=''
+	declare @oilstation nvarchar(20)=''
+
+	declare cursor_table cursor for
+	select a,b,c,d,e,f,g,h,i,j,k,l,m,n from ztmpxls order by CAST(noa as int)
+	open cursor_table
+	fetch next from cursor_table
+	into @a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m,@n
+	while(@@FETCH_STATUS <> -1)
+	begin
+		begin try	
+			if CHARINDEX('站名',@a)>0
+			begin
+				select top 1 @oilstationno=noa,@oilstation=station from oilstation where CHARINDEX(@b,station)>0
+			end
+			if ISDATE(@a)>0
+			begin
+				set @datea = dbo.AD2ChineseEraName(CAST(@a as date))
+				set @timea = SUBSTRING(@b,1,2)+':'+SUBSTRING(@b,3,2)+':'+SUBSTRING(@b,5,2)
+				set @carno = ltrim(rtrim(@g))
+				set @miles = CAST(@h as float)
+				set @product = case when charindex('92',@i)>0 or charindex('九二',@i)>0 then '九二'
+									when charindex('95',@i)>0 or charindex('九五',@i)>0 then '九五'
+									when charindex('98',@i)>0 or charindex('九八',@i)>0 then '九八'
+									when charindex('柴',@i)>0 then '柴油'
+									else @i end
+				set @price = CAST(@j as float)
+				set @mount = CAST(@k as float)
+				set @money = CAST(@l as float)
+				set @discount = CAST(@m as float)
+				set @total = CAST(@n as float)
+				select @driverno='',@driver=''
+				select top 1 @driverno=driverno,@driver=driver from view_trans where trandate=@datea and carno=@carno
+
+				insert into @tmp(datea,timea,carno,miles,product,price,mount,[money],discount,total
+					,oilstationno,oilstation,driverno,driver)
+				select @datea,@timea,@carno,@miles,@product,@price,@mount,@money,@discount,@total
+					,@oilstationno,@oilstation,@driverno,@driver
+			end
+		end try
+		begin catch 
+			--nothing
+		end catch
+
+		fetch next from cursor_table
+		into @a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m,@n
+	end
+	close cursor_table
+	deallocate cursor_table
+	------------------------------------------------------------------------------------------
+	if not exists(SELECT * FROM sys.indexes WHERE name='kd_oil' AND object_id = OBJECT_ID('oil'))
+		create index kd_oil on oil(oildate,timea,carno)
+	
+	declare @noa nvarchar(20) = ''
+	declare @noq nvarchar(20) = ''
+	declare @pno int
+	declare @key nvarchar(20) = 'BQ'
+	declare @tmpno1 nvarchar(20)= ''
+	declare @tmpno2 nvarchar(20)= ''
+	declare @string nvarchar(max) = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		
+		
+	declare cursor_table cursor for
+	select datea from @tmp group by datea
+	open cursor_table
+	fetch next from cursor_table
+	into @datea
+	while(@@FETCH_STATUS <> -1)
+	begin
+		select @tmpno1='',@tmpno2=''
+		set @noa = @key+REPLACE(@datea,'/','')
+		select top 1 @tmpno1=noa from view_trans where noa like @noa+'[0-9,A-Z][0-9][0-9]' order by noa desc
+		select top 1 @tmpno2=noa from @tmp where noa like @noa+'[0-9,A-Z][0-9][0-9]' order by noa desc
+		set @noa = @noa + '000'
+		set @noa = case when @noa>@tmpno1 then @noa else @tmpno1 end
+		set @noa = case when @noa>@tmpno2 then @noa else @tmpno2 end
+		set @n =  cast((charindex(left(RIGHT(@noa,3),1),@string)-1)*100+cast(RIGHT(@noa,2) as int)+1 as nvarchar)	
+			
+		declare cursor_table2 cursor for
+		select pno,timea,carno from @tmp where datea =@datea
+		open cursor_table2
+		fetch next from cursor_table2
+		into @pno,@timea,@carno
+		while(@@FETCH_STATUS <> -1)
+		begin
+			set @noa = ''
+			--沿用舊的編號   用(日期,時間,車牌)來判斷唯一性
+			set @cmd =
+				"select @noa = noa  from oil where datea=@datea and timea=@timea and carno=@carno"
+			execute sp_executesql @cmd,N'@noa nvarchar(20) output,@datea nvarchar(20),@timea nvarchar(20),@carno nvarchar(20)'
+				,@noa=@noa output,@datea=@datea,@timea=@timea,@carno=@carno
+			if len(ISNULL(@noa,''))=0
+			begin
+				set @noq = SUBSTRING(@string,floor(@n/100)+1,1)+right('00'+cast(@n%100 as nvarchar),2)
+				set @noa = @key+REPLACE(@datea,'/','')+@noq
+				set @n = @n + 1
+			end
+			update @tmp set noa=@noa where pno=@pno
+			fetch next from cursor_table2
+			into @pno,@timea,@carno
+		end
+		close cursor_table2
+		deallocate cursor_table2
+
+		fetch next from cursor_table
+		into @datea
+	end
+	close cursor_table
+	deallocate cursor_table	
+	----------------------------------------------------------------------------	
+	--刪除舊資料
+	delete oil
+	from oil a
+	left join @tmp b on a.noa=b.noa
+	where b.noa is not null
+	-----------------------------------------------------------------------------
+	insert into oil(noa,datea,oildate,timea,carno,iscustom,iscustom2,bmiles,emiles,miles,rate
+		,driverno,driver,oilstationno,oilstation,product,price,mount,[money],worker,memo)
+	select noa,datea,datea,timea,carno,0,1,0,0,miles,0
+		,driverno,driver,oilstationno,oilstation,product,price,mount,total,@worker,@curdate
+	from @tmp a;

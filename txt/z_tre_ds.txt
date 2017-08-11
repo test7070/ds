@@ -1,0 +1,1977 @@
+z_tre_ds06:--z_tre_ds06  ref z_tre_ds02   papersize A4
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_accy nvarchar(10)
+	declare @t_bdate nvarchar(10)
+	declare @t_edate nvarchar(10)
+	declare @t_btggno nvarchar(20)
+	declare @t_etggno nvarchar(20)
+	declare @t_bdriverno nvarchar(20)
+	declare @t_edriverno nvarchar(20)
+	declare @t_carteamno nvarchar(max)
+	declare @t_acomp nvarchar(max)
+	
+	set @t_accy = '[1]'
+	set @t_bdate = case when '#non'=[2] then '' else [2] end
+	set @t_edate = case when '#non'=[3] then CHAR(255) else [3] end
+	set @t_btggno = case when '#non'=[4] then '' else [4] end
+	set @t_etggno = case when '#non'=[5] then CHAR(255) else [5] end
+	set @t_bdriverno = case when '#non'=[6] then '' else [6] end
+	set @t_edriverno = case when '#non'=[7] then CHAR(255) else [7] end
+	set @t_carteamno = case when '#non'=[8] then '' else [8] end
+	set @t_acomp = case when '#non'=[9] then '' else [9] end
+	-------------------------------------------------------------------------------
+	declare @string nvarchar(max)
+	declare @n int
+	
+	---------------------------------------------------------------
+	IF OBJECT_ID('tempdb..#z_tre_ds02 ')is not null
+	BEGIN
+		set @cmd = 'drop table #z_tre_ds02 '
+		EXECUTE sp_executesql @cmd
+	END
+	create table #z_tre_ds02 (
+		pno nvarchar(10),
+		treno nvarchar(20),
+		tranno nvarchar(20),
+		trannoq nvarchar(10),
+		datea nvarchar(10),
+		trandate nvarchar(10),
+		trecarchgno nvarchar(max),
+		
+		carno nvarchar(20),
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		carteamno nvarchar(20),
+		carteam nvarchar(20),
+		
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		tggnick nvarchar(20),
+		custno nvarchar(20),
+		cust nvarchar(50),
+		custnick nvarchar(20),
+		addrno nvarchar(20),
+		addr nvarchar(50),
+		productno nvarchar(20),
+		product nvarchar(50),
+		
+		inmount float,
+		pton float,
+		mount float,
+		price float,
+		total float,
+		
+		outmount float,
+		pton2 float,
+		mount2 float,
+		price2 float,
+		price3 float,
+		discount float,
+		total2 float,
+		
+		tolls float,
+		memo nvarchar(max),
+		
+		carchgno nvarchar(20),
+		datea2 nvarchar(10),
+		plusitemno nvarchar(20),
+		plusitem nvarchar(50),
+		plusmoney float,
+		minusitemno nvarchar(20),
+		minusitem nvarchar(50),
+		minusmoney float,
+		memo2 nvarchar(max),
+		
+		ztotal2 float,
+		po nvarchar(50)
+	)
+	insert into #z_tre_ds02 (pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
+		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
+		,inmount,pton,mount,price,total
+		,outmount,pton2,mount2,price2,price3,discount,total2
+		,tolls,memo,po) 
+	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driver,d.driver,b.carteamno,g.team
+		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
+		,d.inmount,d.pton,d.mount,d.price,d.total
+		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
+		,d.tolls,d.memo,d.po
+	 from view_tre b
+	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
+	
+	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
+	 left join tgg e on b.tggno=e.noa
+	 left join cust f on d.custno=f.noa
+	 left join carteam g on b.carteamno=g.noa
+	 where (b.noa is not null)
+	 --and len(d.driverno)>0
+	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
+	 and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
+	---------------------------------------------------------------------------------------------
+	declare @treno nvarchar(20)
+	declare @carchgno nvarchar(max)
+	declare @tggno nvarchar(20)
+	declare @tgg nvarchar(50)
+	declare @tggnick nvarchar(20)
+	
+	declare cursor_table cursor for
+	select treno,trecarchgno from #z_tre_ds02  where len(ISNULL(trecarchgno,''))>0 group by treno,trecarchgno
+	open cursor_table
+	fetch next from cursor_table
+	into @treno,@carchgno
+	while(@@FETCH_STATUS <> -1)
+	begin
+		select @tggno=a.tggno,@tgg=b.comp,@tggnick=b.nick
+		from #z_tre_ds02  a 
+		left join tgg b on a.tggno=b.noa
+		where a.treno=@treno
+		set @tggno = ISNULL(@tggno,'')
+		set @tgg = ISNULL(@tgg,'')
+		set @tggnick = ISNULL(@tggnick,'')
+	
+		set @string = @carchgno
+		while(1=1)
+		begin
+			set @n = PATINDEX('%,%',@string)
+			if @n=0
+			begin
+				if LEN(@string)>0
+				begin
+					insert into #z_tre_ds02 (pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+					,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+					select '2',@treno,carno,driver,driver,@tggno,@tgg,@tggnick
+					,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+					from carchg where noa=@string
+				end
+				break
+			end
+			insert into #z_tre_ds02 (pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+			,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+			select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+			,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+			from carchg where noa=LEFT(@string,@n-1) 	
+			set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
+		end
+
+		fetch next from cursor_table
+		into @treno,@carchgno
+	end
+	close cursor_table
+	deallocate cursor_table	
+	--------------------------------------------------------------------------------------------
+	declare @tmp table(
+		page int,
+		n int,
+		gno nvarchar(10),
+		cpage int,
+		tpage int,
+
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		
+		g31 nvarchar(max),--recno
+		g32 nvarchar(max),--date
+		g33 nvarchar(max),--carno
+		g34 nvarchar(max),--addr
+		g35 nvarchar(max),--product
+		g36 nvarchar(max),--mount
+		g37 nvarchar(max),--price
+		g38 nvarchar(max),--total
+		g39 nvarchar(max),--po
+		g3a nvarchar(max),--discount
+		
+		g41 nvarchar(max),--recno
+		g42 nvarchar(max),--date
+		g43 nvarchar(max),--item
+		g44 nvarchar(max),--plusmoney
+		g45 nvarchar(max),--minusmoney
+		g46 nvarchar(max),--memo
+		
+		g51 nvarchar(max), -- g36 sum
+		g52 nvarchar(max), -- g38 sum
+		g53 nvarchar(max), -- g44 sum
+		g54 nvarchar(max), -- g45 sum
+		g55 nvarchar(max), -- g38 + g44 - g45
+		memo nvarchar(max)
+	)
+	--------------------------------------------------------------------------------------------
+	declare @rowline int -- 每頁可用行數
+	declare @endline int -- 頁尾行數
+	declare @page int
+	declare @recno int
+	declare @curline int -- 當前行數
+	set @rowline = 41
+	set @endline = 2
+	set @page = 0
+	
+	declare @datea nvarchar(10)
+	declare @trandate nvarchar(10)
+	declare @carno	nvarchar(20)
+	declare @addr nvarchar(40)
+	declare @product nvarchar(20)
+	declare @mount decimal(12,3)
+	declare @price decimal(12,3)
+	declare @total float
+	declare @memo nvarchar(max)
+	declare @po nvarchar(max)
+	declare @item nvarchar(max)
+	declare @plus float
+	declare @minus float
+	declare @money float
+	declare @discount decimal(12,3)
+	
+	declare @driverno nvarchar(20)
+	declare @driver nvarchar(20)
+	
+	declare @totcount int
+	declare @xx int = 0--控制表頭不算到行數
+	
+	declare cursor_table cursor for
+	select isnull(b.namea,'') a,isnull(b.namea,'') from #z_tre_ds02  a 
+	left join driver b on a.driver=b.namea
+	where len(isnull(b.namea,''))>0
+	group by isnull(b.namea,''),isnull(b.namea,'') order by a
+	open cursor_table
+	fetch next from cursor_table
+	into @driverno,@driver
+	while(@@FETCH_STATUS <> -1)
+	begin
+		set @page=0
+		set @curline = 0
+		set @recno = 0
+		set @n = 0
+		set @xx=0
+		--出車明細			
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds02  where driverno=@driverno and pno='1'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>=0
+		begin
+			insert into @tmp(page,n,gno,driverno,driver,memo)
+			select @page,@n%@rowline,'1',@driverno,@driver,'A1'
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		
+		
+		declare cursor_table2 cursor for
+		select trandate,carno,addr,product,mount2,isnull(price2,0)+isnull(price3,0),total2,po,discount
+		from #z_tre_ds02  
+		where driverno=@driverno and pno='1' order by trandate,addrno,carno
+		open cursor_table2
+		fetch next from cursor_table2
+		into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver
+			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
+			values(@page,@n%@rowline,'4',@driverno,@driver
+			,CAST(@recno+1-@xx as nvarchar),@trandate,@carno,@addr,@product
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1))
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0)
+			begin	
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,driverno,driver)
+					select @page,@n%@rowline,'1',@driverno,@driver
+					set @xx = @xx + 1
+					set @recno = @recno + 1
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		--加減項明細
+		set @xx = 0
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds02  where driverno=@driverno and pno='2'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			if(@curline%@rowline=@rowline-1)
+			begin
+				insert into @tmp(page,n,gno,driverno,driver)
+				values(@page,@n%@rowline,'0',@driverno,@driver)
+				set @recno = @recno + 1
+				set @curline = @curline + 1
+				set @page = @page + 1
+				set @n = @n + 1
+			end
+		
+			insert into @tmp(page,n,gno,driverno,driver)
+			select @page,@n%@rowline,'2',@driverno,@driver
+			
+			set @curline = @curline + 1
+			set @recno = 0
+			set @n = @n + 1
+		end
+		declare cursor_table2 cursor for
+		select datea2,ltrim(rtrim(plusitem))+ltrim(rtrim(minusitem)),plusmoney,minusmoney,memo2
+		from #z_tre_ds02  
+		where driver=@driver and pno='2' order by datea2
+		open cursor_table2
+		fetch next from cursor_table2
+		into @datea,@item,@plus,@minus,@memo
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver
+			,g41,g42,g43,g44,g45,g46)
+			values(@page,@n%@rowline,'5',@driverno,@driver
+			,CAST(@recno+1-@xx as nvarchar),@datea,@item
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,@memo)
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0 and @totcount>=0)
+			begin
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,driverno,driver)
+					select @page,@n%@rowline,'2',@driverno,@driver
+					set @xx = @xx + 1
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @datea,@item,@plus,@minus,@memo
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		---------------------------------------------------
+		--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		--依司機名稱合併列印
+		update @tmp set driverno=driver where driverno=@driverno
+		set @driverno = @driver
+		--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		--總計
+		if((@curline%@rowline)+@endline>@rowline)
+		begin
+			while(@curline%@rowline!=0)
+			begin
+				insert into @tmp(page,n,gno,driverno,driver)
+				values(@page,@n%@rowline,'0',@driverno,@driver)
+				set @curline = @curline + 1
+				set @n = @n + 1
+			end
+			set @page = @page + 1
+		end
+		while(((@curline%@rowline)+@endline)%@rowline!=0)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver)
+			values(@page,@n%@rowline,case when @curline%@rowline=0 then '3' else '0' end
+			,@driverno,@driver)
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		select @mount=0,@money=0,@plus=0,@minus=0,@total=0
+		select @mount=SUM(cast(replace(g36,',','') as float)),@money=SUM(cast(replace(g38,',','') as float)) from @tmp where driverno=@driverno and gno='4'
+		select @plus=SUM(cast(replace(g44,',','') as float)),@minus=SUM(cast(replace(g45,',','') as float)) from @tmp where driverno=@driverno and gno='5'
+		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
+		insert into @tmp(page,n,gno,driverno,driver,g51,g52,g53,g54,g55)
+			values(@page,@n%@rowline,'6',@driverno,@driver
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
+		
+		set @curline = @curline + 1
+		set @n = @n + 1
+		insert into @tmp(page,n,gno,driverno,driver,g51,g52,g53,g54,g55)
+			values(@page,@n%@rowline,'7',@driverno,@driver
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
+			
+		update @tmp set cpage=page+1,tpage=@page+1 where driverno=@driverno
+		---------------------------------------------------
+		fetch next from cursor_table
+		into @driverno,@driver
+	end
+	close cursor_table
+	deallocate cursor_table	
+
+	--select * from @tmp order by driverno,page,n
+
+	select @t_acomp acomp,* from @tmp order by driverno,page,n
+	--------------------------------------------------------------------------------------------
+	drop table #z_tre_ds02;
+	
+z_tre_ds04:--z_tre_ds04  ref z_tre_ds02
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_accy nvarchar(10)
+	declare @t_bdate nvarchar(10)
+	declare @t_edate nvarchar(10)
+	declare @t_btggno nvarchar(20)
+	declare @t_etggno nvarchar(20)
+	declare @t_bdriverno nvarchar(20)
+	declare @t_edriverno nvarchar(20)
+	declare @t_carteamno nvarchar(max)
+	declare @t_acomp nvarchar(max)
+	
+	set @t_accy = '[1]'
+	set @t_bdate = case when '#non'=[2] then '' else [2] end
+	set @t_edate = case when '#non'=[3] then CHAR(255) else [3] end
+	set @t_btggno = case when '#non'=[4] then '' else [4] end
+	set @t_etggno = case when '#non'=[5] then CHAR(255) else [5] end
+	set @t_bdriverno = case when '#non'=[6] then '' else [6] end
+	set @t_edriverno = case when '#non'=[7] then CHAR(255) else [7] end
+	set @t_carteamno = case when '#non'=[8] then '' else [8] end
+	set @t_acomp = case when '#non'=[9] then '' else [9] end
+	-------------------------------------------------------------------------------
+	declare @string nvarchar(max)
+	declare @n int
+	
+	---------------------------------------------------------------
+	IF OBJECT_ID('tempdb..#z_tre_ds02 ')is not null
+	BEGIN
+		set @cmd = 'drop table #z_tre_ds02 '
+		EXECUTE sp_executesql @cmd
+	END
+	create table #z_tre_ds02 (
+		pno nvarchar(10),
+		treno nvarchar(20),
+		tranno nvarchar(20),
+		trannoq nvarchar(10),
+		datea nvarchar(10),
+		trandate nvarchar(10),
+		trecarchgno nvarchar(max),
+		
+		carno nvarchar(20),
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		carteamno nvarchar(20),
+		carteam nvarchar(20),
+		
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		tggnick nvarchar(20),
+		custno nvarchar(20),
+		cust nvarchar(50),
+		custnick nvarchar(20),
+		addrno nvarchar(20),
+		addr nvarchar(50),
+		productno nvarchar(20),
+		product nvarchar(50),
+		
+		inmount float,
+		pton float,
+		mount float,
+		price float,
+		total float,
+		
+		outmount float,
+		pton2 float,
+		mount2 float,
+		price2 float,
+		price3 float,
+		discount float,
+		total2 float,
+		
+		tolls float,
+		memo nvarchar(max),
+		
+		carchgno nvarchar(20),
+		datea2 nvarchar(10),
+		plusitemno nvarchar(20),
+		plusitem nvarchar(50),
+		plusmoney float,
+		minusitemno nvarchar(20),
+		minusitem nvarchar(50),
+		minusmoney float,
+		memo2 nvarchar(max),
+		
+		ztotal2 float,
+		po nvarchar(50)
+	)
+
+	insert into #z_tre_ds02 (pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
+		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
+		,inmount,pton,mount,price,total
+		,outmount,pton2,mount2,price2,price3,discount,total2
+		,tolls,memo,po)
+		 
+	 select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team
+		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
+		,d.inmount,d.pton,d.mount,d.price,d.total
+		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
+		,d.tolls,d.memo,d.po
+	 from view_tre b
+	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
+	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
+	 left join tgg e on b.tggno=e.noa
+	 left join cust f on d.custno=f.noa
+	 left join carteam g on b.carteamno=g.noa
+	 where (b.noa is not null)
+	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
+	 and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
+	 
+	---------------------------------------------------------------------------------------------
+	declare @treno nvarchar(20)
+	declare @carchgno nvarchar(max)
+	declare @tggno nvarchar(20)
+	declare @tgg nvarchar(50)
+	declare @tggnick nvarchar(20)
+	
+	declare cursor_table cursor for
+	select treno,trecarchgno from #z_tre_ds02  where len(ISNULL(trecarchgno,''))>0 group by treno,trecarchgno
+	open cursor_table
+	fetch next from cursor_table
+	into @treno,@carchgno
+	while(@@FETCH_STATUS <> -1)
+	begin
+		select @tggno=a.tggno,@tgg=b.comp,@tggnick=b.nick
+		from #z_tre_ds02  a 
+		left join tgg b on a.tggno=b.noa
+		where a.treno=@treno
+		set @tggno = ISNULL(@tggno,'')
+		set @tgg = ISNULL(@tgg,'')
+		set @tggnick = ISNULL(@tggnick,'')
+	
+		set @string = @carchgno
+		while(1=1)
+		begin
+			set @n = PATINDEX('%,%',@string)
+			if @n=0
+			begin
+				if LEN(@string)>0
+				begin
+					insert into #z_tre_ds02 (pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+					,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+					select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+					,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+					from carchg where noa=@string
+				end
+				break
+			end
+			insert into #z_tre_ds02 (pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+			,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+			select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+			,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+			from carchg where noa=LEFT(@string,@n-1) 	
+			set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
+		end
+
+		fetch next from cursor_table
+		into @treno,@carchgno
+	end
+	close cursor_table
+	deallocate cursor_table	
+	--------------------------------------------------------------------------------------------
+	declare @tmp table(
+		page int,
+		n int,
+		gno nvarchar(10),
+		cpage int,
+		tpage int,
+
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		
+		g31 nvarchar(max),--recno
+		g32 nvarchar(max),--date
+		g33 nvarchar(max),--carno
+		g34 nvarchar(max),--addr
+		g35 nvarchar(max),--product
+		g36 nvarchar(max),--mount
+		g37 nvarchar(max),--price
+		g38 nvarchar(max),--total
+		g39 nvarchar(max),--po
+		g3a nvarchar(max),--discount
+		
+		g41 nvarchar(max),--recno
+		g42 nvarchar(max),--date
+		g43 nvarchar(max),--item
+		g44 nvarchar(max),--plusmoney
+		g45 nvarchar(max),--minusmoney
+		g46 nvarchar(max),--memo
+		
+		g51 nvarchar(max), -- g36 sum
+		g52 nvarchar(max), -- g38 sum
+		g53 nvarchar(max), -- g44 sum
+		g54 nvarchar(max), -- g45 sum
+		g55 nvarchar(max) -- g38 + g44 - g45
+	)
+	--------------------------------------------------------------------------------------------
+	declare @rowline int -- 每頁可用行數
+	declare @endline int -- 頁尾行數
+	declare @page int
+	declare @recno int
+	declare @curline int -- 當前行數
+	set @rowline = 16
+	set @endline = 2
+	set @page = 0
+	
+	declare @datea nvarchar(10)
+	declare @trandate nvarchar(10)
+	declare @carno	nvarchar(20)
+	declare @addr nvarchar(40)
+	declare @product nvarchar(20)
+	declare @mount decimal(12,3)
+	declare @price decimal(12,3)
+	declare @total float
+	declare @memo nvarchar(max)
+	declare @po nvarchar(max)
+	declare @item nvarchar(max)
+	declare @plus float
+	declare @minus float
+	declare @money float
+	declare @discount decimal(12,3)
+	
+	declare @driverno nvarchar(20)
+	declare @driver nvarchar(20)
+	
+	declare @totcount int
+	
+	declare cursor_table cursor for
+	select isnull(a.driverno,'') a,isnull(b.namea,'') from #z_tre_ds02  a 
+	left join driver b on a.driverno=b.noa
+	group by isnull(a.driverno,''),isnull(b.namea,'') order by a
+	open cursor_table
+	fetch next from cursor_table
+	into @driverno,@driver
+	while(@@FETCH_STATUS <> -1)
+	begin
+		set @page=0
+		set @curline = 0
+		set @recno = 0
+		set @n = 0
+		--出車明細			
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds02  where driverno=@driverno and pno='1'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			insert into @tmp(page,n,gno,driverno,driver)
+			select @page,@n%@rowline,'1',@driverno,@driver
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		
+		declare cursor_table2 cursor for
+		select trandate,carno,addr,product,mount2,isnull(price2,0)+isnull(price3,0),total2,po,discount
+		from #z_tre_ds02  
+		where driverno=@driverno and pno='1' order by trandate,addrno,carno
+		open cursor_table2
+		fetch next from cursor_table2
+		into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver
+			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
+			values(@page,@n%@rowline,'4',@driverno,@driver
+			,CAST(@recno+1 as nvarchar),@trandate,@carno,@addr,@product
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1))
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0)
+			begin	
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,driverno,driver)
+					select @page,@n%@rowline,'1',@driverno,@driver
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		--加減項明細
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds02  where driverno=@driverno and pno='2'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			if(@curline%@rowline=@rowline-1)
+			begin
+				insert into @tmp(page,n,gno,driverno,driver)
+				values(@page,@n%@rowline,'0',@driverno,@driver)
+				set @recno = @recno + 1
+				set @curline = @curline + 1
+				set @page = @page + 1
+				set @n = @n + 1
+			end
+		
+			insert into @tmp(page,n,gno,driverno,driver)
+			select @page,@n%@rowline,'2',@driverno,@driver
+			set @curline = @curline + 1
+			set @recno = 0
+			set @n = @n + 1
+		end
+		declare cursor_table2 cursor for
+		select datea2,ltrim(rtrim(plusitem))+ltrim(rtrim(minusitem)),plusmoney,minusmoney,memo2
+		from #z_tre_ds02  
+		where driverno=@driverno and pno='2' order by datea2
+		open cursor_table2
+		fetch next from cursor_table2
+		into @datea,@item,@plus,@minus,@memo
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver
+			,g41,g42,g43,g44,g45,g46)
+			values(@page,@n%@rowline,'5',@driverno,@driver
+			,CAST(@recno+1 as nvarchar),@datea,@item
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,@memo)
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0 and @totcount>0)
+			begin
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,driverno,driver)
+					select @page,@n%@rowline,'2',@driverno,@driver
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @datea,@item,@plus,@minus,@memo
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		---------------------------------------------------
+		--總計
+		if((@curline%@rowline)+@endline>@rowline)
+		begin
+			while(@curline%@rowline!=0)
+			begin
+				insert into @tmp(page,n,gno,driverno,driver)
+				values(@page,@n%@rowline,'0',@driverno,@driver)
+				set @curline = @curline + 1
+				set @n = @n + 1
+			end
+			set @page = @page + 1
+		end
+		while(((@curline%@rowline)+@endline)%@rowline!=0)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver)
+			values(@page,@n%@rowline,case when @curline%@rowline=0 then '3' else '0' end
+			,@driverno,@driver)
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		select @mount=0,@money=0,@plus=0,@minus=0,@total=0
+		select @mount=SUM(cast(replace(g36,',','') as float)),@money=SUM(cast(replace(g38,',','') as float)) from @tmp where driverno=@driverno and gno='4'
+		select @plus=SUM(cast(replace(g44,',','') as float)),@minus=SUM(cast(replace(g45,',','') as float)) from @tmp where driverno=@driverno and gno='5'
+		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
+		insert into @tmp(page,n,gno,driverno,driver,g51,g52,g53,g54,g55)
+			values(@page,@n%@rowline,'6',@driverno,@driver
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
+	
+		update @tmp set cpage=page+1,tpage=@page+1 where driverno=@driverno
+		---------------------------------------------------
+		fetch next from cursor_table
+		into @driverno,@driver
+	end
+	close cursor_table
+	deallocate cursor_table	
+
+	select @t_acomp acomp,* from @tmp order by driverno,page,n
+	--------------------------------------------------------------------------------------------
+	drop table #z_tre_ds02 ;
+
+
+z_tre_ds03:--z_tre_ds03  ref z_tre_ds01
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_accy nvarchar(10) = '[1]'
+	declare @t_bdate nvarchar(10) = case when '#non'=[2] then '' else [2] end
+	declare @t_edate nvarchar(10) = case when '#non'=[3] then CHAR(255) else [3] end
+	declare @t_btggno nvarchar(20) = case when '#non'=[4] then '' else [4] end
+	declare @t_etggno nvarchar(20) = case when '#non'=[5] then CHAR(255) else [5] end
+	declare @t_bdriverno nvarchar(20) = case when '#non'=[6] then '' else [6] end
+	declare @t_edriverno nvarchar(20) = case when '#non'=[7] then CHAR(255) else [7] end
+	declare @t_carteamno nvarchar(max) = case when '#non'=[8] then '' else [8] end
+	declare @t_acomp nvarchar(max) = case when '#non'=[9] then '' else [9] end
+	declare @t_treno nvarchar(max) = case when '#non'=[10] then '' else [10] end
+	-------------------------------------------------------------------------------
+	declare @string nvarchar(max)
+	declare @n int
+	---------------------------------------------------------------
+	IF OBJECT_ID('tempdb..#z_tre_ds01')is not null
+	BEGIN
+		drop table #z_tre_ds01
+	END
+	create table #z_tre_ds01(
+		pno nvarchar(10),
+		treno nvarchar(20),
+		tranno nvarchar(20),
+		trannoq nvarchar(10),
+		datea nvarchar(10),
+		trandate nvarchar(10),
+		trecarchgno nvarchar(max),
+		
+		carno nvarchar(20),
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		carteamno nvarchar(20),
+		carteam nvarchar(20),
+		
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		tggnick nvarchar(20),
+		custno nvarchar(20),
+		cust nvarchar(50),
+		custnick nvarchar(20),
+		addrno nvarchar(20),
+		addr nvarchar(50),
+		productno nvarchar(20),
+		product nvarchar(50),
+		
+		inmount float,
+		pton float,
+		mount float,
+		price float,
+		total float,
+		
+		outmount float,
+		pton2 float,
+		mount2 float,
+		price2 float,
+		price3 float,
+		discount float,
+		total2 float,
+		
+		tolls float,
+		memo nvarchar(max),
+		
+		carchgno nvarchar(20),
+		datea2 nvarchar(10),
+		plusitemno nvarchar(20),
+		plusitem nvarchar(50),
+		plusmoney float,
+		minusitemno nvarchar(20),
+		minusitem nvarchar(50),
+		minusmoney float,
+		memo2 nvarchar(max),
+		
+		ztotal2 float,
+		po nvarchar(50)
+	)
+
+	insert into #z_tre_ds01(pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
+		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
+		,inmount,pton,mount,price,total
+		,outmount,pton2,mount2,price2,price3,discount,total2
+		,tolls,memo,po)
+	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team
+		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
+		,d.inmount,d.pton,d.mount,d.price,d.total
+		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
+		,d.tolls,d.memo,d.po
+	 from view_tre b
+	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
+	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
+	 left join tgg e on b.tggno=e.noa
+	 left join cust f on d.custno=f.noa
+	 left join carteam g on b.carteamno=g.noa
+	 where ( len(@t_treno)>0 and charindex(','+b.noa+',',','+@t_treno+',')>0)
+		or ( len(@t_treno)=0 and ((b.noa is not null)
+	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
+	 and (isnull(b.tggno,0) between @t_btggno and @t_etggno))
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0))
+	 
+	---------------------------------------------------------------------------------------------
+	declare @treno nvarchar(20)
+	declare @carchgno nvarchar(max)
+	declare @tggno nvarchar(20)
+	declare @tgg nvarchar(50)
+	declare @tggnick nvarchar(20)
+	
+	declare cursor_table cursor for
+	select treno,trecarchgno from #z_tre_ds01 where len(ISNULL(trecarchgno,''))>0 group by treno,trecarchgno
+	open cursor_table
+	fetch next from cursor_table
+	into @treno,@carchgno
+	while(@@FETCH_STATUS <> -1)
+	begin
+		select @tggno=a.tggno,@tgg=b.comp,@tggnick=b.nick
+		from #z_tre_ds01 a 
+		left join tgg b on a.tggno=b.noa
+		where a.treno=@treno
+		set @tggno = ISNULL(@tggno,'')
+		set @tgg = ISNULL(@tgg,'')
+		set @tggnick = ISNULL(@tggnick,'')
+	
+		set @string = @carchgno
+		while(1=1)
+		begin
+			set @n = PATINDEX('%,%',@string)
+			if @n=0
+			begin
+				if LEN(@string)>0
+				begin
+					insert into #z_tre_ds01(pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+					,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+					select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+					,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+					from carchg where noa=@string
+				end
+				break
+			end
+			insert into #z_tre_ds01(pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+			,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+			select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+			,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+			from carchg where noa=LEFT(@string,@n-1) 	
+			set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
+		end
+
+		fetch next from cursor_table
+		into @treno,@carchgno
+	end
+	close cursor_table
+	deallocate cursor_table	
+	--------------------------------------------------------------------------------------------
+	declare @tmp table(
+		page int,
+		n int,
+		gno nvarchar(10),
+		cpage int,
+		tpage int,
+
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		tggnick nvarchar(20),
+		
+		g31 nvarchar(max),--recno
+		g32 nvarchar(max),--date
+		g33 nvarchar(max),--carno
+		g34 nvarchar(max),--addr
+		g35 nvarchar(max),--product
+		g36 nvarchar(max),--mount
+		g37 nvarchar(max),--price
+		g38 nvarchar(max),--total
+		g39 nvarchar(max),--po
+		g3a nvarchar(max),--discount
+		
+		g41 nvarchar(max),--recno
+		g42 nvarchar(max),--date
+		g43 nvarchar(max),--item
+		g44 nvarchar(max),--plusmoney
+		g45 nvarchar(max),--minusmoney
+		g46 nvarchar(max),--memo
+		
+		g51 nvarchar(max), -- g36 sum
+		g52 nvarchar(max), -- g38 sum
+		g53 nvarchar(max), -- g44 sum
+		g54 nvarchar(max), -- g45 sum
+		g55 nvarchar(max) -- g38 + g44 - g45
+	)
+	--------------------------------------------------------------------------------------------
+	declare @rowline int -- 每頁可用行數
+	declare @endline int -- 頁尾行數
+	declare @page int
+	declare @recno int
+	declare @curline int -- 當前行數
+	set @rowline = 16
+	set @endline = 2
+	set @page = 0
+	
+	declare @datea nvarchar(10)
+	declare @trandate nvarchar(10)
+	declare @carno	nvarchar(20)
+	declare @addr nvarchar(40)
+	declare @product nvarchar(20)
+	declare @mount decimal(12,3)
+	declare @price decimal(12,3)
+	declare @total float
+	declare @memo nvarchar(max)
+	declare @po nvarchar(max)
+	declare @item nvarchar(max)
+	declare @plus float
+	declare @minus float
+	declare @money float
+	declare @discount decimal(12,3)
+	
+	declare @totcount int
+	
+	declare cursor_table cursor for
+	select isnull(a.tggno,'') a,isnull(b.comp,''),isnull(b.nick,'') from #z_tre_ds01 a 
+	left join tgg b on a.tggno=b.noa
+	group by isnull(a.tggno,''),isnull(b.comp,''),isnull(b.nick,'') order by a
+	open cursor_table
+	fetch next from cursor_table
+	into @tggno,@tgg,@tggnick
+	while(@@FETCH_STATUS <> -1)
+	begin
+		set @page=0
+		set @curline = 0
+		set @recno = 0
+		set @n = 0
+		--出車明細		
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds01 where tggno=@tggno and pno='1'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+			select @page,@n%@rowline,'1',@tggno,@tgg,@tggnick
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		declare cursor_table2 cursor for
+		select trandate,carno,addr,product,mount2,isnull(price2,0)+isnull(price3,0),total2,po,discount
+		from #z_tre_ds01 
+		where tggno=@tggno and pno='1' order by trandate,addrno,carno
+		open cursor_table2
+		fetch next from cursor_table2
+		into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick
+			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
+			values(@page,@n%@rowline,'4',@tggno,@tgg,@tggnick
+			,CAST(@recno+1 as nvarchar),@trandate,@carno,@addr,@product
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1))
+
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0)
+			begin	
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+					select @page,@n%@rowline,'1',@tggno,@tgg,@tggnick
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		--加減項明細
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds01 where tggno=@tggno and pno='2'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			if(@curline%@rowline=@rowline-1)
+			begin
+				insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+				values(@page,@n%@rowline,'0',@tggno,@tgg,@tggnick)
+				set @recno = @recno + 1
+				set @curline = @curline + 1
+				set @page = @page + 1
+				set @n = @n + 1
+			end
+		
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+			select @page,@n%@rowline,'2',@tggno,@tgg,@tggnick
+			set @curline = @curline + 1
+			set @recno = 0
+			set @n = @n + 1
+		end
+		declare cursor_table2 cursor for
+		select datea2,ltrim(rtrim(plusitem))+ltrim(rtrim(minusitem)),plusmoney,minusmoney,memo2
+		from #z_tre_ds01 
+		where tggno=@tggno and pno='2' order by datea2
+		open cursor_table2
+		fetch next from cursor_table2
+		into @datea,@item,@plus,@minus,@memo
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick
+			,g41,g42,g43,g44,g45,g46)
+			values(@page,@n%@rowline,'5',@tggno,@tgg,@tggnick
+			,CAST(@recno+1 as nvarchar),@datea,@item
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,@memo)
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0)
+			begin
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+					select @page,@n%@rowline,'2',@tggno,@tgg,@tggnick
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @datea,@item,@plus,@minus,@memo
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		---------------------------------------------------
+		--總計
+		if((@curline%@rowline)+@endline>@rowline)
+		begin
+			while(@curline%@rowline!=0)
+			begin
+				insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+				values(@page,@n%@rowline,'0',@tggno,@tgg,@tggnick)
+				set @curline = @curline + 1
+				set @n = @n + 1
+			end
+			set @page = @page + 1
+		end
+		while(((@curline%@rowline)+@endline)%@rowline!=0)
+		begin
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+			values(@page,@n%@rowline,case when @curline%@rowline=0 then '3' else '0' end
+			,@tggno,@tgg,@tggnick)
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		select @mount=0,@money=0,@plus=0,@minus=0,@total=0
+		select @mount=SUM(cast(replace(g36,',','') as float)),@money=SUM(cast(replace(g38,',','') as float)) from @tmp where tggno=@tggno and gno='4'
+		select @plus=SUM(cast(replace(g44,',','') as float)),@minus=SUM(cast(replace(g45,',','') as float)) from @tmp where tggno=@tggno and gno='5'
+		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
+		insert into @tmp(page,n,gno,tggno,tgg,tggnick,g51,g52,g53,g54,g55)
+			values(@page,@n%@rowline,'6',@tggno,@tgg,@tggnick
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
+	
+		update @tmp set cpage=page+1,tpage=@page+1 where tggno=@tggno
+		---------------------------------------------------
+		fetch next from cursor_table
+		into @tggno,@tgg,@tggnick
+	end
+	close cursor_table
+	deallocate cursor_table	
+
+	select @t_acomp acomp,tggno+' '+tgg ttt, * from @tmp order by tggno,page,n
+	--------------------------------------------------------------------------------------------
+	drop table #z_tre_ds01;
+	
+z_tre_ds02:--z_tre_ds02
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_accy nvarchar(10)
+	declare @t_bdate nvarchar(10)
+	declare @t_edate nvarchar(10)
+	declare @t_btggno nvarchar(20)
+	declare @t_etggno nvarchar(20)
+	declare @t_bdriverno nvarchar(20)
+	declare @t_edriverno nvarchar(20)
+	declare @t_carteamno nvarchar(max)
+	declare @t_acomp nvarchar(max)
+	
+	set @t_accy = '[1]'
+	set @t_bdate = case when '#non'=[2] then '' else [2] end
+	set @t_edate = case when '#non'=[3] then CHAR(255) else [3] end
+	set @t_btggno = case when '#non'=[4] then '' else [4] end
+	set @t_etggno = case when '#non'=[5] then CHAR(255) else [5] end
+	set @t_bdriverno = case when '#non'=[6] then '' else [6] end
+	set @t_edriverno = case when '#non'=[7] then CHAR(255) else [7] end
+	set @t_carteamno = case when '#non'=[8] then '' else [8] end
+	set @t_acomp = case when '#non'=[9] then '' else [9] end
+	-------------------------------------------------------------------------------
+	IF OBJECT_ID('tempdb..#z_tre_ds02 ')is not null
+	BEGIN
+		drop table #z_tre_ds02
+	END
+	create table #z_tre_ds02 (
+		pno nvarchar(10),
+		treno nvarchar(20),
+		tranno nvarchar(20),
+		trannoq nvarchar(10),
+		datea nvarchar(10),
+		trandate nvarchar(10),
+		trecarchgno nvarchar(max),
+		
+		carno nvarchar(20),
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		carteamno nvarchar(20),
+		carteam nvarchar(20),
+		
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		tggnick nvarchar(20),
+		custno nvarchar(20),
+		cust nvarchar(50),
+		custnick nvarchar(20),
+		addrno nvarchar(20),
+		addr nvarchar(50),
+		productno nvarchar(20),
+		product nvarchar(50),
+		
+		inmount float,
+		pton float,
+		mount float,
+		price float,
+		total float,
+		
+		outmount float,
+		pton2 float,
+		mount2 float,
+		price2 float,
+		price3 float,
+		discount float,
+		total2 float,
+		
+		tolls float,
+		memo nvarchar(max),
+		
+		carchgno nvarchar(20),
+		datea2 nvarchar(10),
+		plusitemno nvarchar(20),
+		plusitem nvarchar(50),
+		plusmoney float,
+		minusitemno nvarchar(20),
+		minusitem nvarchar(50),
+		minusmoney float,
+		memo2 nvarchar(max),
+		
+		ztotal2 float,
+		po nvarchar(50)
+	)
+
+	insert into #z_tre_ds02 (pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
+		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
+		,inmount,pton,mount,price,total
+		,outmount,pton2,mount2,price2,price3,discount,total2
+		,tolls,memo,po) 
+	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team
+		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
+		,d.inmount,d.pton,d.mount,d.price,d.total
+		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
+		,d.tolls,d.memo,d.po
+	 from view_tre b
+	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
+	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
+	 left join tgg e on b.tggno=e.noa
+	 left join cust f on d.custno=f.noa
+	 left join carteam g on b.carteamno=g.noa
+	 where (b.noa is not null)
+	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
+	 and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
+	 
+
+	---------------------------------------------------------------------------------------------
+	declare @string nvarchar(max)
+	declare @n int
+
+	declare @treno nvarchar(20)
+	declare @carchgno nvarchar(max)
+	declare @tggno nvarchar(20)
+	declare @tgg nvarchar(50)
+	declare @tggnick nvarchar(20)
+	
+	declare cursor_table cursor for
+	select treno,trecarchgno from #z_tre_ds02  where len(ISNULL(trecarchgno,''))>0 group by treno,trecarchgno
+	open cursor_table
+	fetch next from cursor_table
+	into @treno,@carchgno
+	while(@@FETCH_STATUS <> -1)
+	begin
+		select @tggno=a.tggno,@tgg=b.comp,@tggnick=b.nick
+		from #z_tre_ds02  a 
+		left join tgg b on a.tggno=b.noa
+		where a.treno=@treno
+		set @tggno = ISNULL(@tggno,'')
+		set @tgg = ISNULL(@tgg,'')
+		set @tggnick = ISNULL(@tggnick,'')
+	
+		set @string = @carchgno
+		while(1=1)
+		begin
+			set @n = PATINDEX('%,%',@string)
+			if @n=0
+			begin
+				if LEN(@string)>0
+				begin
+					insert into #z_tre_ds02 (pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+					,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+					select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+					,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+					from carchg where noa=@string
+				end
+				break
+			end
+			insert into #z_tre_ds02 (pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+			,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+			select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+			,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+			from carchg where noa=LEFT(@string,@n-1) 	
+			set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
+		end
+
+		fetch next from cursor_table
+		into @treno,@carchgno
+	end
+	close cursor_table
+	deallocate cursor_table	
+	--------------------------------------------------------------------------------------------
+	declare @tmp table(
+		page int,
+		n int,
+		gno nvarchar(10),
+		cpage int,
+		tpage int,
+
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		
+		g31 nvarchar(max),--recno
+		g32 nvarchar(max),--date
+		g33 nvarchar(max),--carno
+		g34 nvarchar(max),--addr
+		g35 nvarchar(max),--product
+		g36 nvarchar(max),--mount
+		g37 nvarchar(max),--price
+		g38 nvarchar(max),--total
+		g39 nvarchar(max),--po
+		g3a nvarchar(max),--discount
+		
+		g41 nvarchar(max),--recno
+		g42 nvarchar(max),--date
+		g43 nvarchar(max),--item
+		g44 nvarchar(max),--plusmoney
+		g45 nvarchar(max),--minusmoney
+		g46 nvarchar(max),--memo
+		
+		g51 nvarchar(max), -- g36 sum
+		g52 nvarchar(max), -- g38 sum
+		g53 nvarchar(max), -- g44 sum
+		g54 nvarchar(max), -- g45 sum
+		g55 nvarchar(max) -- g38 + g44 - g45
+	)
+	--------------------------------------------------------------------------------------------
+	
+
+	declare @rowline int -- 每頁可用行數
+	declare @endline int -- 頁尾行數
+	declare @page int
+	declare @recno int
+	declare @curline int -- 當前行數
+	set @rowline = 15
+	set @endline = 5
+	set @page = 0
+	
+	declare @datea nvarchar(10)
+	declare @trandate nvarchar(10)
+	declare @carno	nvarchar(20)
+	declare @addr nvarchar(40)
+	declare @product nvarchar(20)
+	declare @mount decimal(12,3)
+	declare @price decimal(12,3)
+	declare @total float
+	declare @memo nvarchar(max)
+	declare @po nvarchar(max)
+	declare @item nvarchar(max)
+	declare @plus float
+	declare @minus float
+	declare @money float
+	declare @discount decimal(12,3)
+	
+	declare @driverno nvarchar(20)
+	declare @driver nvarchar(20)
+	
+	declare @totcount int
+	
+	declare cursor_table cursor for
+	select isnull(a.driverno,'') a,isnull(b.namea,'') from #z_tre_ds02  a 
+	left join driver b on a.driverno=b.noa
+	group by isnull(a.driverno,''),isnull(b.namea,'') order by a
+	open cursor_table
+	fetch next from cursor_table
+	into @driverno,@driver
+	while(@@FETCH_STATUS <> -1)
+	begin
+		set @page=0
+		set @curline = 0
+		set @recno = 0
+		set @n = 0
+		--出車明細			
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds02  where driverno=@driverno and pno='1'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			insert into @tmp(page,n,gno,driverno,driver)
+			select @page,@n%@rowline,'1',@driverno,@driver
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		
+		declare cursor_table2 cursor for
+		select trandate,carno,addr,product,mount2,isnull(price2,0)+isnull(price3,0),total2,po,discount
+		from #z_tre_ds02  
+		where driverno=@driverno and pno='1' order by trandate,addrno,carno
+		open cursor_table2
+		fetch next from cursor_table2
+		into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver
+			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
+			values(@page,@n%@rowline,'4',@driverno,@driver
+			,CAST(@recno+1 as nvarchar),@trandate,@carno,isnull(@addr,'')+' '+isnull(@product,''),''
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1))
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0)
+			begin	
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,driverno,driver)
+					select @page,@n%@rowline,'1',@driverno,@driver
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		--加減項明細
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds02  where driverno=@driverno and pno='2'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			if(@curline%@rowline=@rowline-1)
+			begin
+				insert into @tmp(page,n,gno,driverno,driver)
+				values(@page,@n%@rowline,'0',@driverno,@driver)
+				set @recno = @recno + 1
+				set @curline = @curline + 1
+				set @page = @page + 1
+				set @n = @n + 1
+			end
+		
+			insert into @tmp(page,n,gno,driverno,driver)
+			select @page,@n%@rowline,'2',@driverno,@driver
+			set @curline = @curline + 1
+			set @recno = 0
+			set @n = @n + 1
+		end
+		declare cursor_table2 cursor for
+		select datea2,ltrim(rtrim(plusitem))+ltrim(rtrim(minusitem)),plusmoney,minusmoney,memo2
+		from #z_tre_ds02  
+		where driverno=@driverno and pno='2' order by datea2
+		open cursor_table2
+		fetch next from cursor_table2
+		into @datea,@item,@plus,@minus,@memo
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver
+			,g41,g42,g43,g44,g45,g46)
+			values(@page,@n%@rowline,'5',@driverno,@driver
+			,CAST(@recno+1 as nvarchar),@datea,@item
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1),@memo)
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0 and @totcount>0)
+			begin
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,driverno,driver)
+					select @page,@n%@rowline,'2',@driverno,@driver
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @datea,@item,@plus,@minus,@memo
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		---------------------------------------------------
+		--總計
+		if((@curline%@rowline)+@endline+1>@rowline)
+		begin
+			while(@curline%@rowline!=0)
+			begin
+				insert into @tmp(page,n,gno,driverno,driver)
+				values(@page,@n%@rowline,'0',@driverno,@driver)
+				set @curline = @curline + 1
+				set @n = @n + 1
+			end
+			set @page = @page + 1
+		end
+		while(((@curline%@rowline)+@endline)%@rowline!=0)
+		begin
+			insert into @tmp(page,n,gno,driverno,driver)
+			values(@page,@n%@rowline,case when @curline%@rowline=0 then '3' else '0' end
+			,@driverno,@driver)
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		select @mount=0,@money=0,@plus=0,@minus=0,@total=0
+		select @mount=SUM(cast(replace(g36,',','') as float)),@money=SUM(cast(replace(g38,',','') as float)) from @tmp where driverno=@driverno and gno='4'
+		select @plus=SUM(cast(replace(g44,',','') as float)),@minus=SUM(cast(replace(g45,',','') as float)) from @tmp where driverno=@driverno and gno='5'
+		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
+		insert into @tmp(page,n,gno,driverno,driver,g51,g52,g53,g54,g55)
+			values(@page,@n%@rowline,'6',@driverno,@driver
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
+	
+		update @tmp set cpage=page+1,tpage=@page+1 where driverno=@driverno
+		---------------------------------------------------
+		fetch next from cursor_table
+		into @driverno,@driver
+	end
+	close cursor_table
+	deallocate cursor_table	
+
+	select @t_acomp acomp,* from @tmp order by driverno,page,n
+	--------------------------------------------------------------------------------------------
+	drop table #z_tre_ds02 ;;
+
+z_tre_ds01:--z_tre_ds01
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_accy nvarchar(10)
+	declare @t_bdate nvarchar(10)
+	declare @t_edate nvarchar(10)
+	declare @t_btggno nvarchar(20)
+	declare @t_etggno nvarchar(20)
+	declare @t_bdriverno nvarchar(20)
+	declare @t_edriverno nvarchar(20)
+	declare @t_carteamno nvarchar(max)
+	declare @t_acomp nvarchar(max)
+	
+	set @t_accy = '[1]'
+	set @t_bdate = case when '#non'=[2] then '' else [2] end
+	set @t_edate = case when '#non'=[3] then CHAR(255) else [3] end
+	set @t_btggno = case when '#non'=[4] then '' else [4] end
+	set @t_etggno = case when '#non'=[5] then CHAR(255) else [5] end
+	set @t_bdriverno = case when '#non'=[6] then '' else [6] end
+	set @t_edriverno = case when '#non'=[7] then CHAR(255) else [7] end
+	set @t_carteamno = case when '#non'=[8] then '' else [8] end
+	set @t_acomp = case when '#non'=[9] then '' else [9] end
+	-------------------------------------------------------------------------------
+	declare @string nvarchar(max)
+	declare @n int
+	------------------------------------------------------------------------------- 
+	IF OBJECT_ID('tempdb..#z_tre_ds01')is not null
+	BEGIN
+		drop table #z_tre_ds01
+	END
+	create table #z_tre_ds01(
+		pno nvarchar(10),
+		treno nvarchar(20),
+		tranno nvarchar(20),
+		trannoq nvarchar(10),
+		datea nvarchar(10),
+		trandate nvarchar(10),
+		trecarchgno nvarchar(max),
+		
+		carno nvarchar(20),
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		carteamno nvarchar(20),
+		carteam nvarchar(20),
+		
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		tggnick nvarchar(20),
+		custno nvarchar(20),
+		cust nvarchar(50),
+		custnick nvarchar(20),
+		addrno nvarchar(20),
+		addr nvarchar(50),
+		productno nvarchar(20),
+		product nvarchar(50),
+		
+		inmount float,
+		pton float,
+		mount float,
+		price float,
+		total float,
+		
+		outmount float,
+		pton2 float,
+		mount2 float,
+		price2 float,
+		price3 float,
+		discount float,
+		total2 float,
+		
+		tolls float,
+		memo nvarchar(max),
+		
+		carchgno nvarchar(20),
+		datea2 nvarchar(10),
+		plusitemno nvarchar(20),
+		plusitem nvarchar(50),
+		plusmoney float,
+		minusitemno nvarchar(20),
+		minusitem nvarchar(50),
+		minusmoney float,
+		memo2 nvarchar(max),
+		
+		ztotal2 float,
+		po nvarchar(50),
+	)
+
+	insert into #z_tre_ds01(pno,treno,tranno,trannoq,datea,trandate,carno,driverno,driver,carteamno,carteam
+		,trecarchgno,tggno,tgg,tggnick,custno,cust,custnick,addrno,addr,productno,product
+		,inmount,pton,mount,price,total
+		,outmount,pton2,mount2,price2,price3,discount,total2
+		,tolls,memo,po)
+	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team
+		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
+		,d.inmount,d.pton,d.mount,d.price,d.total
+		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
+		,d.tolls,d.memo,d.po
+	 from view_tre b
+	 left join view_tres a on a.accy=b.accy and a.noa=b.noa
+	 left join view_trans d on a.tranno=d.noa and a.trannoq=d.noq
+	 left join tgg e on b.tggno=e.noa
+	 left join cust f on d.custno=f.noa
+	 left join carteam g on b.carteamno=g.noa
+	 where (b.noa is not null)
+	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
+	 and (isnull(b.tggno,0) between @t_btggno and @t_etggno)
+	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
+
+	---------------------------------------------------------------------------------------------
+	declare @treno nvarchar(20)
+	declare @carchgno nvarchar(max)
+	declare @tggno nvarchar(20)
+	declare @tgg nvarchar(50)
+	declare @tggnick nvarchar(20)
+	
+	declare cursor_table cursor for
+	select treno,trecarchgno from #z_tre_ds01 where len(ISNULL(trecarchgno,''))>0 group by treno,trecarchgno
+	open cursor_table
+	fetch next from cursor_table
+	into @treno,@carchgno
+	while(@@FETCH_STATUS <> -1)
+	begin
+		select @tggno=a.tggno,@tgg=b.comp,@tggnick=b.nick
+		from #z_tre_ds01 a 
+		left join tgg b on a.tggno=b.noa
+		where a.treno=@treno
+		set @tggno = ISNULL(@tggno,'')
+		set @tgg = ISNULL(@tgg,'')
+		set @tggnick = ISNULL(@tggnick,'')
+	
+		set @string = @carchgno
+		while(1=1)
+		begin
+			set @n = PATINDEX('%,%',@string)
+			if @n=0
+			begin
+				if LEN(@string)>0
+				begin
+					insert into #z_tre_ds01(pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+					,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+					select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+					,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+					from carchg where noa=@string
+				end
+				break
+			end
+			insert into #z_tre_ds01(pno,treno,carno,driverno,driver,tggno,tgg,tggnick
+			,carchgno,datea2,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo2)
+			select '2',@treno,carno,driverno,driver,@tggno,@tgg,@tggnick
+			,noa,datea,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,memo 
+			from carchg where noa=LEFT(@string,@n-1) 	
+			set @string = SUBSTRING(@string,@n+1,LEN(@string)-@n)
+		end
+
+		fetch next from cursor_table
+		into @treno,@carchgno
+	end
+	close cursor_table
+	deallocate cursor_table	
+	--------------------------------------------------------------------------------------------
+	declare @tmp table(
+		page int,
+		n int,
+		gno nvarchar(10),
+		cpage int,
+		tpage int,
+
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		tggnick nvarchar(20),
+		
+		g31 nvarchar(max),--recno
+		g32 nvarchar(max),--date
+		g33 nvarchar(max),--carno
+		g34 nvarchar(max),--addr
+		g35 nvarchar(max),--product
+		g36 nvarchar(max),--mount
+		g37 nvarchar(max),--price
+		g38 nvarchar(max),--total
+		g39 nvarchar(max),--po
+		g3a nvarchar(max),--discount
+		
+		g41 nvarchar(max),--recno
+		g42 nvarchar(max),--date
+		g43 nvarchar(max),--item
+		g44 nvarchar(max),--plusmoney
+		g45 nvarchar(max),--minusmoney
+		g46 nvarchar(max),--memo
+		
+		g51 nvarchar(max), -- g36 sum
+		g52 nvarchar(max), -- g38 sum
+		g53 nvarchar(max), -- g44 sum
+		g54 nvarchar(max), -- g45 sum
+		g55 nvarchar(max) -- g38 + g44 - g45
+	)
+	--------------------------------------------------------------------------------------------
+	declare @rowline int -- 每頁可用行數
+	declare @endline int -- 頁尾行數
+	declare @page int
+	declare @recno int
+	declare @curline int -- 當前行數
+	set @rowline = 15
+	set @endline = 5
+	set @page = 0
+	
+	declare @datea nvarchar(10)
+	declare @trandate nvarchar(10)
+	declare @carno	nvarchar(20)
+	declare @addr nvarchar(40)
+	declare @product nvarchar(20)
+	declare @mount decimal(12,3)
+	declare @price decimal(12,3)
+	declare @total float
+	declare @memo nvarchar(max)
+	declare @po nvarchar(max)
+	declare @item nvarchar(max)
+	declare @plus float
+	declare @minus float
+	declare @money float
+	declare @discount decimal(12,3)
+	
+	declare @totcount int
+	
+	declare cursor_table cursor for
+	select isnull(a.tggno,'') a,isnull(b.comp,''),isnull(b.nick,'') from #z_tre_ds01 a 
+	left join tgg b on a.tggno=b.noa
+	group by isnull(a.tggno,''),isnull(b.comp,''),isnull(b.nick,'') order by a
+	open cursor_table
+	fetch next from cursor_table
+	into @tggno,@tgg,@tggnick
+	while(@@FETCH_STATUS <> -1)
+	begin
+		set @page=0
+		set @curline = 0
+		set @recno = 0
+		set @n = 0
+		--出車明細		
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds01 where tggno=@tggno and pno='1'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+			select @page,@n%@rowline,'1',@tggno,@tgg,@tggnick
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		declare cursor_table2 cursor for
+		select trandate,carno,addr,product,mount2,isnull(price2,0)+isnull(price3,0),total2,po,discount
+		from #z_tre_ds01 
+		where tggno=@tggno and pno='1' order by trandate,addrno,carno
+		open cursor_table2
+		fetch next from cursor_table2
+		into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick
+			,g31,g32,g33,g34,g35,g36,g37,g38,g39,g3a)
+			values(@page,@n%@rowline,'4',@tggno,@tgg,@tggnick
+			,CAST(@recno+1 as nvarchar),@trandate,@carno,@addr,@product
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@price,-1)
+			,dbo.getComma(@total,-1)
+			,@po
+			,dbo.getComma(@discount,-1)
+			)
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0)
+			begin	
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+					select @page,@n%@rowline,'1',@tggno,@tgg,@tggnick
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @trandate,@carno,@addr,@product,@mount,@price,@total,@po,@discount
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		--加減項明細
+		select @totcount = 0
+		select @totcount=count(1) from #z_tre_ds01 where tggno=@tggno and pno='2'
+		select @totcount = isnull(@totcount,0)
+		if @totcount>0
+		begin
+			if(@curline%@rowline=@rowline-1)
+			begin
+				insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+				values(@page,@n%@rowline,'0',@tggno,@tgg,@tggnick)
+				set @recno = @recno + 1
+				set @curline = @curline + 1
+				set @page = @page + 1
+				set @n = @n + 1
+			end
+		
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+			select @page,@n%@rowline,'2',@tggno,@tgg,@tggnick
+			set @curline = @curline + 1
+			set @recno = 0
+			set @n = @n + 1
+		end
+		declare cursor_table2 cursor for
+		select datea2,ltrim(rtrim(plusitem))+ltrim(rtrim(minusitem)),plusmoney,minusmoney,memo2
+		from #z_tre_ds01 
+		where tggno=@tggno and pno='2' order by datea2
+		open cursor_table2
+		fetch next from cursor_table2
+		into @datea,@item,@plus,@minus,@memo
+		while(@@FETCH_STATUS <> -1)
+		begin
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick
+			,g41,g42,g43,g44,g45,g46)
+			values(@page,@n%@rowline,'5',@tggno,@tgg,@tggnick
+			,CAST(@recno+1 as nvarchar),@datea,@item
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,@memo)
+			set @recno = @recno + 1
+			set @curline = @curline + 1
+			set @n = @n + 1
+			set @totcount = @totcount - 1
+			if(@curline%@rowline=0)
+			begin
+				set @page = @page + 1
+				if(@totcount>0)
+				begin
+					insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+					select @page,@n%@rowline,'2',@tggno,@tgg,@tggnick
+					set @curline = @curline + 1
+					set @n = @n + 1
+				end
+			end
+			fetch next from cursor_table2
+			into @datea,@item,@plus,@minus,@memo
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		---------------------------------------------------
+		--總計
+		if((@curline%@rowline)+@endline+1>@rowline)
+		begin
+			while(@curline%@rowline!=0)
+			begin
+				insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+				values(@page,@n%@rowline,'0',@tggno,@tgg,@tggnick)
+				set @curline = @curline + 1
+				set @n = @n + 1
+			end
+			set @page = @page + 1
+		end
+		while(((@curline%@rowline)+@endline)%@rowline!=0)
+		begin
+			insert into @tmp(page,n,gno,tggno,tgg,tggnick)
+			values(@page,@n%@rowline,case when @curline%@rowline=0 then '3' else '0' end
+			,@tggno,@tgg,@tggnick)
+			set @curline = @curline + 1
+			set @n = @n + 1
+		end
+		select @mount=0,@money=0,@plus=0,@minus=0,@total=0
+		select @mount=SUM(cast(replace(g36,',','') as float)),@money=SUM(cast(replace(g38,',','') as float)) from @tmp where tggno=@tggno and gno='4'
+		select @plus=SUM(cast(replace(g44,',','') as float)),@minus=SUM(cast(replace(g45,',','') as float)) from @tmp where tggno=@tggno and gno='5'
+		select @money=ISNULL(@money,0),@plus=ISNULL(@plus,0),@minus=ISNULL(@minus,0),@total=ISNULL(@money,0)+ISNULL(@plus,0)-ISNULL(@minus,0)
+		insert into @tmp(page,n,gno,tggno,tgg,tggnick,g51,g52,g53,g54,g55)
+			values(@page,@n%@rowline,'6',@tggno,@tgg,@tggnick
+			,dbo.getComma(@mount,-1)
+			,dbo.getComma(@money,-1)
+			,dbo.getComma(@plus,-1)
+			,dbo.getComma(@minus,-1)
+			,dbo.getComma(@total,-1))
+	
+		update @tmp set cpage=page+1,tpage=@page+1 where tggno=@tggno
+		---------------------------------------------------
+		fetch next from cursor_table
+		into @tggno,@tgg,@tggnick
+	end
+	close cursor_table
+	deallocate cursor_table	
+
+	select @t_acomp acomp,tggno+' '+tgg ttt, * from @tmp order by tggno,page,n
+	--------------------------------------------------------------------------------------------
+	drop table #z_tre_ds01;

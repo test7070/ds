@@ -1,0 +1,107 @@
+z_fixa_ef01:--z_fixa_ef01
+declare @t_bmon nvarchar(20)
+declare @t_emon nvarchar(20)
+declare @t_noa nvarchar(10)
+
+
+set @t_bmon = case when '#non'=[1] then '' else [1] end
+set @t_emon = case when '#non'=[2] then char(255) else [2] end
+set @t_noa = case when '#non'=[3] then '%%'  else [3] end
+
+----------------------------------------------------------------------------------------------------
+declare @tmp table( 
+gno nvarchar(2),
+cnoa nvarchar(10), 
+driver nvarchar(50), 
+ton float, 
+monmiles float, 
+omoney float, 
+omount float,
+ston float,
+milsm float,
+omys float,
+omns float,
+fws float,
+fcs float,
+ems float,
+skml float,
+kms float,
+tls float
+) 
+
+
+
+insert into @tmp(gno,cnoa,driver,ton,monmiles,omoney,omount)
+select  '0',a.carno,b.driver,a.ton,sum(b.miles),sum(b.money),sum(b.mount)
+from car2 a left join oil b on a.driverno=b.driverno 
+where b.oildate between @t_bmon and @t_emon and
+a.carno like @t_noa
+group by a.carno,b.driver ,a.ton
+
+declare @tmp1 table(
+driver nvarchar(20),
+cnoa nvarchar(20),
+fw float,
+fc float
+)
+insert into @tmp1(cnoa,fw,fc)
+select  carno
+,sum(convert(float,wacc1))wacc1, sum(convert(float,cacc1))
+from fixa
+where fixadate between @t_bmon and @t_emon and
+		carno like @t_noa
+group by carno
+
+declare @tmp2 table(
+driver nvarchar(20),
+cnoa nvarchar(20),
+em float
+)
+insert into @tmp2(cnoa,em)
+select  carno,case when sum(money) IS null then 0 else  sum(money) end
+from etc
+where datea between @t_bmon and @t_emon and 
+		carno like @t_noa
+group by carno
+insert into @tmp(gno,skml,kms,tls)
+select 2,dbo.getComma(round((a.monmiles/a.omount),2),0)
+			 ,dbo.getComma(round((a.omoney+b.fc +case when c.em IS null then 0 else c.em end
+			 +  case when b.fw IS null then 0 else b.fw  end)/a.monmiles,2),0),
+			 round(a.omoney+b.fc +case when c.em IS null then 0 else c.em end
+			   +  case when b.fw IS null then 0 else b.fw  end ,2)
+from @tmp a left join @tmp1 b on a.cnoa=b.cnoa
+			left join @tmp2 c on c.cnoa=a.cnoa
+			
+insert into @tmp(gno,ston ,milsm ,omys ,omns ,fws ,fcs ,ems,skml,kms,tls)
+select 1,sum(a.ton),SUM(a.monmiles),SUM(a.omoney),SUM(a.omount),SUM(b.fw),SUM(b.fc),SUM(c.em),
+		 sum(skml),sum(kms),SUM(tls)
+from @tmp a left join @tmp1 b on a.cnoa=b.cnoa
+			left join @tmp2 c on c.cnoa=a.cnoa
+
+
+
+
+------------------------------------------------------------------------------------------------------ 
+select gno,a.cnoa c,a.driver driver,dbo.getComma(a.monmiles,0) mil,dbo.getComma(a.omoney,0) omy
+	   ,dbo.getComma(a.omount,0) omt,a.ton
+				,dbo.getComma(round(b.fc,2),0) cm
+				,dbo.getComma(b.fw,0) fm 
+				,dbo.getComma(c.em,0) et
+			  ,dbo.getComma(round(a.omoney+b.fc +case when c.em IS null then 0 else c.em end
+			   +  case when b.fw IS null then 0 else b.fw  end ,2),0)tt,
+			  dbo.getComma(round((a.monmiles/a.omount),2),0) kml,
+			  dbo.getComma(round((a.omoney+b.fc +case when c.em IS null then 0 else c.em end
+			   +  case when b.fw IS null then 0 else b.fw  end)/a.monmiles,2),0) kmcost
+			   ,dbo.getComma(ston,0) sts
+			   ,dbo.getComma(milsm,0) mis
+			   ,dbo.getComma(omys,0)  oms
+			   ,dbo.getComma(omns,0)  osm
+			   ,dbo.getComma(fws,0)  fsw
+			   ,dbo.getComma(fcs,0)  fcs
+			   ,dbo.getComma(ems,0)  esm
+			   ,dbo.getComma(a.skml,0) ssk
+			   ,dbo.getComma(a.kms,0) smk
+			   ,dbo.getComma(a.tls,0) tsl
+from @tmp a left join @tmp1 b on a.cnoa=b.cnoa
+			left join @tmp2 c on c.cnoa=a.cnoa
+order by gno;

@@ -1,0 +1,64 @@
+z_custchg_ds01:--z_custchg_ds01
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_accy nvarchar(10)
+	declare @t_name nvarchar(20)
+	declare @t_bdate nvarchar(10)
+	declare @t_edate nvarchar(10)
+	declare @t_bcustno nvarchar(20)
+	declare @t_ecustno nvarchar(20)
+	declare @t_option01 nvarchar(max)
+	
+	set @t_accy = '[1]'
+	set @t_name = '[2]'
+	set @t_bdate = case when '#non'=[3] then '' else [3] end
+	set @t_edate = case when '#non'=[4] then CHAR(255) else [4] end
+	set @t_bcustno = case when '#non'=[5] then '' else [5] end
+	set @t_ecustno = case when '#non'=[6] then CHAR(255) else [6] end
+	set @t_option01 = case when '#non'=[7] then '' else [7] end
+	--------------------------------------------------------
+	declare @tmp table(
+		rr int,
+		gno nvarchar(10),
+		pno nvarchar(10),
+		noa nvarchar(20),
+		datea nvarchar(10),
+		custno nvarchar(20),
+		cust nvarchar(50),
+		nick nvarchar(50),
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		plusitemno nvarchar(20),
+		plusitem nvarchar(50),
+		plusmoney float,
+		minusitemno nvarchar(20),
+		minusitem nvarchar(50),
+		minusmoney float,
+		trdno nvarchar(20),
+		item nvarchar(max),
+		memo nvarchar(max)
+	)
+	
+	insert into @tmp(rr,gno,pno,noa,datea,custno,cust,nick,tggno,tgg
+		,plusitemno,plusitem,plusmoney,minusitemno,minusitem,minusmoney,trdno,item,memo)
+	select ROW_NUMBER()over(order by a.datea,a.custno,a.noa)
+		,case when len(a.memo)=0 then '1' else '2' end  
+		,'1',a.noa,a.datea,a.custno,a.comp,case when b.noa is null then a.comp else b.nick end,a.tggno,a.tgg
+		,a.plusitemno,a.plusitem,a.plusmoney,a.minusitemno,a.minusitem,a.minusmoney,a.trdno
+		,ltrim(RTRIM(plusitem))+ltrim(RTRIM(minusitem))
+		,a.memo
+	from custchg a
+	left join cust b on a.custno=b.noa
+	where (a.datea between @t_bdate and @t_edate)
+	and (a.custno between @t_bcustno and @t_ecustno)
+	and ((charindex('payed',@t_option01)>0 and len(ISNULL(a.trdno,''))>0) or (charindex('unpay',@t_option01)>0 and len(ISNULL(a.trdno,''))=0))
+	order by a.datea,a.custno,a.noa
+
+	insert into @tmp(gno,pno,plusmoney,minusmoney,datea,custno)
+	select '3','2',SUM(ISNULL(plusmoney,0)),SUM(ISNULL(minusmoney,0)),char(255),char(255) from @tmp
+	
+	select *
+	,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,plusmoney),1)),4,12)) pm
+	,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,minusmoney),1)),4,12)) mm
+	,case when len(ISNULL(trdno,''))=0 then '' else '*' end it
+	from @tmp order by datea,custno,noa;

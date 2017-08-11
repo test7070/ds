@@ -1,0 +1,183 @@
+zxls_sloil:--zxls_sloil.txt   山隆加油站
+	SET QUOTED_IDENTIFIER OFF 	
+	declare @oilstationno nvarchar(20) = ''
+	declare @oilstation nvarchar(20) = '山隆'
+	select @oilstationno=noa,@oilstation=station 
+	from oilstation where CHARINDEX(@oilstation,station)>0
+	
+	declare @noa nvarchar(max)
+	declare @a nvarchar(max)
+	declare @b nvarchar(max)
+	declare @c nvarchar(max)
+	declare @d nvarchar(max)
+	declare @e nvarchar(max)
+	declare @f nvarchar(max)
+	declare @g nvarchar(max)
+	declare @h nvarchar(max)
+	declare @i nvarchar(max)
+	declare @j nvarchar(max)
+	declare @k nvarchar(max)
+	declare @l nvarchar(max)
+	declare @m nvarchar(max)
+	declare @n nvarchar(max)
+	declare @o nvarchar(max)
+	declare @p nvarchar(max)
+	declare @q nvarchar(max)
+	declare @r nvarchar(max)
+	declare @s nvarchar(max)
+	declare @t nvarchar(max)
+
+	declare @tmp table(
+		sel int identity(1,1),
+		noa nvarchar(20),
+		datea nvarchar(20),
+		timea nvarchar(10),
+		carno nvarchar(20),
+		driverno nvarchar(20),
+		driver nvarchar(50),
+		product nvarchar(20),
+		mount float,
+		price float,
+		[money] float,
+		total float,
+		bmiles float,
+		emiles float,
+		miles float,
+		memo nvarchar(max)
+	)
+	
+	declare @datea nvarchar(20)
+	declare @timea nvarchar(10)
+	declare @carno nvarchar(20)
+	declare @driverno nvarchar(20)
+	declare @driver nvarchar(50)
+	declare @product nvarchar(20)
+	declare @mount float
+	declare @price float
+	declare @money float
+	declare @total float
+	declare @bmiles float
+	declare @emiles float
+	declare @miles float
+	
+	declare @curdate datetime = getdate()
+	declare @string nvarchar(max)
+	declare @nn int
+	declare @mm nvarchar(max)
+	declare @dd nvarchar(max)
+	
+	declare cursor_table cursor for
+	select noa,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t from ztmpxls order by CAST(noa as int)
+	open cursor_table
+	fetch next from cursor_table
+	into @noa,@a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m,@n,@o,@p,@q,@r,@s,@t
+	while(@@FETCH_STATUS <> -1)
+	begin
+		--begin try
+			if ISDATE(@d)>0
+			begin
+				set @datea = dbo.AD2ChineseEraName(CAST(@d as date))
+				set @timea = @f
+				set @carno = ltrim(rtrim(@h))
+				set @carno = case when @carno like '[0-9][0-9][0-9][0-9,A-Z][0-9,A-Z]' then LEFT(@carno,3)+'-'+RIGHT(@carno,2)
+								when @carno like '[0-9,A-Z][0-9,A-Z][0-9][0-9][0-9]' then LEFT(@carno,2)+'-'+RIGHT(@carno,3)
+								when @carno like '[0-9,A-Z][0-9,A-Z][0-9,A-Z][0-9][0-9][0-9][0-9]' then LEFT(@carno,3)+'-'+RIGHT(@carno,4)
+								else @carno end
+				set @product = case when charindex('92',@k)>0 or charindex('九二',@k)>0 then '九二'
+									when charindex('95',@k)>0 or charindex('九五',@k)>0 then '九五'
+									when charindex('98',@k)>0 or charindex('九八',@k)>0 then '九八'
+									when charindex('柴',@k)>0 then '柴油'
+									else @k end
+				set @price = CAST(@o as float)
+				set @mount = CAST(@n as float)
+				set @money = CAST(@p as float)
+				set @total = CAST(@r as float)
+				
+				set @emiles = CAST( replace(@s,',','') as float)
+				
+				set @bmiles = 0
+				select top 1 @bmiles=emiles from @tmp 
+				where carno=@carno and isnull(datea,'')+isnull(timea,'')<=@datea+@timea 
+				order by isnull(datea,'')+isnull(timea,'') desc
+				if @bmiles=0
+				begin
+					select top 1 @bmiles=emiles from oil 
+					where carno=@carno and isnull(datea,'')+isnull(timea,'')<=@datea+@timea 
+					order by isnull(datea,'')+isnull(timea,'') desc
+				end
+				set @miles = 0
+				if @bmiles!=0 and @emiles!=0
+				begin
+					set @miles = @emiles - @bmiles
+				end
+				
+				if not exists(select * from oil where carno=@carno and oildate=@datea and timea=@timea)
+				begin
+					select @driverno='',@driver=''
+					select top 1 @driverno=driverno,@driver=driver from view_trans where carno=@carno and trandate=@datea 
+				
+					insert into @tmp(datea,timea,carno,driverno,driver,product,mount,price,[money],total,bmiles,emiles,miles,memo)
+					select @datea,@timea,@carno,@driverno,@driver,@product,@mount,@price,@money,@total,@bmiles,@emiles,@miles,''
+				end
+			end
+		--end try
+		--begin catch
+			
+		--end catch
+		fetch next from cursor_table
+		into @noa,@a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m,@n,@o,@p,@q,@r,@s,@t
+	end
+	close cursor_table
+	deallocate cursor_table
+----------------------------------------------------------------------------------------------------------------
+	declare @sel int
+	declare @curMaxNoa nvarchar(20)
+	declare @noq nvarchar(10)
+	set @string = '0123456789ABCDEFGHIJKLMN'
+	declare @num int
+	
+	declare cursor_table cursor for
+	select sel,datea from @tmp
+	open cursor_table
+	fetch next from cursor_table
+	into @sel,@datea
+	while(@@FETCH_STATUS <> -1)
+	begin	
+		select @noa = MAX(noa) 
+		from(select noa from oil where LEFT(noa,9)='BQ'+replace(@datea,'/','')
+		union all
+		select noa from @tmp where LEFT(noa,9)='BQ'+replace(@datea,'/','')) as a
+		
+		if(LEN(ISNULL(@noa,''))=0)
+		begin
+			set @noq='001'
+		end
+		else
+		begin
+			set @noq = right(@noa,3)
+			if(right(@noq,2)='99')
+			begin
+				set @noq = Substring(@string,Charindex(LEFT(@noq,1),@string)+1,1)+'00'
+			end
+			else
+			begin
+				set @noq = LEFT(@noq,1) + right('00'+CAST(CAST(right(@noq,2) as int)+1 as nvarchar),2)
+			end
+		end
+		update @tmp set noa='BQ'+replace(@datea,'/','')+@noq where sel=@sel
+		fetch next from cursor_table
+		into @sel,@datea
+	end
+	close cursor_table
+	deallocate cursor_table
+-------------------------------------------------------------------------------------------------------
+	--money 牌價金額
+	--total 交易金額
+	
+	insert into oil(noa,datea,oildate,timea,carno,iscustom,iscustom2,bmiles,emiles,miles
+		,rate,driverno,driver,oilstationno,oilstation,product
+		,mount,price,[money])	
+	select noa,datea,datea,timea,carno,0,1,bmiles,emiles,miles
+		,0,driverno,driver,@oilstationno,@oilstation,product
+		,mount,price,total
+	from @tmp;

@@ -1,0 +1,215 @@
+zxls_csa:--zxls_csa
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @workerno nvarchar(20)
+	declare @worker nvarchar(20)
+	
+	set @workerno=[1]
+	set @worker=[2]
+	
+	declare @a nvarchar(max)
+	declare @b nvarchar(max)
+	declare @c nvarchar(max)
+	declare @d nvarchar(max)
+	declare @e nvarchar(max)
+	declare @f nvarchar(max)
+	declare @g nvarchar(max)
+	declare @h nvarchar(max)
+	declare @i nvarchar(max)
+	declare @j nvarchar(max)
+	declare @k nvarchar(max)
+	declare @l nvarchar(max)
+	declare @m nvarchar(max)
+	declare @n nvarchar(max)
+	declare @o nvarchar(max)
+	declare @p nvarchar(max)
+	declare @q nvarchar(max)
+	declare @r nvarchar(max)
+	declare @s nvarchar(max)
+	declare @t nvarchar(max)
+	------------------------------------------------------------------
+	declare @tmp table(
+		pno int,
+		noa nvarchar(20),
+		datea nvarchar(10),
+		trandate nvarchar(10),
+		mon nvarchar(10),
+		interval nvarchar(10),
+		ordeno nvarchar(20),
+		cartype nvarchar(10),
+		price float,
+		custno nvarchar(20),
+		addrno nvarchar(20),
+		uccno nvarchar(20),
+		memo nvarchar(max),
+		[weight] float,
+		mount float,
+		inmoney float,
+		outmoney float,
+		tggno nvarchar(20),
+		tgg nvarchar(50),
+		cardealno nvarchar(20),
+		cardeal nvarchar(50)
+	)
+	
+	declare @tmps table(
+		pno int,
+		qno int,
+		noa nvarchar(20),
+		noq nvarchar(10),
+		carno nvarchar(20),
+		calctype nvarchar(20),
+		[weight] float,
+		mount float,
+		price float,
+		discount float,
+		[money] float,
+		memo nvarchar(max)
+	)
+	
+	declare @count int
+	declare @pno int
+	declare @qno int
+	select @count=1, @pno = 0
+	declare cursor_table cursor for
+	select a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t from ztmpxls where not(len(isnull(g,''))=0 and len(isnull(q,''))=0 and len(isnull(r,''))=0) order by cast(noa as int)
+	open cursor_table
+	fetch next from cursor_table
+	into @a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m,@n,@o,@p,@q,@r,@s,@t
+	while(@@FETCH_STATUS <> -1)
+	begin
+		begin try
+			if(LEN(@a)>0)
+			begin
+				select @pno = @pno + 1,@qno = 1
+				insert into @tmp(pno,datea,trandate,mon,interval,ordeno,cartype,price,custno,addrno,uccno,tgg,cardeal)
+				values(@pno,@a,@b,@c,@d,@e,@f,cast(@g as float),@h,@i,@j,@m,@l)
+				
+				insert into @tmps(pno,qno,carno,calctype,[weight],mount
+					,price,discount,[money],memo)
+				values(@pno,@qno,@n,@o,cast(replace(@p,',','') as float),cast(replace(@q,',','') as float)
+					,cast(replace(@r,',','') as float),cast(replace(@s,',','') as float),cast(replace(@t,',','') as float),@k)	
+			end
+			else
+			begin
+				select @qno = @qno + 1
+				insert into @tmps(pno,qno,carno,calctype,[weight],mount,price,discount,[money],memo)
+				values(@pno,@qno,@n,@o,cast(replace(@p,',','') as float),cast(replace(@q,',','') as float)
+					,cast(replace(@r,',','') as float),cast(replace(@s,',','') as float),cast(replace(@t,',','') as float),@k)	
+			end
+			set @count = @count + 1
+		end try
+		begin catch
+		
+		end catch
+		fetch next from cursor_table
+		into @a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m,@n,@o,@p,@q,@r,@s,@t
+	end
+	close cursor_table
+	deallocate cursor_table
+	------------------------------------------------------------------
+	declare @datea nvarchar(10)
+	declare @curMaxNoa nvarchar(20)
+	declare @noa nvarchar(20)
+	declare @noq nvarchar(10)
+	declare @string nvarchar(max)
+	set @string = '0123456789ABCDEFGHIJKLMN'
+	declare @num int
+	declare @weight float
+	declare @mount float
+	declare @inmoney float
+	declare @outmoney float
+	
+	declare cursor_table cursor for
+	select pno,datea from @tmp
+	open cursor_table
+	fetch next from cursor_table
+	into @pno,@datea
+	while(@@FETCH_STATUS <> -1)
+	begin	
+		select @noa = MAX(noa) 
+		from(select noa from carcsa where LEFT(noa,9)='BN'+replace(@datea,'/','')
+		union all
+		select noa from @tmp where LEFT(noa,9)='BN'+replace(@datea,'/','')) as a
+		if(LEN(ISNULL(@noa,''))=0)
+		begin
+			set @noq='001'
+		end
+		else
+		begin
+			set @noq = right(@noa,3)
+			if(right(@noq,2)='99')
+			begin
+				set @noq = Substring(@string,Charindex(LEFT(@noq,1),@string)+1,1)+'00'
+			end
+			else
+			begin
+				set @noq = LEFT(@noq,1) + right('00'+CAST(CAST(right(@noq,2) as int)+1 as nvarchar),2)
+			end
+		end
+		select @weight=0,@mount=0,@inmoney=0,@outmoney=0
+		select @weight=sum(isnull([weight],0)),@mount=sum(isnull([mount],0)),@outmoney=sum(round(isnull([money],0),0)) from @tmps where pno=@pno
+		update @tmp set noa='BN'+replace(@datea,'/','')+@noq,[weight]=ISNULL(@weight,0),[mount]=ISNULL(@mount,0),[inmoney]=Round(ISNULL(price,0)*ISNULL(@mount,0),0),[outmoney]=ISNULL(@outmoney,0) where pno=@pno
+		update @tmps set noa='BN'+replace(@datea,'/','')+@noq, noq = RIGHT('000'+CAST(qno as nvarchar),3) where pno=@pno
+		fetch next from cursor_table
+		into @pno,@datea
+	end
+	close cursor_table
+	deallocate cursor_table
+	
+	update @tmps set [money]=round(mount*price*discount,0)
+	update @tmp set inmoney=ROUND(a.price*isnull(b.mount,0),0),outmoney=ISNULL(b.[money],0)
+	from @tmp a
+	outer apply (select sum(mount) mount,SUM([money]) [money] from @tmps where noa=a.noa)b
+	
+	declare @memo nvarchar(max)
+	declare cursor_table cursor for
+	select noa from @tmp
+	open cursor_table
+	fetch next from cursor_table
+	into @noa
+	while(@@FETCH_STATUS <> -1)
+	begin
+		set @memo=''
+		declare cursor_table2 cursor for
+		select ltrim(rtrim(memo)) from @tmps where noa=@noa
+		open cursor_table2
+		fetch next from cursor_table2
+		into @a
+		while(@@FETCH_STATUS <> -1)
+		begin
+			set @memo=@memo + case when LEN(@memo)>0 then ',' else '' end + @a
+			fetch next from cursor_table2
+			into @a
+		end
+		close cursor_table2
+		deallocate cursor_table2
+		update @tmp set memo=@memo where noa=@noa
+		fetch next from cursor_table
+		into @noa
+	end
+	close cursor_table
+	deallocate cursor_table
+	
+	insert into carcsa(worker,noa,datea,trandate,mon,interval,ordeno,cartype,price
+	,custno,comp,nick,addrno,addr,uccno,product,memo,[weight],mount,inmoney,outmoney,tggno,tgg,cardealno,cardeal,qtime)
+	select @worker,a.noa,a.datea,a.trandate,a.mon
+	,case when a.interval='中' then '2' when a.interval='下' then '3' else '1' end
+	,a.ordeno,a.cartype,a.price
+	,a.custno,b.comp,b.nick,a.addrno,c.addr
+	,a.uccno,isnull(d.product,'')+LEFT(ISNULL(a.ordeno,''),4)
+	,a.memo,a.[weight],a.mount,a.inmoney,a.outmoney
+	,e.noa,e.comp,f.noa,f.acomp,convert(nvarchar,getDate(),120)
+	from @tmp a
+	left join cust b on a.custno=b.noa
+	left join addr c on a.addrno=c.noa
+	left join ucc d on a.uccno=d.noa
+	outer apply (select top(1) b.noa,b.comp from tgg b where len(a.tgg)>0 and b.nick=ltrim(rtrim(a.tgg))) e
+	outer apply (select top(1) b.noa,b.acomp from acomp b where len(a.cardeal)>0 and b.nick=ltrim(rtrim(a.cardeal))) f
+	
+	insert into carcsas(noa,noq,carno,driverno,driver,calctype,[weight],mount,discount,outprice,outmoney,inmoney)
+	select a.noa,a.noq,a.carno,b.driverno,c.namea,a.calctype,a.[weight],a.mount,a.discount,a.price,a.[money],ROUND(ISNULL(a.mount,0)*ISNULL(d.price,0),0)
+	from @tmps a
+	left join car2 b on a.carno = b.carno
+	left join driver c on b.driverno=c.noa
+	left join @tmp d on a.noa=d.noa;
