@@ -65,8 +65,8 @@
                 $('#txtPaydate').datepicker();
                 $('#txtIndate').datepicker();
                 
-                q_cmbParse("cmbCno", t_part);
-            	q_cmbParse("cmbPartno",'@,'+ t_item,'s');
+                q_cmbParse("cmbCno", t_acomp);
+            	q_cmbParse("cmbPartno",'@,'+ t_part,'s');
                 
                 $("#cmbCno").focus(function() {
                     var len = $(this).children().length > 0 ? $(this).children().length : 1;
