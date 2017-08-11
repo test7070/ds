@@ -377,12 +377,15 @@
             }
 
             function sum() {
-            	var t_money,t_total,t_tax,t_discount;
+            	var t_money,t_total,t_tax,t_discount,t_taxrate;
             	var tot_money=0,tot_tax=0,tot_discount=0,tot_total=0;
             	for (var j = 0; j < q_bbsCount; j++) {
             		t_money = q_float('txtMount_'+j).mul(q_float('txtPrice_'+j)).round(0);
+            		t_taxrate = parseFloat(q_getPara('sys.taxrate'))/100;
+            		t_tax = t_money.mul(t_taxrate).round(0);
             		t_total = t_money.add(q_float('txtTax_'+j)).sub(q_float('txtDiscount_'+j))    		
             		$('#txtMoney_'+j).val(FormatNumber(t_money));
+            		$('#txtTax_'+j).val(FormatNumber(t_tax));
             		$('#txtTotal_'+j).val(FormatNumber(t_total));
             		tot_money = tot_money.add(t_money);
             		tot_tax = tot_tax.add(q_float('txtTax_'+j));
