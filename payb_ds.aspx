@@ -332,7 +332,7 @@
 	                        sum();
 	                    });
 	                    $('#txtTax_' + j).change(function(e) {
-	                        sum();
+	                        sum();  
 	                    });
 	                    $('#txtDiscount_' + j).change(function(e) {
 	                        sum();
@@ -382,11 +382,13 @@
             	for (var j = 0; j < q_bbsCount; j++) {
             		t_money = q_float('txtMount_'+j).mul(q_float('txtPrice_'+j)).round(0);
             		t_taxrate = parseFloat(q_getPara('sys.taxrate'))/100;
-            		t_tax = t_money.mul(t_taxrate).round(0);
+                    t_tax = t_money.mul(t_taxrate).round(0);
             		t_total = t_money.add(q_float('txtTax_'+j)).sub(q_float('txtDiscount_'+j))    		
             		$('#txtMoney_'+j).val(FormatNumber(t_money));
-            		$('#txtTax_'+j).val(FormatNumber(t_tax));
-            		$('#txtTotal_'+j).val(FormatNumber(t_total));
+            		if($('#txtRc2no_'+j).val().length==0){
+                         $('#txtTax_'+j).val(FormatNumber(t_tax));
+                    }    
+            		$('#txtTotal_'+j).val(FormatNumber(t_total));          
             		tot_money = tot_money.add(t_money);
             		tot_tax = tot_tax.add(q_float('txtTax_'+j));
             		tot_discount = tot_discount.add(q_float('txtDiscount_'+j));
