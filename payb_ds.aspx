@@ -64,7 +64,9 @@
                 $('#txtDatea').datepicker();
                 $('#txtPaydate').datepicker();
                 $('#txtIndate').datepicker();
-                
+                $('#txtBdate').datepicker();
+                $('#txtEdate').datepicker();
+
                 q_cmbParse("cmbCno", t_acomp);
             	q_cmbParse("cmbPartno",'@,'+ t_part,'s');
                 
@@ -385,7 +387,7 @@
                     t_tax = t_money.mul(t_taxrate).round(0);
             		t_total = t_money.add(q_float('txtTax_'+j)).sub(q_float('txtDiscount_'+j))    		
             		$('#txtMoney_'+j).val(FormatNumber(t_money));
-            		if($('#txtRc2no_'+j).val().length==0){
+            		if($('#txtRc2no_'+j).val().length==0 && $('#txtTax_'+j).val()==0){
                          $('#txtTax_'+j).val(FormatNumber(t_tax));
                     }    
             		$('#txtTotal_'+j).val(FormatNumber(t_total));          
