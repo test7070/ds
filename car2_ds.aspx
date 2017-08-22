@@ -597,11 +597,6 @@
                 	alert(q_getMsg('lblLimitdate')+'錯誤。');
                 	return;
            		}
-           		
-           		if ($('#txtCheckdate').val().length>0&&checkId($('#txtCheckdate').val())!=4){
-                	alert(q_getMsg('lblCheckdate')+'錯誤。');
-                	return;
-           		}
                 if (!q_cd($('#txtCheckdate').val())){
                 	alert(q_getMsg('lblCheckdate')+'錯誤。');
                 	return;
