@@ -91,7 +91,7 @@
 				$('#chkXcarteam').children('input').attr('checked', 'checked');
 				$('#btnOk').hide();
                 $('#btnOk2').click(function(e) {
-                    switch($('#q_report').data('info').radioIndex) {
+                    /*switch($('#q_report').data('info').radioIndex) {
                         case 0:
                             $('#cmbPaperSize').val('LETTER');
                             $('#chkLandScape').prop('checked',false);
@@ -116,7 +116,7 @@
                             $('#cmbPaperSize').val('A4');
                             $('#chkLandScape').prop('checked',false);
                             break;
-                    }
+                    }*/
                     $('#btnOk').click();
                 });
 			}
