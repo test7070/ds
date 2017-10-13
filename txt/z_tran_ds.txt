@@ -1,3 +1,129 @@
+z_tran_ds12:--z_tran_ds12    z_tran_ds.txt
+	SET QUOTED_IDENTIFIER OFF
+	declare @cmd nvarchar(max)
+	declare @t_accy nvarchar(10) = '[1]'
+	declare @t_name nvarchar(20) = '[2]'
+	
+	declare @t_bdate nvarchar(10) = case when '#non'=[3] then '' else [3] end
+	declare @t_edate nvarchar(10) = case when '#non'=[4] then CHAR(255) else [4] end
+	declare @t_btrandate nvarchar(10) = case when '#non'=[5] then '' else [5] end
+	declare @t_etrandate nvarchar(10) = case when '#non'=[6] then CHAR(255) else [6] end	
+	--------------------------------------------------------------------------------------
+	declare @tmpa table(
+		sel int identity(1,1)
+		,accy nvarchar(10)
+		,noa nvarchar(20)
+		,noq nvarchar(10)
+		,trandate nvarchar(20)
+		,custno nvarchar(20)
+		,cust nvarchar(100)
+		,driverno nvarchar(20)
+		,driver nvarchar(100)
+		,total float
+		,total2 float
+	)
+	
+	insert into @tmpa(accy,noa,noq,trandate,custno,cust,driverno,driver,total,total2)
+	select a.accy,a.noa,a.noq,a.trandate,a.custno,a.comp,a.driverno,a.driver,a.total,a.total2
+	from view_trans a
+	where a.trandate between @t_btrandate and @t_etrandate
+	and not(ISNULL(a.total,0)=0 and ISNULL(a.total2,0)=0)
+	--------------------------------------------------------------------------------------
+	declare @tmpb table(
+		sel int identity(1,1)
+		,datea nvarchar(20)
+		,accc3 nvarchar(20)
+		,noq nvarchar(10)
+		,accc5 nvarchar(20)
+		,accc6 nvarchar(50)
+		,accc7 nvarchar(50)
+		,dmoney float
+		,cmoney float
+	)
+	
+	declare @tablea nvarchar(20)
+
+	declare cursor_table cursor for
+		select [name]
+		from sys.tables
+		where [name] like 'acccs[0-9][0-9][0-9]_[0-9]'
+		order by [name]
+	open cursor_table
+	fetch next from cursor_table
+	into @tablea
+	while(@@FETCH_STATUS <> -1)
+	begin
+		insert into @tmpb(datea,accc3,noq,accc5,accc6,accc7,dmoney,cmoney)
+		select substring(@tablea,6,3)+'/'+a.accc2
+			,a.accc3,a.noq,a.accc5,a.accc6,a.accc7,a.dmoney,a.cmoney
+		from acccs106_1 a
+		left join accc106_1 b on a.accc3=b.accc3
+		where b.accc3 is not null
+		and substring(@tablea,6,3)+'/'+a.accc2 between @t_btrandate and @t_etrandate
+		and (LEFT(a.accc5,1)='5' or LEFT(a.accc5,1)='6' or LEFT(a.accc5,1)='8') 
+		and left(a.accc5,4)!='5850'
+		
+		fetch next from cursor_table
+		into @tablea
+	end
+	close cursor_table
+	deallocate cursor_table
+	--------------------------------------------------------------------------------------
+	declare @tmp table(
+		sel int identity(1,1)
+		,gno nvarchar(10)
+		,pno int
+		,recno int
+		,itemno nvarchar(20)
+		,item nvarchar(50)
+		,money01 float
+		,money02 float
+		,money03 float
+	)
+	insert into @tmp(gno,pno,itemno,item,money01,money02)
+	select '1',1,a.custno,isnull(b.comp,'')
+		,sum(isnull(a.total,0)),sum(isnull(a.total2,0))
+	from @tmpa a 
+	left join cust b on a.custno=b.noa
+	group by a.custno,b.comp
+	
+	-------------------------------------------------------------------------------------------------------
+	insert into @tmp(gno,pno,itemno,item,money01,money02)
+	select '2',2,a.accc5,a.accc6,sum(isnull(a.cmoney,0)),sum(isnull(a.dmoney,0))
+	from @tmpb a
+	group by accc5,accc6
+	-------------------------------------------------------------------------------------------------------
+	update @tmp set money03 = money01-money02
+	update @tmp set recno=b.recno
+	from @tmp a
+	left join(select sel,ROW_NUMBER()over(order by money03 desc,itemno) recno from @tmp) b on a.sel=b.sel
+	-- 總計
+	insert into @tmp(gno,pno,itemno,item,money01,money02,money03)
+	select '3',3,'','',SUM(ISNULL(money01,0)),SUM(ISNULL(money02,0)),SUM(ISNULL(money03,0)) 
+	from @tmp 
+	
+	declare @titlea nvarchar(max)
+	if @t_btrandate=@t_etrandate
+	begin
+		set @titlea = '日期：'+@t_btrandate
+	end
+	else
+	begin
+		set @titlea = '日期：'+@t_btrandate + '～' +@t_etrandate
+	end
+	
+	select gno
+		,@titlea titlea
+		,recno rr
+		,itemno a01
+		,item a02
+		,dbo.getComma(money01,-1) a03
+		,dbo.getComma(money02,-1) a04
+		,dbo.getComma(money03,-1) a05
+	from @tmp
+	order by pno,recno;
+
+
 z_tran_dh01:--z_tran_dh01    z_tran_ds.txt
 	SET QUOTED_IDENTIFIER OFF
 	declare @cmd nvarchar(max)
