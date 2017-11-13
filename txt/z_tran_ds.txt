@@ -3280,6 +3280,34 @@ z_tran_ds01:--z_tran_ds01
 	declare @mount float 
 	declare @money float 
 	----------------------------------------------------------------------------------------------
+	IF OBJECT_ID('tempdb..#z_tran01')is not null
+	BEGIN
+		set @cmd = 'drop table #z_tran01'
+		EXECUTE sp_executesql @cmd
+	END
+	create table #z_tran01 (
+		n float,
+		gno nvarchar(3),
+		carno nvarchar(20),
+		carkindno nvarchar(20),
+		carkind nvarchar(20),
+		driverno nvarchar(20),
+		driver nvarchar(20),
+		trandate nvarchar(10),
+		miles float,
+		tranmoney float,
+		drivermoney float,
+		oilmount float,
+		oilmoney float,
+		tolls float,
+		ticket float,
+		reserve float,
+		profit  float,
+		memo nvarchar(max),
+		rate1 float
+	)
+	CREATE INDEX noa ON #z_tran01 (carno,trandate)
+	----------------------------------------------------------------------------------------------
 	
 	declare @t_date nvarchar(10)
 	declare @t_date1 nvarchar(10)
@@ -3330,40 +3358,14 @@ z_tran_ds01:--z_tran_ds01
 	left join car2 b on a.carno=b.carno
 	left join carKind c on b.carkindno=c.noa
 	left join calctypes d on d.noa+d.noq=a.calctype
-	where isnull(d.isoutside,0)=0
+	where ( exists(select * from acomp where CHARINDEX('日光',comp)=0) or (exists(select * from acomp where CHARINDEX('日光',comp)>0) and isnull(d.isoutside,0)=0))
 	and (len(@t_carno)=0 or @t_carno=a.carno)
 	and ( len(@t_carkind)=0 or CHARINDEX(b.carkindno,c.noa)>0)
 	and (LEFT(a.trandate,6)  between LEFT(@t_btrandate,6)  and  LEFT(@t_etrandate,6)) 
 	group  by a.carno,isnull(c.noa,''),isnull(c.kind,'')
-	
+
 	----------------------------------------------------------------------------------------------
-	IF OBJECT_ID('tempdb..#z_tran01')is not null
-	BEGIN
-		set @cmd = 'drop table #z_tran01'
-		EXECUTE sp_executesql @cmd
-	END
-	create table #z_tran01 (
-		n float,
-		gno nvarchar(3),
-		carno nvarchar(20),
-		carkindno nvarchar(20),
-		carkind nvarchar(20),
-		driverno nvarchar(20),
-		driver nvarchar(20),
-		trandate nvarchar(10),
-		miles float,
-		tranmoney float,
-		drivermoney float,
-		oilmount float,
-		oilmoney float,
-		tolls float,
-		ticket float,
-		reserve float,
-		profit  float,
-		memo nvarchar(max),
-		rate1 float
-	)
-	CREATE INDEX noa ON #z_tran01 (carno,trandate)
+	
 	
 	declare cursor_table cursor for
 	select carno,carkindno,carkind,[date] from #listCarno,#listDate
