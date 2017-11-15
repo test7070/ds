@@ -35,8 +35,8 @@ z_tran_ds12:--z_tran_ds12    z_tran_ds.txt
 		,accc3 nvarchar(20)
 		,noq nvarchar(10)
 		,accc5 nvarchar(20)
-		,accc6 nvarchar(50)
-		,accc7 nvarchar(50)
+		,accc6 nvarchar(max)
+		,accc7 nvarchar(max)
 		,dmoney float
 		,cmoney float
 	)
