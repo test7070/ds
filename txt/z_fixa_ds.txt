@@ -763,7 +763,7 @@ z_fixa_ds01:--z_fixa_ds01
 	,dbo.getComma(mount,3) mt
 	,dbo.getComma(price,3) pe
 	,dbo.getComma([money],0) my
-	,tablea+'_ds?left(noa,'+cast(len(a.noa) as nvarchar)+')=$noa?' qhref
+	,tablea+'_ds?left(noa,'+cast(len(a.noa) as nvarchar)+')=$noa?' ghref
 	from @tmp a
 	left join tgg b on a.tggno=b.noa
 	order by a.pno,a.tablea,a.noa,a.gno;
