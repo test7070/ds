@@ -387,7 +387,11 @@ z_tre_ds07:--z_tre_ds07  ref z_tre_ds02  宏茂用
 	end
 	close cursor_table
 	deallocate cursor_table	
-
+	
+	update @tmp set g33 = b.g33
+	from @tmp a
+	outer apply(select top 1 g33 from @tmp where len(ISNULL(g33,''))>0 and a.driverno=driverno)b
+	
 	select @t_acomp acomp,* from @tmp order by driverno,page,n
 	--------------------------------------------------------------------------------------------
 	drop table #z_tre_ds02 ;
