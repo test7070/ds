@@ -108,6 +108,8 @@ z_tre_ds07:--z_tre_ds07  ref z_tre_ds02  宏茂用
 	 and (isnull(b.datea,0) between @t_bdate and @t_edate)
 	 and (isnull(b.driverno,0) between @t_bdriverno and @t_edriverno)
 	 and (len(@t_carteamno)=0 or CHARINDEX(','+b.carteamno+',',','+@t_carteamno+',')>0)
+	
+
 	 
 	---------------------------------------------------------------------------------------------
 	declare @treno nvarchar(20)
@@ -160,8 +162,12 @@ z_tre_ds07:--z_tre_ds07  ref z_tre_ds02  宏茂用
 	end
 	close cursor_table
 	deallocate cursor_table	
+	
+--select * from #z_tre_ds02 
+--return
 	--------------------------------------------------------------------------------------------
 	declare @tmp table(
+		sel int identity(1,1),
 		page int,
 		n int,
 		gno nvarchar(10),
@@ -290,6 +296,7 @@ z_tre_ds07:--z_tre_ds07  ref z_tre_ds02  宏茂用
 		close cursor_table2
 		deallocate cursor_table2
 		--加減項明細
+		
 		select @totcount = 0
 		select @totcount=count(1) from #z_tre_ds02  where driverno=@driverno and pno='2'
 		select @totcount = isnull(@totcount,0)
@@ -347,6 +354,7 @@ z_tre_ds07:--z_tre_ds07  ref z_tre_ds02  宏茂用
 		end
 		close cursor_table2
 		deallocate cursor_table2
+	
 		---------------------------------------------------
 		--總計
 		if((@curline%@rowline)+@endline>@rowline)
@@ -381,6 +389,7 @@ z_tre_ds07:--z_tre_ds07  ref z_tre_ds02  宏茂用
 			,dbo.getComma(@total,-1))
 	
 		update @tmp set cpage=page+1,tpage=@page+1 where driverno=@driverno
+		
 		---------------------------------------------------
 		fetch next from cursor_table
 		into @driverno,@driver
@@ -392,7 +401,7 @@ z_tre_ds07:--z_tre_ds07  ref z_tre_ds02  宏茂用
 	from @tmp a
 	outer apply(select top 1 g33 from @tmp where len(ISNULL(g33,''))>0 and a.driverno=driverno)b
 	
-	select @t_acomp acomp,* from @tmp order by driverno,page,n
+	select @t_acomp acomp,* from @tmp order by driverno,sel
 	--------------------------------------------------------------------------------------------
 	drop table #z_tre_ds02 ;
 
