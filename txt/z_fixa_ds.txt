@@ -403,6 +403,8 @@ z_fixa_ds02:--z_fixa_ds02
 	--------------------------------------------------------------------------------------
 	SET QUOTED_IDENTIFIER OFF
 	declare @cmd nvarchar(max)
+	declare @t_bdate nvarchar(10) = case when '#non'=[3] then '' else [3] end
+	declare @t_edate nvarchar(10) = case when '#non'=[4] then CHAR(255) else [4] end
 	declare @t_btggno nvarchar(20) = case when '#non'=[5] then '' else [5] end
 	declare @t_etggno nvarchar(20) = case when '#non'=[6] then CHAR(255) else [6] end
 	declare @t_bnoa nvarchar(20)= case when '#non'=[11] then '' else [11] end
@@ -419,7 +421,7 @@ z_fixa_ds02:--z_fixa_ds02
 	and (len(@t_product)=0 or CHARINDEX(@t_product,namea)>0) 
 	and indate between @t_bdate and @t_edate 
 	order by noa 
-
+;
 
 z_fixa_ds04:--z_fixa_ds04
 	SET QUOTED_IDENTIFIER OFF
