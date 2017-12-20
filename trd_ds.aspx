@@ -582,7 +582,7 @@
                     $('#txtTranno_'+i).bind('contextmenu',function(e) {
                         /*滑鼠右鍵*/
                         e.preventDefault();
-                        var n = $(this).attr('id').replace('txtTranno_','');
+                        var n = $(this).attr('id').split('_')[$(this).attr('id').split('_').length - 1];
                         var t_accy = $('#txtTranaccy_'+n).val();
                         var t_noa = $(this).val();
                         var t_aspx = r_comp.indexOf('金勇')>=0?'trans_at.aspx':'trans_ds.aspx';

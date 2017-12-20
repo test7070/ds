@@ -190,6 +190,9 @@
 				q_brwCount();
 				//q_content += ' order=^^datea desc, noa desc ^^';
 				q_content ="";
+				if($.trim(q_getHref()[0])=='noa'){
+					q_content = "where=^^ noa='"+$.trim(q_getHref()[1])+"'^^";
+				}
 				q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
 
 			});
