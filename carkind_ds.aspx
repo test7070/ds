@@ -67,18 +67,22 @@
 					}
 				});
             }
-			function refreshImg(){
-				var imgwidth = $('#imgPic').width();
-                var imgheight = $('#imgPic').height();
-                $('#canvas').width(imgwidth).height(imgheight);
-                var c = document.getElementById("canvas");
-				var ctx = c.getContext("2d");		
-				c.width = imgwidth;
-				c.height = imgheight;
-				ctx.drawImage($('#imgPic')[0],0,0,imgwidth,imgheight);
-				$('#imgPic').attr('src',c.toDataURL());
-				$('#imgPic').width(imgwidth).height(imgheight);
-				$('#txtImg').val(c.toDataURL());
+			function refreshImg(isOrg){
+			    var image = document.getElementById('imgPic');
+			    var c = document.getElementById("canvas");
+			    image.onload = function() {
+    				var imgwidth = $('#imgPic').width();
+                    var imgheight = $('#imgPic').height();
+                    $('#canvas').width(imgwidth).height(imgheight);
+                    var c = document.getElementById("canvas");
+    				var ctx = c.getContext("2d");		
+    				c.width = imgwidth;
+    				c.height = imgheight;
+    				ctx.drawImage($('#imgPic')[0],0,0,imgwidth,imgheight);
+    				$('#imgPic').attr('src',c.toDataURL());
+    				$('#imgPic').width(imgwidth).height(imgheight);
+    				$('#txtImg').val(c.toDataURL());
+    			}
 			}
 			
             function q_boxClose(s2) {
