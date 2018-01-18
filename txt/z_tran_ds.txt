@@ -5791,8 +5791,8 @@ z_tran_ds06:--z_tran_ds06
 	 (len(@t_carno) = 0 or a.carno = @t_carno) and
 	 (len(@t_po)=0 or a.po = @t_po) and
 	 (a.straddrno between @t_baddrno and @t_eaddrno)
-	 and (len(@t_carteam)>0 or CHARINDEX(','+a.carteamno+',',','+@t_carteam+',')>0)
-	 and (len(@t_calctypes)>0 or CHARINDEX(','+a.calctype+',',','+@t_calctypes+',')>0)
+	 and (len(@t_carteam)=0 or CHARINDEX(','+a.carteamno+',',','+@t_carteam+',')>0)
+	 and (len(@t_calctypes)=0 or CHARINDEX(','+a.calctype+',',','+@t_calctypes+',')>0)
 
 	declare @tmp table(
 		gno nvarchar(10),
@@ -6053,8 +6053,8 @@ z_tran_ds07:--z_tran_ds07
 		" (len(@t_carno)=0  or  a.carno=@t_carno) and "+
 		" (len(@t_po)=0  or  a.po=@t_po) "+
 		" and (a.straddrno between @t_baddrno and @t_eaddrno)"+
-		" and (len(@t_carteam)>0 or CHARINDEX(','+a.carteamno+',',','+@t_carteam+',')>0)"+
-		" and (len(@t_calctypes)>0 or CHARINDEX(','+a.calctype+',',','+@t_calctypes+',')>0)"+
+		" and (len(@t_carteam)=0 or CHARINDEX(','+a.carteamno+',',','+@t_carteam+',')>0)"+
+		" and (len(@t_calctypes)=0 or CHARINDEX(','+a.calctype+',',','+@t_calctypes+',')>0)"+
 		" group by a.custno,b.nick,left(a.datea,6)"
 	insert into @tmp
 	execute sp_executesql @cmd,N'@t_bdate nvarchar(10),@t_edate nvarchar(10),@t_btrandate nvarchar(10),@t_etrandate nvarchar(10),@t_bcustno nvarchar(20),@t_ecustno nvarchar(20),@t_bdriverno  nvarchar(20),@t_edriverno  nvarchar(20),@t_carno  nvarchar(20),@t_po  nvarchar(20),@t_baddrno  nvarchar(20),@t_eaddrno  nvarchar(20),@t_carteam nvarchar(max),@t_calctypes nvarchar(max)',
