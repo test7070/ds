@@ -211,14 +211,15 @@ z_fixa_ds07:--z_fixa_ds07
 		,'<a style="font-family:'+ "'Times New Roman','標楷體', serif"+char(59)+'">'+a.unit+'</a>' a04
 		,a.mount a05
 		,a.price a06
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[money]),1)),4,12))  a07 
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[wmoney]),1)),4,12)) b01
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[cmoney]),1)),4,12)) b02
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[dmoney]),1)),4,12)) b03
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[emoney]),1)),4,12)) b04
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[tax]),1)),4,12)) b05
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[discount]),1)),4,12)) b06
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[total]),1)),4,12)) b07
+		,dbo.getComma(a.[money],-1) a07 
+		,a.memo a08
+		,dbo.getComma(a.[wmoney],-1) b01
+		,dbo.getComma(a.[cmoney],-1) b02
+		,dbo.getComma(a.[dmoney],-1) b03
+		,dbo.getComma(a.[emoney],-1) b04
+		,dbo.getComma(a.[tax],-1) b05
+		,dbo.getComma(a.[discount],-1) b06
+		,dbo.getComma(a.[total],-1) b07
 		,a.* 
 	from @tmp a
 	left join tgg b on a.tggno=b.noa
