@@ -6133,3 +6133,175 @@ z_tran_ds07:--z_tran_ds07
 			dbo.getComma( @minus,-1) +' = '+
 			dbo.getComma( total4+@plus-@minusmoney,-1) total5
 	from @tmp order by custno,gno,mon;
+----------------------------------------------------------------------------------------------------
+z_tran_nv01:--z_tran_nv01
+	SET QUOTED_IDENTIFIER OFF
+	declare @t_bdriverno nvarchar(20) = case when '#non'=[11] then '' else [11] end
+	declare @t_edriverno nvarchar(20) = case when '#non'=[12] then CHAR(255) else [12] end	
+	declare @t_carno nvarchar(20) = case when '#non'=[13] then '' else [13] end
+	declare @t_bmon nvarchar(20) = case when '#non'=[44] then '' else [44] end
+	declare @t_emon nvarchar(20) = case when '#non'=[45] then CHAR(255) else [45] end		
+
+declare @tmp table(
+	noa nvarchar(50),
+	caryear nvarchar(50),
+	suspdate nvarchar(50),
+	driverno nvarchar(50),
+	driver nvarchar(50)
+)
+insert @tmp
+select a.noa,caryear,suspdate,driverno,driver from car2 a
+left join driver b on a.driverno=b.noa
+where (a.noa=@t_carno or len(@t_carno)=0)
+
+declare @tmpa table(
+	gno nvarchar(1),
+	carno nvarchar(50),
+	caryear nvarchar(10),
+	driverno nvarchar(50),
+	driver nvarchar(50),
+	total float,
+	product nvarchar(max)
+)
+insert @tmpa 
+select '9',a.noa,a.caryear,b.driverno,case when len(b.driverno)!=0 then b.driver else '無司機' end,total,
+case when len(a.suspdate)!=0 then '停駛/'+a.suspdate
+else(select case when ISNULL(product,'')!='' then '/'+product end from view_trans where carno=a.noa group by product order by product FOR XML PATH(''))end
+from @tmp a
+left join view_trans b on a.noa=b.carno
+where (left(b.datea,6) between @t_bmon and @t_emon)
+and(a.noa=@t_carno or len(@t_carno)=0)
+and(b.driverno between @t_bdriverno and @t_edriverno)
+
+insert @tmpa 
+select '0',carno,caryear,driverno,driver,sum(isnull(total,0)),substring(product,2,len(product))
+from @tmpa
+group by carno,caryear,driverno,driver,product
+
+delete @tmpa where gno='9'
+
+declare @tmpb table(
+	gno nvarchar(1),
+	carno nvarchar(50),
+	driverno nvarchar(50),
+	driver nvarchar(50),
+	f1 float,--新人教育費
+	f2 float,--車險
+	f3 float,--燃料費
+	f4 float,--牌照費
+	f5 float,--攤提
+	f6 float,--司機團保
+	f7 float,--油資
+	f8 float,--通行費
+	f9 float,--公會
+	f10 float,--GPS
+	f11 float,--其他費用
+	f12 float,--零件出售
+	f13 float,--輪胎出售
+	f14 float,--勞健保
+	f15 float,--維修
+	f16 float--輪胎
+)
+insert @tmpb
+select '9',carno,driverno,driver
+,case when acc2 like '%新人教育%' then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%車險%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%燃料費%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%牌照費%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%攤提%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%司機團保%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%油資%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%通行費%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%公會%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%GPS%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%其他費用%' or len(acc2)=0 then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%零件出售%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,case when acc2 like '%輪胎出售%'then isnull(plusmoney,0)-isnull(minusmoney,0) end
+,'','',''
+from carchg
+where isnull(carno,'')!=''
+and (left(datea,6) between @t_bmon and @t_emon)
+and(carno=@t_carno or len(@t_carno)=0)
+and(driverno between @t_bdriverno and @t_edriverno)
+
+
+insert @tmpb(gno,carno,driverno,driver,f14)
+select '9',c.noa,a.noa,a.namea,(isnull(b.re_person,0)+ISNULL(b.la_person,0)+ISNULL(b.he_person,0))*-1
+from driver a
+left join salinsures b on a.noa=b.noa
+left join @tmp c on a.noa=c.driverno
+where isnull(c.noa,'')!=''
+and (mon between @t_bmon and @t_emon)
+and(c.noa=@t_carno or len(@t_carno)=0)
+and(driverno between @t_bdriverno and @t_edriverno)
+group by c.noa,a.noa,a.namea,b.re_person,b.la_person,b.he_person
+
+insert @tmpb(gno,carno,driverno,driver,f15,f16)
+select '9',carno,driverno,driver,wmoney,cmoney
+from fixa
+where isnull(carno,'')!=''
+and (mon between @t_bmon and @t_emon)
+and(carno=@t_carno or len(@t_carno)=0)
+and(driverno between @t_bdriverno and @t_edriverno)
+
+insert @tmpb
+select '0',carno,driverno,driver,SUM(ISNULL(f1,0)),SUM(ISNULL(f2,0)),SUM(ISNULL(f3,0)),SUM(ISNULL(f4,0))
+,SUM(ISNULL(f5,0)),SUM(ISNULL(f6,0)),SUM(ISNULL(f7,0)),SUM(ISNULL(f8,0)),SUM(ISNULL(f9,0)),SUM(ISNULL(f10,0))
+,SUM(ISNULL(f11,0)),SUM(ISNULL(f12,0)),SUM(ISNULL(f13,0)),SUM(ISNULL(f14,0)),SUM(ISNULL(f15,0)),SUM(ISNULL(f16,0))
+from @tmpb
+group by carno,driverno,driver
+
+delete @tmpb where gno='9'
+
+declare @result table(
+	gno nvarchar(1),
+	rr int,
+	carno nvarchar(50),
+	caryear nvarchar(10),
+	driverno nvarchar(50),
+	driver nvarchar(50),
+	total float,
+	product nvarchar(max),
+	f01 float,--新人教育費
+	f2 float,--車險
+	f3 float,--燃料費
+	f4 float,--牌照費
+	f5 float,--攤提
+	f6 float,--司機團保
+	f7 float,--油資
+	f8 float,--通行費
+	f9 float,--公會
+	f10 float,--GPS
+	f11 float,--其他費用
+	f12 float,--零件出售
+	f13 float,--輪胎出售
+	f14 float,--勞健保
+	f15 float,--維修
+	f16 float,--輪胎
+	t1 float,--小計
+	t2 float--總計
+)
+insert @result(gno,carno,driverno,driver,caryear,product,total,f01,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16)
+select '0',a.carno,a.driverno,a.driver,MAX(caryear),MAX(product),SUM(total),SUM(f1),SUM(f2),SUM(f3),SUM(f4),SUM(f5),SUM(f6),SUM(f7),SUM(f8),SUM(f9),SUM(f10),SUM(f11),SUM(f12),SUM(f13),SUM(f14),SUM(f15),SUM(f16)
+from (select noa carno,driverno,driver,caryear,'' product,0 total,0 f1,0 f2,0 f3,0 f4,0 f5,0 f6,0 f7,0 f8,0 f9,0 f10,0 f11,0 f12,0 f13,0 f14,0 f15,0 f16 from @tmp
+	union all
+	select carno,driverno,driver,'' caryear,product,total,0 f1,0 f2,0 f3,0 f4,0 f5,0 f6,0 f7,0 f8,0 f9,0 f10,0 f11,0 f12,0 f13,0 f14,0 f15,0 f16 from @tmpa
+	union all
+	select carno,driverno,driver,'' caryear,'' product,0 total,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16  from @tmpb)a
+group by a.carno,a.driverno,a.driver
+
+update a
+set rr=rx
+from (select ROW_NUMBER()over(partition by gno order by carno)rx,rr from @result)a
+
+update @result
+set t1=total+f01+f2+f3+f4+f5+f6+f7+f8+f9+f10+f11+f14+f15+f16,t2=total+f01+f2+f3+f4+f5+f6+f7+f8+f9+f10+f11+f12+f13+f14+f15+f16
+
+select
+dbo.getComma(total,0),dbo.getComma(t1,0)t1,dbo.getComma(t2,0)t2,dbo.getComma(f01*-1,0)f1,dbo.getComma(f2*-1,0)f2,dbo.getComma(f3*-1,0)f3
+,dbo.getComma(f4*-1,0)f4,dbo.getComma(f5*-1,0)f5,dbo.getComma(f6*-1,0)f6
+,dbo.getComma(f7*-1,0)f7,dbo.getComma(f8*-1,0)f8,dbo.getComma(f9*-1,0)f9
+,dbo.getComma(f10*-1,0)f10,dbo.getComma(f11*-1,0)f11,dbo.getComma(f12*-1,0)f12
+,dbo.getComma(f13*-1,0)f13,dbo.getComma(f14*-1,0)f14,dbo.getComma(f15*-1,0)f15,dbo.getComma(f16*-1,0)f16
+, * from @result
+;
