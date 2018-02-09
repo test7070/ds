@@ -6139,8 +6139,8 @@ z_tran_nv01:--z_tran_nv01
 	declare @t_bdriverno nvarchar(20) = case when '#non'=[11] then '' else [11] end
 	declare @t_edriverno nvarchar(20) = case when '#non'=[12] then CHAR(255) else [12] end	
 	declare @t_carno nvarchar(20) = case when '#non'=[13] then '' else [13] end
-	declare @t_bmon nvarchar(20) = case when '#non'=[44] then '' else [44] end
-	declare @t_emon nvarchar(20) = case when '#non'=[45] then CHAR(255) else [45] end		
+	declare @t_bmon nvarchar(20) = case when '#non'=[30] then '' else [30] end
+	declare @t_emon nvarchar(20) = case when '#non'=[31] then CHAR(255) else [31] end		
 
 declare @tmp table(
 	noa nvarchar(50),
@@ -6237,7 +6237,7 @@ and(driverno between @t_bdriverno and @t_edriverno)
 group by c.noa,a.noa,a.namea,b.re_person,b.la_person,b.he_person
 
 insert @tmpb(gno,carno,driverno,driver,f15,f16)
-select '9',carno,driverno,driver,wmoney,cmoney
+select '9',carno,driverno,driver,(wmoney+tax-discount)*-1,cmoney*-1
 from fixa
 where isnull(carno,'')!=''
 and (mon between @t_bmon and @t_emon)
@@ -6298,10 +6298,23 @@ update @result
 set t1=total+f01+f2+f3+f4+f5+f6+f7+f8+f9+f10+f11+f14+f15+f16,t2=total+f01+f2+f3+f4+f5+f6+f7+f8+f9+f10+f11+f12+f13+f14+f15+f16
 
 select
-dbo.getComma(total,0),dbo.getComma(t1,0)t1,dbo.getComma(t2,0)t2,dbo.getComma(f01*-1,0)f1,dbo.getComma(f2*-1,0)f2,dbo.getComma(f3*-1,0)f3
-,dbo.getComma(f4*-1,0)f4,dbo.getComma(f5*-1,0)f5,dbo.getComma(f6*-1,0)f6
-,dbo.getComma(f7*-1,0)f7,dbo.getComma(f8*-1,0)f8,dbo.getComma(f9*-1,0)f9
-,dbo.getComma(f10*-1,0)f10,dbo.getComma(f11*-1,0)f11,dbo.getComma(f12*-1,0)f12
-,dbo.getComma(f13*-1,0)f13,dbo.getComma(f14*-1,0)f14,dbo.getComma(f15*-1,0)f15,dbo.getComma(f16*-1,0)f16
-, * from @result
+'月份:'+@t_bmon+'~'+@t_emon titlea
+,dbo.getComma(total,0),dbo.getComma(t1,0)t1,dbo.getComma(t2,0)t2
+,case when f01<0 then dbo.getComma(f01*-1,0) else dbo.getComma(f01,0) end f1
+,case when f2<0 then dbo.getComma(f2*-1,0) else dbo.getComma(f2,0) end f2
+,case when f3<0 then dbo.getComma(f3*-1,0) else dbo.getComma(f3,0) end f3 
+,case when f4<0 then dbo.getComma(f4*-1,0) else dbo.getComma(f4,0) end f4
+,case when f5<0 then dbo.getComma(f5*-1,0) else dbo.getComma(f5,0) end f5
+,case when f6<0 then dbo.getComma(f6*-1,0) else dbo.getComma(f6,0) end f6 
+,case when f7<0 then dbo.getComma(f7*-1,0) else dbo.getComma(f7,0) end f7
+,case when f8<0 then dbo.getComma(f8*-1,0) else dbo.getComma(f8,0) end f8
+,case when f9<0 then dbo.getComma(f9*-1,0) else dbo.getComma(f9,0) end f9 
+,case when f10<0 then dbo.getComma(f10*-1,0) else dbo.getComma(f10,0) end f10
+,case when f11<0 then dbo.getComma(f11*-1,0) else dbo.getComma(f11,0) end f11
+,case when f12<0 then dbo.getComma(f12*-1,0) else dbo.getComma(f12,0) end f12 
+,case when f13<0 then dbo.getComma(f13*-1,0) else dbo.getComma(f13,0) end f13
+,case when f14<0 then dbo.getComma(f14*-1,0) else dbo.getComma(f14,0) end f14
+,case when f15<0 then dbo.getComma(f15*-1,0) else dbo.getComma(f15,0) end f15
+,case when f16<0 then dbo.getComma(f16*-1,0) else dbo.getComma(f16,0) end f16 
+, * from @result 
 ;
