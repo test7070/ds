@@ -211,14 +211,15 @@ z_fixa_ds07:--z_fixa_ds07
 		,'<a style="font-family:'+ "'Times New Roman','標楷體', serif"+char(59)+'">'+a.unit+'</a>' a04
 		,a.mount a05
 		,a.price a06
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[money]),1)),4,12))  a07 
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[wmoney]),1)),4,12)) b01
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[cmoney]),1)),4,12)) b02
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[dmoney]),1)),4,12)) b03
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[emoney]),1)),4,12)) b04
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[tax]),1)),4,12)) b05
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[discount]),1)),4,12)) b06
-		,reverse(substring(reverse(convert(nvarchar(15),CONVERT(money,a.[total]),1)),4,12)) b07
+		,dbo.getComma(a.[money],-1) a07 
+		,a.memo a08
+		,dbo.getComma(a.[wmoney],-1) b01
+		,dbo.getComma(a.[cmoney],-1) b02
+		,dbo.getComma(a.[dmoney],-1) b03
+		,dbo.getComma(a.[emoney],-1) b04
+		,dbo.getComma(a.[tax],-1) b05
+		,dbo.getComma(a.[discount],-1) b06
+		,dbo.getComma(a.[total],-1) b07
 		,a.* 
 	from @tmp a
 	left join tgg b on a.tggno=b.noa
@@ -720,7 +721,7 @@ z_fixa_ds01:--z_fixa_ds01
 	select '4','9','總計(不含領料、換補輪胎)'
 	,SUM(ISNULL(wmoney,0))
 	,SUM(case when tablea='fixout' or tablea='tire' then 0 else ISNULL(cmoney,0) end)
-	,SUM(ISNULL(dmoney,0)),SUM(ISNULL(dmoney,0))
+	,SUM(ISNULL(dmoney,0)),SUM(ISNULL(emoney,0))
 	,SUM(ISNULL(tax,0)),SUM(ISNULL(discount,0)),SUM(ISNULL(total,0))
 	from @tmp where gno='1'
 	
@@ -728,7 +729,7 @@ z_fixa_ds01:--z_fixa_ds01
 	insert into @tmp(gno,pno,noa,wmoney,cmoney,dmoney,emoney,tax,discount,total)
 	select '3','A','進貨成本(維修+進貨)',SUM(wmoney),SUM(cmoney),SUM(dmoney),SUM(emoney),SUM(tax),SUM(discount),SUM(total)
 	from(
-		select SUM(ISNULL(wmoney,0)) wmoney,SUM(ISNULL(cmoney,0)) cmoney,SUM(ISNULL(dmoney,0)) dmoney,SUM(ISNULL(dmoney,0)) emoney
+		select SUM(ISNULL(wmoney,0)) wmoney,SUM(ISNULL(cmoney,0)) cmoney,SUM(ISNULL(dmoney,0)) dmoney,SUM(ISNULL(emoney,0)) emoney
 			,SUM(ISNULL(tax,0)) tax,SUM(ISNULL(discount,0)) discount,SUM(ISNULL(total,0)) total
 		from @tmp where gno='1' and tablea='fixa'
 		union all
@@ -737,17 +738,17 @@ z_fixa_ds01:--z_fixa_ds01
 		from @tmp where gno='1' and tablea='fixin') a
 	--領料成本
 	insert into @tmp(gno,pno,noa,wmoney,cmoney,dmoney,emoney,tax,discount,total)
-	select '3','B','領料成本(維修+領料+換補)',SUM(wmoney),SUM(cmoney),SUM(dmoney),SUM(ISNULL(dmoney,0)),SUM(tax),SUM(discount),SUM(total)
+	select '3','B','領料成本(維修+領料+換補)',SUM(wmoney),SUM(cmoney),SUM(dmoney),SUM(ISNULL(emoney,0)),SUM(tax),SUM(discount),SUM(total)
 	from(
-		select SUM(ISNULL(wmoney,0)) wmoney,SUM(ISNULL(cmoney,0)) cmoney,SUM(ISNULL(dmoney,0)) dmoney,SUM(ISNULL(dmoney,0)) emoney
+		select SUM(ISNULL(wmoney,0)) wmoney,SUM(ISNULL(cmoney,0)) cmoney,SUM(ISNULL(dmoney,0)) dmoney,SUM(ISNULL(emoney,0)) emoney
 			,SUM(ISNULL(tax,0)) tax,SUM(ISNULL(discount,0)) discount,SUM(ISNULL(total,0)) total
 		from @tmp where gno='1' and tablea='fixa'
 		union all
-		select SUM(ISNULL(wmoney,0)) wmoney,SUM(ISNULL(cmoney,0)) cmoney,SUM(ISNULL(dmoney,0)) dmoney,SUM(ISNULL(dmoney,0)) emoney
+		select SUM(ISNULL(wmoney,0)) wmoney,SUM(ISNULL(cmoney,0)) cmoney,SUM(ISNULL(dmoney,0)) dmoney,SUM(ISNULL(emoney,0)) emoney
 			,SUM(ISNULL(tax,0)) tax,SUM(ISNULL(discount,0)) discount,SUM(ISNULL(total,0)) total
 		from @tmp where gno='1' and tablea='fixout'
 		union all
-		select SUM(ISNULL(wmoney,0)),SUM(ISNULL(cmoney,0)),SUM(ISNULL(dmoney,0)),SUM(ISNULL(dmoney,0))
+		select SUM(ISNULL(wmoney,0)),SUM(ISNULL(cmoney,0)),SUM(ISNULL(dmoney,0)),SUM(ISNULL(emoney,0))
 			,SUM(ISNULL(tax,0)),SUM(ISNULL(discount,0)),SUM(ISNULL(total,0))
 		from @tmp where gno='1' and tablea='tire') a
 	---------------------
