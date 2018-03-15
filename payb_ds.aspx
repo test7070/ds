@@ -123,6 +123,10 @@
                 $('#lblAccno').click(function() {
                     q_pop('txtAccno', "accc.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";accc3='" + $('#txtAccno').val() + "';" + $('#txtDatea').val().substring(0,3) + '_' + r_cno, 'accc', 'accc3', 'accc2', "97%", "1054px", q_getMsg('btnAccc'), true);
                 });
+                
+                if(q_getPara('sys.project').toUpperCase()=='JR'){
+                    $('.isJR').show();
+                }
             }
 
             function q_boxClose(s2) {
@@ -137,8 +141,6 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
-            		
-                	
                 	case 'acomp':
                         var as = _q_appendData("acomp", "", true);
                         if (as[0] != undefined) {
@@ -714,8 +716,8 @@
 						<td><input id="txtPaydate" type="text" class="txt c1"/> </td>
 					</tr>
 					<tr>
-						<td> </td>
-						<td> </td>
+						<td><span> </span><a id='lblMon' class="lbl isJR" style="display:none;"> </a></td>
+                        <td><input id="txtMon" type="text" class="txt c1 isJR" style="display:none;"/> </td>
 						<td><span> </span><a id='lblIndate' class="lbl"> </a></td>
 						<td><input id="txtIndate" type="text" class="txt c1"/> </td>
 					</tr>
