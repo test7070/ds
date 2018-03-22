@@ -128,20 +128,31 @@
                 		var ass = _q_appendData("carkinds", "", true);
                 		if (as[0] != undefined && ass[0] != undefined){
                 			for(var i = 0;i<as.length;i++){
-                				t_item = new Array();
-                				for(var j = 0;j<ass.length;j++){
-                					if(ass[j].noa==as[i].noa && ass[j].position.length>0){
-                						t_item.push({position:ass[j].position,namea:ass[j].namea});
-                					}
-                				}
-                				tire_ds.carkind.push({noa:as[i].noa,kind:as[i].kind,img:as[i].img,item:t_item});
+                				tire_ds.carkind.push({noa:as[i].noa,kind:as[i].kind,img:as[i].img});
                 			}
                 		}
+                		q_gt('carkinds', "", 0, 0, 0, "", r_accy);
+                		
+                		break;
+                	case 'carkinds':
+                		var as = _q_appendData("carkinds", "", true);
+                		if (as[0] != undefined ){
+                			for(var i = 0;i<tire_ds.carkind.length;i++){
+                				t_item = new Array();
+                				for(var j = 0;j<as.length;j++){
+                					if(as[j].noa==tire_ds.carkind[i].noa && as[j].position.length>0){
+                						t_item.push({position:as[j].position,namea:as[j].namea});
+                					}
+                				}
+                				tire_ds.carkind[i].item = t_item;
+                			}
+                		}
+                		
                 		bbmKey = ['noa'];
 		                bbsKey = ['noa', 'noq'];
 		                q_brwCount();
 		                q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
-                		break;
+                		break;	
                 	case 'combRefresh':
                 		var as = _q_appendData("car2", "", true);
                 		var t_index = -1;
