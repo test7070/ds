@@ -38,6 +38,7 @@
             aPop = new Array();
 			
 			var t_acomp= "";
+			var t_carteam = "";
             $(document).ready(function() {
                 //q_bbsShow = -1;
                 bbmKey = ['noa'];
@@ -78,7 +79,6 @@
                 			,['textMon',r_picm],['textBdate_2umm',r_picd],['textEdate_2umm',r_picd],['textPaydate_2umm',r_picd]];
            		
                 q_mask(bbmMask);
-                
                 $('#lblTrtype').text('保留%');
 				$('#txtBdate').datepicker();
 				$('#txtEdate').datepicker();
@@ -122,6 +122,7 @@
                 	var t_etrandate = $.trim($('#txtEtrandate').val());
                 	var t_baddrno = $.trim($('#txtStraddrno').val());
                 	var t_eaddrno = $.trim($('#txtEndaddrno').val());
+                	var t_carteamno = $.trim($('#cmbCarteamno').val());
                 	var t_where = "(b.noa is null or b.noa='"+t_noa+"')";
                 	t_where += " and a.custno='"+t_custno+"'";
                 	t_where += t_bdate.length>0?" and a.datea>='"+t_bdate+"'":"";
@@ -135,6 +136,13 @@
                 		t_where += t_baddrno.length>0?" and a.straddrno>='"+t_baddrno+"'":"";
                 		t_where += t_eaddrno.length>0?" and a.straddrno<='"+t_eaddrno+"'":"";
                 	}
+                	
+                	if(q_getPara('sys.project').toUpperCase()=='SH'){
+                        if(t_carteamno.length>0){
+                            t_where += " and a.carteamno='"+t_carteamno+"'";
+                        }
+                    }
+                    
                 	var t_po = "";
                 	if ($.trim($('#txtPo').val()).length > 0) {
                         var tmp = $.trim($('#txtPo').val()).split(',');
@@ -200,7 +208,12 @@
 				if(q_getPara('sys.project').toUpperCase()=='ES'){
 					$('.ES_show').show();
 					$('.ES_hide').hide();
-				}	
+				}
+				if(q_getPara('sys.project').toUpperCase()=='SH'){
+                    $('.isNSH').hide();
+                    $('.isSH').show();
+                    $('.ES_hide').hide();
+                }
 				//----------------------------------------------------------
 				q_cmbParse("combType", "月結,現金,回收");
 
@@ -235,6 +248,7 @@
                 	$('#div2umm').toggle();
                 });
                 q_cmbParse("combAcomp_2umm", t_acomp);
+                q_cmbParse("cmbCarteamno", t_carteam);
                 q_cmbParse("combPaytype_2umm", "現金");
                 $('#textBdate_2umm').datepicker();
                 $('#textEdate_2umm').datepicker();
@@ -325,6 +339,16 @@
             
             function q_gtPost(t_name) {
                 switch (t_name) {
+                    case 'carteam':
+                        var as = _q_appendData("carteam", "", true);
+                        t_carteam = "@";
+                        if(as[0]!=undefined){
+                            for ( i = 0; i < as.length; i++) {
+                                t_carteam = t_carteam + (t_carteam.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].team;
+                            }
+                        }
+                        q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
+                        break;
                 	case 'acomp':
                 		var as = _q_appendData("acomp", "", true);
 						if (as[0] != undefined) {
@@ -333,7 +357,7 @@
 								t_acomp = t_acomp + (t_acomp.length > 0 ? ',' : '') + as[i].noa + '@' + as[i].acomp;
 							}
 						}
-                		q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
+                		q_gt('carteam', '', 0, 0, 0, "");
                 		break;
                 	case 'btnDele':
                 		var as = _q_appendData("umms", "", true);
@@ -425,7 +449,14 @@
                         	case 'ES':
                         		q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo,txtOthercost'
                         , as.length, as, 'price,accy,trandate,noa,noq,carno,aaddr,endaddr,total,caseno,mount,custdiscount,total,custorde,product,memo,reserve', '','');
-                        		break;
+                        		break;	
+                        	case 'SH':
+                                q_gridAddRow(bbsHtm, 'tbbs', 'txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtTranmoney,txtCaseno,txtMount,txtPrice,txtTotal,txtCustorde,txtProduct,txtVolume,txtWeight,txtMemo'
+                                , as.length, as, 'trandate,noa,noq,carno,straddr,total,caseno,mount,price,total,custorde,product,volume,weight,memo', '','');
+                                for(var j=0;j<as.length;j++){
+                                         $('#txtStraddr_'+j).val(as[j].straddr+'-'+as[j].endaddr); 
+                                }
+                                break;
                         	default:
                         		q_gridAddRow(bbsHtm, 'tbbs', 'txtPrice,txtTranaccy,txtTrandate,txtTranno,txtTrannoq,txtCarno,txtStraddr,txtEndaddr,txtTranmoney,txtCaseno,txtMount,txtCustdiscount,txtTotal,txtCustorde,txtProduct,txtMemo'
                         , as.length, as, 'price,accy,trandate,noa,noq,carno,straddr,endaddr,total,caseno,mount,custdiscount,total,custorde,product,memo', '','');
@@ -632,6 +663,9 @@
             		case 'VA':
             			q_box('z_trd_va.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
             			break;
+            	   case 'SH':
+                        q_box('z_trd_sh.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+                        break;
             		case 'DH':
             			q_box('z_trans_dh.aspx?' + r_userno + ";" + r_name + ";" + q_time + ";" + JSON.stringify({
 		                    noa : trim($('#txtNoa').val())
@@ -1122,8 +1156,8 @@
 						<td class="tdZ"> </td>
 					</tr>
 					<tr class="trX">
-						<td> </td>
-						<td> </td>
+						<td><span> </span><a id="lblCarteam" class="lbl isSH"  style="display: none">車隊</a></td>
+                        <td><select id="cmbCarteamno" class="txt c1 isSH"  style="display: none"> </select></td>
 						<td> </td>
 						<td> </td>
 						<td> </td>
@@ -1229,10 +1263,10 @@
 					<td align="center" style="width:80px;"><a id='lblTotal_s'> </a></td>
 					<td align="center" style="width:80px; display:none;" class="ES_show"><a>稅額</a></td>
 					<td align="center" style="width:80px;"><a id='lblCarno_s'> </a></td>
-					<td align="center" style="width:150px;"><a id='lblMemo_s'> </a></td>
+					<td align="center" style="width:150px;" class='isNSH'><a id='lblMemo_s'> </a></td>
 					<td align="center" style="width:150px;" class="DH_hide"><a id='lblCustorde_s'> </a></td>
 					<td align="center" style="width:150px;" class="DH_hide"><a id='lblCaseno_s'> </a></td>
-					<td align="center" style="width:150px;" class="DH_hide"><a id='lblCaseno2_s'> </a></td>
+					<td align="center" style="width:150px;" class="DH_hide isNSH"><a id='lblCaseno2_s'> </a></td>
 					<td align="center" style="width:150px;"><a id='lblTranno_s'> </a></td>
 					<td align="center" style="width:80px;"><a id='lblTranmoney_s'> </a></td>
 				</tr>
@@ -1260,14 +1294,14 @@
 					<td >
 					<input type="text" id="txtCarno.*" style="width:95%;" />
 					</td>
-					<td >
+					<td class='isNSH'>
 					<input type="text" id="txtMemo.*" style="width:95%;" />
 					</td>
 					<td class="DH_hide">
 					<input type="text" id="txtCustorde.*" style="width:95%;"/>
 					</td>
 					<td class="DH_hide"><input type="text" id="txtCaseno.*" style="width:95%;"/></td>
-					<td class="DH_hide"><input type="text" id="txtCaseno2.*" style="width:95%;"/></td>
+					<td class="DH_hide isNSH"><input type="text" id="txtCaseno2.*" style="width:95%;"/></td>
 					<td >
 					   <input type="text" id="txtTranno.*" style="float:left; width: 95%;"/>
 						<input type="text" id="txtTrannoq.*" style="float:left;display:none; width:1%"/>
