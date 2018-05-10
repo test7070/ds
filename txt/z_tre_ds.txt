@@ -498,7 +498,7 @@ z_tre_ds06:--z_tre_ds06  ref z_tre_ds02   papersize A4
 		,inmount,pton,mount,price,total
 		,outmount,pton2,mount2,price2,price3,discount,total2
 		,tolls,memo,po) 
-	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driver,d.driver,b.carteamno,g.team
+	select '1',b.noa,a.tranno,a.trannoq,d.datea,d.trandate,d.carno,d.driverno,d.driver,b.carteamno,g.team
 		,b.carchgno,isnull(b.tggno,''),b.tgg,e.nick,d.custno,f.comp,f.nick,d.straddrno,d.straddr,d.uccno,d.product
 		,d.inmount,d.pton,d.mount,d.price,d.total
 		,d.outmount,d.pton2,d.mount2,d.price2,d.price3,d.discount,d.total2
