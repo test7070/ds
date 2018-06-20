@@ -1287,6 +1287,12 @@
 					<td >
 					<input type="text" id="txtMount.*" style="width:95%;text-align: right;" />
 					</td>
+					<td style="display:none;">
+                        <input type="text" id="txtVolume.*" style="width:95%;text-align: right;" />
+                    </td>
+                    <td style="display:none;">
+                        <input type="text" id="txtWeight.*" style="width:95%;text-align: right;" />
+                    </td>
 					<td><input type="text" id="txtPrice.*" style="width:95%;text-align: right;" /></td>
 					<td class="ES_hide"><input type="text" id="txtCustdiscount.*" style="width:95%;text-align: right;" /></td>
 					<td ><input type="text" id="txtTotal.*" style="width:95%;text-align: right;" /></td>
